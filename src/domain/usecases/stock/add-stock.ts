@@ -1,4 +1,4 @@
-import { StockModel } from "../../models/stock"
+import { StockModel } from '../../models/stock'
 
 export interface AddStock {
   execute(params: AddStock.Params): Promise<AddStock.Result>
