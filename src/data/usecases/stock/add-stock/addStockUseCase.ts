@@ -15,6 +15,5 @@ export class AddStockUseCase implements AddStock {
       throw new Error('A stock with this name already exists')
     }
     await this.addStockRepository.add(stockData)
-    return
   }
 }
