@@ -22,7 +22,9 @@
   "author": "Raniel Sobrinho",
   "license": "MIT",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^4.1.0",
     "@types/jest": "^27.4.1",
+    "@types/mongodb": "^4.0.7",
     "@types/node": "^17.0.25",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "eslint": "^7.32.0",
@@ -41,5 +43,8 @@
   },
   "engines": {
     "node": "16.x"
+  },
+  "dependencies": {
+    "mongodb": "^4.9.1"
   }
 }
