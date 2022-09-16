@@ -55,6 +55,15 @@ describe('AddStockUseCase', () => {
     expect(loadStockSpy).toHaveBeenCalledWith(makeStockDataRequest().modelName)
   })
 
+  test('Should throw if LoadStockByNameRepository throws', async () => {
+    const { sut, loadStockByNameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadStockByNameRepositoryStub, 'loadByName')
+      .mockReturnValueOnce(Promise.reject(new Error()))
+    const promise = sut.execute(makeStockDataRequest())
+    await expect(promise).rejects.toThrow()
+  })
+
   test('Should call AddStockRepository with correct values', async () => {
     const { sut, addStockRepositoryStub } = makeSut()
     const addStockSpy = jest.spyOn(addStockRepositoryStub, 'add')
