@@ -1,4 +1,6 @@
+import { StockModel } from '../../../../domain/models/stock'
 import { AddStockRepository } from '../../../protocols/db/stock/addStockRepository'
+import { LoadStockByNameRepository } from '../../../protocols/db/stock/loadStockByNameRepository'
 import { AddStockUseCase } from './addStockUseCase'
 
 const makeStockDataRequest = () => ({
@@ -16,21 +18,43 @@ const makeFakeAddStockRepositoryStub = (): AddStockRepository => {
   return new AddStockRepositoryStub()
 }
 
+const makeFakeLoadStockRepositoryStub = (): LoadStockByNameRepository => {
+  class LoadStocByNamekRepositoryStub implements LoadStockByNameRepository {
+    async loadByName(name: string): Promise<StockModel | null> {
+      return null
+    }
+  }
+  return new LoadStocByNamekRepositoryStub()
+}
+
 type SutTypes = {
   sut: AddStockUseCase
   addStockRepositoryStub: AddStockRepository
+  loadStockByNameRepositoryStub: LoadStockByNameRepository
 }
 
 const makeSut = (): SutTypes => {
   const addStockRepositoryStub = makeFakeAddStockRepositoryStub()
-  const sut = new AddStockUseCase(addStockRepositoryStub)
+  const loadStockByNameRepositoryStub = makeFakeLoadStockRepositoryStub()
+  const sut = new AddStockUseCase(
+    addStockRepositoryStub,
+    loadStockByNameRepositoryStub
+  )
   return {
     sut,
     addStockRepositoryStub,
+    loadStockByNameRepositoryStub,
   }
 }
 
 describe('AddStockUseCase', () => {
+  test('Should call LoadStockByNameRepository with correct values', async () => {
+    const { sut, loadStockByNameRepositoryStub } = makeSut()
+    const loadStockSpy = jest.spyOn(loadStockByNameRepositoryStub, 'loadByName')
+    await sut.execute(makeStockDataRequest())
+    expect(loadStockSpy).toHaveBeenCalledWith(makeStockDataRequest().modelName)
+  })
+
   test('Should call AddStockRepository with correct values', async () => {
     const { sut, addStockRepositoryStub } = makeSut()
     const addStockSpy = jest.spyOn(addStockRepositoryStub, 'add')
