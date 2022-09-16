@@ -9,6 +9,13 @@ const makeStockDataRequest = () => ({
   quantity: 1,
 })
 
+const makeStockData = (): StockModel => ({
+  id: 'any_id',
+  modelName: 'any_name',
+  color: 'any_color',
+  quantity: 1,
+})
+
 const makeFakeAddStockRepositoryStub = (): AddStockRepository => {
   class AddStockRepositoryStub implements AddStockRepository {
     async add({}): Promise<void> {
@@ -62,6 +69,17 @@ describe('AddStockUseCase', () => {
       .mockReturnValueOnce(Promise.reject(new Error()))
     const promise = sut.execute(makeStockDataRequest())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return an error if AddStockRepository returns an stockModel', async () => {
+    const { sut, loadStockByNameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadStockByNameRepositoryStub, 'loadByName')
+      .mockReturnValueOnce(Promise.resolve(makeStockData()))
+    const error = sut.execute(makeStockDataRequest())
+    await expect(error).rejects.toThrow(
+      new Error('A stock with this name already exists')
+    )
   })
 
   test('Should call AddStockRepository with correct values', async () => {
