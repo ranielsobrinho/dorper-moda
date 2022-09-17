@@ -20,8 +20,8 @@ const makeAddStockStub = (): AddStock => {
 
 const makeValidationStub = (): Validation => {
   class ValidationStub implements Validation {
-    validate(input: any): Error | null {
-      return null
+    async validate(input: any): Promise<Error | null> {
+      return Promise.resolve(null)
     }
   }
   return new ValidationStub()
@@ -58,5 +58,12 @@ describe('AddStockController', () => {
     })
     const httpResponse = await sut.handle(makeAddStockRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validationSpy = jest.spyOn(validationStub, 'validate')
+    await sut.handle(makeAddStockRequest())
+    expect(validationSpy).toHaveBeenCalledWith(makeAddStockRequest().body)
   })
 })
