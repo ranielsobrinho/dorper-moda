@@ -37,4 +37,11 @@ describe('AddStockController', () => {
     await sut.handle(makeAddStockRequest())
     expect(addSpy).toHaveBeenCalledWith(makeAddStockRequest().body)
   })
+
+  test('Should throw if AddStock throws', async () => {
+    const { sut, addStockStub } = makeSut()
+    jest.spyOn(addStockStub, 'execute').mockRejectedValueOnce(new Error())
+    const promise = sut.handle(makeAddStockRequest())
+    await expect(promise).rejects.toThrow()
+  })
 })
