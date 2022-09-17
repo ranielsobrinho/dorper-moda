@@ -1,6 +1,7 @@
 import { AddStock } from '../../../../domain/usecases/stock/add-stock'
-import { HttpRequest } from '../../../protocols'
+import { HttpRequest, Validation } from '../../../protocols'
 import { AddStockController } from './add-stock-controller'
+import { serverError } from '../../../helpers/http-helper'
 
 const makeAddStockRequest = (): HttpRequest => ({
   body: {
@@ -17,17 +18,29 @@ const makeAddStockStub = (): AddStock => {
   return new AddStockStub()
 }
 
+const makeValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(input: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 type SutTypes = {
   sut: AddStockController
   addStockStub: AddStock
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const addStockStub = makeAddStockStub()
-  const sut = new AddStockController(addStockStub)
+  const validationStub = makeValidationStub()
+  const sut = new AddStockController(addStockStub, validationStub)
   return {
     sut,
-    addStockStub
+    addStockStub,
+    validationStub
   }
 }
 describe('AddStockController', () => {
@@ -38,10 +51,12 @@ describe('AddStockController', () => {
     expect(addSpy).toHaveBeenCalledWith(makeAddStockRequest().body)
   })
 
-  test('Should throw if AddStock throws', async () => {
+  test('Should return 500 if AddStock throws', async () => {
     const { sut, addStockStub } = makeSut()
-    jest.spyOn(addStockStub, 'execute').mockRejectedValueOnce(new Error())
-    const promise = sut.handle(makeAddStockRequest())
-    await expect(promise).rejects.toThrow()
+    jest.spyOn(addStockStub, 'execute').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpResponse = await sut.handle(makeAddStockRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
