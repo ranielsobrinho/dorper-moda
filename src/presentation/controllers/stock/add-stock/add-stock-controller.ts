@@ -1,5 +1,9 @@
 import { AddStock } from '../../../../domain/usecases/stock/add-stock'
-import { badRequest, serverError } from '../../../helpers/http-helper'
+import {
+  badRequest,
+  noContent,
+  serverError
+} from '../../../helpers/http-helper'
 import {
   Controller,
   HttpRequest,
@@ -24,10 +28,7 @@ export class AddStockController implements Controller {
         color,
         quantity
       })
-      return {
-        statusCode: 204,
-        body: 'ok'
-      }
+      return noContent()
     } catch (error) {
       return serverError(error)
     }
