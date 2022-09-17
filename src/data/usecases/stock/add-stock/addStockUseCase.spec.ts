@@ -3,24 +3,23 @@ import { AddStockRepository } from '../../../protocols/db/stock/addStockReposito
 import { LoadStockByNameRepository } from '../../../protocols/db/stock/loadStockByNameRepository'
 import { AddStockUseCase } from './addStockUseCase'
 
-const makeStockDataRequest = () => ({
+const makeStockDataRequest = (): AddStockRepository.Params => ({
   modelName: 'any_name',
   color: 'any_color',
-  quantity: 1,
+  quantity: 1
 })
 
 const makeStockData = (): StockModel => ({
   id: 'any_id',
   modelName: 'any_name',
   color: 'any_color',
-  quantity: 1,
+  quantity: 1
 })
 
 const makeFakeAddStockRepositoryStub = (): AddStockRepository => {
   class AddStockRepositoryStub implements AddStockRepository {
-    async add({}): Promise<void> {
-      return
-    }
+    // eslint-disable-next-line no-empty-pattern
+    async add({}): Promise<void> {}
   }
   return new AddStockRepositoryStub()
 }
@@ -50,7 +49,7 @@ const makeSut = (): SutTypes => {
   return {
     sut,
     addStockRepositoryStub,
-    loadStockByNameRepositoryStub,
+    loadStockByNameRepositoryStub
   }
 }
 
