@@ -23,7 +23,7 @@ describe('StockMongoRepository', () => {
       await sut.add({
         modelName: 'any_name',
         color: 'any_color',
-        quantity: 1,
+        quantity: 1
       })
       const stockData = await stockCollection.findOne({ modelName: 'any_name' })
       expect(stockData).toBeTruthy()
