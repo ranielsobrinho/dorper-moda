@@ -1,7 +1,7 @@
 import { AddStock } from '../../../../domain/usecases/stock/add-stock'
 import { HttpRequest, Validation } from '../../../protocols'
 import { AddStockController } from './add-stock-controller'
-import { serverError } from '../../../helpers/http-helper'
+import { serverError, badRequest } from '../../../helpers/http-helper'
 
 const makeAddStockRequest = (): HttpRequest => ({
   body: {
@@ -65,5 +65,14 @@ describe('AddStockController', () => {
     const validationSpy = jest.spyOn(validationStub, 'validate')
     await sut.handle(makeAddStockRequest())
     expect(validationSpy).toHaveBeenCalledWith(makeAddStockRequest().body)
+  })
+
+  test('Should return 400 if Validation returns a error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(Promise.resolve(new Error()))
+    const httpResponse = await sut.handle(makeAddStockRequest())
+    expect(httpResponse).toEqual(badRequest(new Error()))
   })
 })
