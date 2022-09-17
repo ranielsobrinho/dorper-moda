@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "mongodb": "^4.9.1",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "yup": "^0.32.11"
   }
 }
