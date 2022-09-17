@@ -1,7 +1,11 @@
 import { AddStock } from '../../../../domain/usecases/stock/add-stock'
 import { HttpRequest, Validation } from '../../../protocols'
 import { AddStockController } from './add-stock-controller'
-import { serverError, badRequest } from '../../../helpers/http-helper'
+import {
+  serverError,
+  badRequest,
+  noContent
+} from '../../../helpers/http-helper'
 
 const makeAddStockRequest = (): HttpRequest => ({
   body: {
@@ -74,5 +78,11 @@ describe('AddStockController', () => {
       .mockReturnValueOnce(Promise.resolve(new Error()))
     const httpResponse = await sut.handle(makeAddStockRequest())
     expect(httpResponse).toEqual(badRequest(new Error()))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeAddStockRequest())
+    expect(httpResponse).toEqual(noContent())
   })
 })
