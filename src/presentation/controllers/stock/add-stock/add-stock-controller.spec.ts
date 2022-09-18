@@ -6,6 +6,7 @@ import {
   badRequest,
   noContent
 } from '../../../helpers/http-helper'
+import { MissingParamError } from '../../../errors'
 
 const makeAddStockRequest = (): HttpRequest => ({
   body: {
@@ -24,8 +25,8 @@ const makeAddStockStub = (): AddStock => {
 
 const makeValidationStub = (): Validation => {
   class ValidationStub implements Validation {
-    async validate(input: any): Promise<Error | null> {
-      return Promise.resolve(null)
+    validate(input: any): Error | null {
+      return null
     }
   }
   return new ValidationStub()
@@ -75,9 +76,9 @@ describe('AddStockController', () => {
     const { sut, validationStub } = makeSut()
     jest
       .spyOn(validationStub, 'validate')
-      .mockReturnValueOnce(Promise.resolve(new Error()))
+      .mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await sut.handle(makeAddStockRequest())
-    expect(httpResponse).toEqual(badRequest(new Error()))
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 
   test('Should return 204 on success', async () => {
