@@ -37,4 +37,16 @@ describe('YupValidation', () => {
       age: 25
     })
   })
+
+  test('Should throw if YupValidator throws', async () => {
+    const { sut, yupValidatorStub } = makeSut()
+    jest.spyOn(yupValidatorStub, 'validate').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const promise = sut.validate({
+      name: 'Raniel',
+      age: 25
+    })
+    await expect(promise).rejects.toThrow()
+  })
 })
