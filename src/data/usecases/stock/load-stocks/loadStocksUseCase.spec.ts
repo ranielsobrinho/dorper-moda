@@ -52,9 +52,10 @@ describe('LoadStocksUseCase', () => {
     const promise = sut.loadAll()
     expect(promise).rejects.toThrow()
   })
-})
-test('Should return an array of stock if LoadStocksRepository succeeds', async () => {
-  const { sut } = makeSut()
-  const stocks = await sut.loadAll()
-  expect(stocks).toEqual(makeFakeStockModel())
+
+  test('Should return an array of stock if LoadStocksRepository succeeds', async () => {
+    const { sut } = makeSut()
+    const stocks = await sut.loadAll()
+    expect(stocks).toEqual(makeFakeStockModel())
+  })
 })
