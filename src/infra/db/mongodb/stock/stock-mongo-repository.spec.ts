@@ -53,4 +53,12 @@ describe('StockMongoRepository', () => {
       expect(stockData?.quantity).toBe(1)
     })
   })
+
+  describe('loadAll()', () => {
+    test('Should return an array of stocks on success', async () => {
+      const sut = makeSut()
+      const stockData = await sut.loadAll()
+      expect(stockData).toBeTruthy()
+    })
+  })
 })
