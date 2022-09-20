@@ -18,14 +18,27 @@ describe('Stock Routes', () => {
     await stockCollection.deleteMany({})
   })
 
-  test('Should return 204 on success', async () => {
-    await request(app)
-      .post('/api/stock')
-      .send({
+  describe('POST /stock', () => {
+    test('Should return 204 on success', async () => {
+      await request(app)
+        .post('/api/stock')
+        .send({
+          modelName: 'any_name',
+          color: 'any_color',
+          quantity: 1
+        })
+        .expect(204)
+    })
+  })
+
+  describe('GET /stock', () => {
+    test('Should return 200 on success', async () => {
+      await stockCollection.insertOne({
         modelName: 'any_name',
         color: 'any_color',
         quantity: 1
       })
-      .expect(204)
+      await request(app).get('/api/stock').expect(200)
+    })
   })
 })
