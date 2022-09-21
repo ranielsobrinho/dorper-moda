@@ -61,4 +61,13 @@ describe('StockMongoRepository', () => {
       expect(stockData).toBeTruthy()
     })
   })
+
+  describe('getById()', () => {
+    test('Should return a stock on success', async () => {
+      const stock = await stockCollection.insertOne(makeStockRequest())
+      const sut = makeSut()
+      const stockData = await sut.getById(stock.insertedId.toString())
+      expect(stockData).toBeTruthy()
+    })
+  })
 })
