@@ -48,4 +48,10 @@ describe('GetByIdUseCase', () => {
     const promise = sut.execute('any_id')
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return a stock on GetStockByIdRepository success', async () => {
+    const { sut } = makeSut()
+    const stockData = await sut.execute('any_id')
+    expect(stockData).toEqual(makeFakeStockData())
+  })
 })
