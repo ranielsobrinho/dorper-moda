@@ -4,13 +4,15 @@ import { LoadStockByNameRepository } from '../../../../data/protocols/db/stock/l
 import { LoadStocksRepository } from '../../../../data/protocols/db/stock/loadStocksRepository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { ObjectId } from 'mongodb'
+import { DeleteStockRepository } from '../../../../data/protocols/db/stock/deleteStockRepository'
 
 export class StockMongoRepository
   implements
     AddStockRepository,
     LoadStockByNameRepository,
     LoadStocksRepository,
-    GetStockByIdRepository
+    GetStockByIdRepository,
+    DeleteStockRepository
 {
   async add(
     stockData: AddStockRepository.Params
@@ -36,5 +38,11 @@ export class StockMongoRepository
     const objectId = new ObjectId(stockId)
     const stockData = await stockCollection.findOne({ _id: objectId })
     return stockData && MongoHelper.map(stockData)
+  }
+
+  async delete(stockId: string): Promise<void> {
+    const stockCollection = MongoHelper.getCollection('stocks')
+    const objectId = new ObjectId(stockId)
+    await stockCollection.deleteOne({ _id: objectId })
   }
 }
