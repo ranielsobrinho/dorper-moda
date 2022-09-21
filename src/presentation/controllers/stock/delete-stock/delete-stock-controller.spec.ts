@@ -8,13 +8,30 @@ const makeDeleteRequest = (): HttpRequest => ({
   }
 })
 
+const makeDeleteStockStub = (): DeleteStock => {
+  class DeleteStockStub implements DeleteStock {
+    async execute(stockId: string): Promise<void> {}
+  }
+  return new DeleteStockStub()
+}
+
+type SutTypes = {
+  sut: DeleteStockController
+  deleteStockStub: DeleteStock
+}
+
+const makeSut = (): SutTypes => {
+  const deleteStockStub = makeDeleteStockStub()
+  const sut = new DeleteStockController(deleteStockStub)
+  return {
+    sut,
+    deleteStockStub
+  }
+}
+
 describe('DeleteStockController', () => {
   test('Should call DeleteStock with correct values', async () => {
-    class DeleteStockStub implements DeleteStock {
-      async execute(stockId: string): Promise<void> {}
-    }
-    const deleteStockStub = new DeleteStockStub()
-    const sut = new DeleteStockController(deleteStockStub)
+    const { sut, deleteStockStub } = makeSut()
     const deleteStockSpy = jest.spyOn(deleteStockStub, 'execute')
     await sut.handle(makeDeleteRequest())
     expect(deleteStockSpy).toHaveBeenCalledWith(
