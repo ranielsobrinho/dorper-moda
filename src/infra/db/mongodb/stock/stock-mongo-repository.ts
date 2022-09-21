@@ -5,6 +5,7 @@ import { LoadStocksRepository } from '../../../../data/protocols/db/stock/loadSt
 import { MongoHelper } from '../helpers/mongo-helper'
 import { ObjectId } from 'mongodb'
 import { DeleteStockRepository } from '../../../../data/protocols/db/stock/deleteStockRepository'
+import { UpdateStockRepository } from '../../../../data/protocols/db/stock/updateStockRepository'
 
 export class StockMongoRepository
   implements
@@ -12,7 +13,8 @@ export class StockMongoRepository
     LoadStockByNameRepository,
     LoadStocksRepository,
     GetStockByIdRepository,
-    DeleteStockRepository
+    DeleteStockRepository,
+    UpdateStockRepository
 {
   async add(
     stockData: AddStockRepository.Params
@@ -44,5 +46,23 @@ export class StockMongoRepository
     const stockCollection = MongoHelper.getCollection('stocks')
     const objectId = new ObjectId(stockId)
     await stockCollection.deleteOne({ _id: objectId })
+  }
+
+  async update(
+    params: UpdateStockRepository.Params
+  ): Promise<UpdateStockRepository.Result> {
+    const { stockId, data } = params
+    const stockCollection = MongoHelper.getCollection('stocks')
+    const objectId = new ObjectId(stockId)
+    await stockCollection.findOneAndUpdate(
+      { _id: objectId },
+      {
+        $set: {
+          modelName: data.modelName,
+          color: data.color,
+          quantity: data.quantity
+        }
+      }
+    )
   }
 }
