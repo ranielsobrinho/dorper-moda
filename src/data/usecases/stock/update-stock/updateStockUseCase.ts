@@ -9,7 +9,10 @@ export class UpdateStockUseCase implements UpdateStock {
   ) {}
 
   async execute(params: UpdateStock.Params): Promise<UpdateStock.Result> {
-    await this.getStockByIdRepository.getById(params.stockId)
+    const stockData = await this.getStockByIdRepository.getById(params.stockId)
+    if (!stockData) {
+      return null
+    }
     await this.updateStockRepository.update(params)
   }
 }

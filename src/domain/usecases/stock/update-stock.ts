@@ -9,5 +9,5 @@ export namespace UpdateStock {
     stockId: string
     data: Omit<StockModel, 'id'>
   }
-  export type Result = void
+  export type Result = void | null
 }

@@ -8,6 +8,9 @@ export class GetStockByIdUseCase implements GetStockById {
 
   async execute(stockId: string): Promise<GetStockById.Result> {
     const stockData = await this.getStockByIdRepository.getById(stockId)
+    if (!stockData) {
+      return null
+    }
     return stockData
   }
 }

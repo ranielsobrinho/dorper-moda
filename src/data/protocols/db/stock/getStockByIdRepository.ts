@@ -5,5 +5,5 @@ export interface GetStockByIdRepository {
 }
 
 export namespace GetStockByIdRepository {
-  export type Result = StockModel
+  export type Result = StockModel | null
 }
