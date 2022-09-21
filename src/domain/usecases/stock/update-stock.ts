@@ -1,10 +1,10 @@
 import { StockModel } from '../../models/stock'
 
 export interface UpdateStock {
-  execute(params: AddStock.Params): Promise<AddStock.Result>
+  execute(params: UpdateStock.Params): Promise<UpdateStock.Result>
 }
 
-export namespace AddStock {
+export namespace UpdateStock {
   export type Params = {
     stockId: string
     data: Omit<StockModel, 'id'>
