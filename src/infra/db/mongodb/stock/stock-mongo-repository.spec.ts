@@ -70,4 +70,15 @@ describe('StockMongoRepository', () => {
       expect(stockData).toBeTruthy()
     })
   })
+
+  describe('delete()', () => {
+    test('Should delete a stock on success', async () => {
+      const stock = await stockCollection.insertOne(makeStockRequest())
+      expect(stock).toBeTruthy()
+      const sut = makeSut()
+      await sut.delete(stock.insertedId.toString())
+      const stockData = await stockCollection.findOne({ _id: stock.insertedId })
+      expect(stockData).toBeFalsy()
+    })
+  })
 })
