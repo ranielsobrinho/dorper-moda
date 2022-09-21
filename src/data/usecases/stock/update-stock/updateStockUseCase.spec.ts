@@ -10,15 +10,32 @@ const makeStockDataRequest = (): UpdateStockRepository.Params => ({
   }
 })
 
+const makeUpdateStockRepositoryStub = (): UpdateStockRepository => {
+  class UpdateStockRepositoryStub implements UpdateStockRepository {
+    async update(
+      params: UpdateStockRepository.Params
+    ): Promise<UpdateStockRepository.Result> {}
+  }
+  return new UpdateStockRepositoryStub()
+}
+
+type SutTypes = {
+  sut: UpdateStockUseCase
+  updateStockRepositoryStub: UpdateStockRepository
+}
+
+const makeSut = (): SutTypes => {
+  const updateStockRepositoryStub = makeUpdateStockRepositoryStub()
+  const sut = new UpdateStockUseCase(updateStockRepositoryStub)
+  return {
+    sut,
+    updateStockRepositoryStub
+  }
+}
+
 describe('UpdateStockUseCase', () => {
   test('Should call UpdateStockUseCase with correct values', async () => {
-    class UpdateStockRepositoryStub implements UpdateStockRepository {
-      async update(
-        params: UpdateStockRepository.Params
-      ): Promise<UpdateStockRepository.Result> {}
-    }
-    const updateStockRepositoryStub = new UpdateStockRepositoryStub()
-    const sut = new UpdateStockUseCase(updateStockRepositoryStub)
+    const { sut, updateStockRepositoryStub } = makeSut()
     const updateSpy = jest.spyOn(updateStockRepositoryStub, 'update')
     sut.execute(makeStockDataRequest())
     expect(updateSpy).toHaveBeenCalledWith(makeStockDataRequest())
