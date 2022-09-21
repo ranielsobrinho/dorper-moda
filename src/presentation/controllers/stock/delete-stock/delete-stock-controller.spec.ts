@@ -1,4 +1,5 @@
 import { DeleteStock } from '../../../../domain/usecases/stock/delete-stock'
+import { serverError } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols'
 import { DeleteStockController } from './delete-stock-controller'
 
@@ -37,5 +38,12 @@ describe('DeleteStockController', () => {
     expect(deleteStockSpy).toHaveBeenCalledWith(
       makeDeleteRequest().body.stockId
     )
+  })
+
+  test('Should return 500 if DeleteStock throws', async () => {
+    const { sut, deleteStockStub } = makeSut()
+    jest.spyOn(deleteStockStub, 'execute').mockRejectedValueOnce(new Error())
+    const httpResponse = await sut.handle(makeDeleteRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
