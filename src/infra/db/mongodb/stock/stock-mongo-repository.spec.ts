@@ -81,4 +81,33 @@ describe('StockMongoRepository', () => {
       expect(stockData).toBeFalsy()
     })
   })
+
+  describe('update()', () => {
+    test('Should update a stock data on success', async () => {
+      const inserted = await stockCollection.insertOne(makeStockRequest())
+      const stock = await stockCollection.findOne({ _id: inserted.insertedId })
+      expect(stock).toBeTruthy()
+      expect(stock?._id).toBeTruthy()
+      expect(stock?.modelName).toBe('any_name')
+      expect(stock?.color).toBe('any_color')
+      expect(stock?.quantity).toBe(1)
+
+      const sut = makeSut()
+      const id = inserted.insertedId.toString()
+      await sut.update({
+        stockId: id,
+        data: {
+          modelName: 'other_name',
+          color: 'any_color',
+          quantity: 1
+        }
+      })
+      const stockData = await stockCollection.findOne({ _id: stock?._id })
+      expect(stockData).toBeTruthy()
+      expect(stockData?._id).toBeTruthy()
+      expect(stockData?.modelName).toBe('other_name')
+      expect(stockData?.color).toBe('any_color')
+      expect(stockData?.quantity).toBe(1)
+    })
+  })
 })
