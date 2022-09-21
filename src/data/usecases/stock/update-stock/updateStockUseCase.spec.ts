@@ -37,7 +37,16 @@ describe('UpdateStockUseCase', () => {
   test('Should call UpdateStockUseCase with correct values', async () => {
     const { sut, updateStockRepositoryStub } = makeSut()
     const updateSpy = jest.spyOn(updateStockRepositoryStub, 'update')
-    sut.execute(makeStockDataRequest())
+    await sut.execute(makeStockDataRequest())
     expect(updateSpy).toHaveBeenCalledWith(makeStockDataRequest())
+  })
+
+  test('Should throw if UpdateStockUseCase throws', async () => {
+    const { sut, updateStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(updateStockRepositoryStub, 'update')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeStockDataRequest())
+    await expect(promise).rejects.toThrow()
   })
 })
