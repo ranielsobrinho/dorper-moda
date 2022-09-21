@@ -29,4 +29,13 @@ describe('DeleteStockUseCase', () => {
     await sut.execute('1')
     expect(deleteSpy).toHaveBeenCalledWith('1')
   })
+
+  test('Should throw if DeleteStockRepository throws', async () => {
+    const { sut, deleteStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(deleteStockRepositoryStub, 'delete')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute('1')
+    await expect(promise).rejects.toThrow()
+  })
 })
