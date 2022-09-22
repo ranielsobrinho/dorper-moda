@@ -69,4 +69,15 @@ describe('DeleteStockUseCase', () => {
     await sut.execute('1')
     expect(getByIdSpy).toHaveBeenCalledWith('1')
   })
+
+  test('Should throw if GetStockByIdRepository throws', async () => {
+    const { sut, getStockByIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(getStockByIdRepositoryStub, 'getById')
+      .mockImplementationOnce(() => {
+        throw new Error()
+      })
+    const promise = sut.execute('1')
+    await expect(promise).rejects.toThrow()
+  })
 })
