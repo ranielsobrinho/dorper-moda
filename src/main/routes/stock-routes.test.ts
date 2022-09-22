@@ -41,4 +41,36 @@ describe('Stock Routes', () => {
       await request(app).get('/api/stock').expect(200)
     })
   })
+
+  describe('GET /stock/1', () => {
+    test('Should return 200 on success', async () => {
+      const stockData = await stockCollection.insertOne({
+        modelName: 'any_name',
+        color: 'any_color',
+        quantity: 1
+      })
+      const id = stockData.insertedId.toString()
+      await request(app).get(`/api/stock/${id}`).expect(200)
+    })
+
+    test('Should return 403 if wrong id is provided', async () => {
+      await request(app).get('/api/stock/123343555224').expect(403)
+    })
+  })
+
+  describe('DELETE /stock/1', () => {
+    test('Should return 200 on success', async () => {
+      const stockData = await stockCollection.insertOne({
+        modelName: 'any_name',
+        color: 'any_color',
+        quantity: 1
+      })
+      const id = stockData.insertedId.toString()
+      await request(app).delete(`/api/stock/${id}`).expect(204)
+    })
+
+    test('Should return 403 if wrong id is provided', async () => {
+      await request(app).delete('/api/stock/123343555224').expect(403)
+    })
+  })
 })
