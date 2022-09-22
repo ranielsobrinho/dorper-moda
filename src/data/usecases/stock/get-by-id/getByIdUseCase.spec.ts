@@ -49,6 +49,15 @@ describe('GetByIdUseCase', () => {
     await expect(promise).rejects.toThrow()
   })
 
+  test('Should return null if GetStockByIdRepository returns null', async () => {
+    const { sut, getStockByIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(getStockByIdRepositoryStub, 'getById')
+      .mockResolvedValueOnce(null)
+    const stockData = await sut.execute('any_id')
+    expect(stockData).toEqual(null)
+  })
+
   test('Should return a stock on GetStockByIdRepository success', async () => {
     const { sut } = makeSut()
     const stockData = await sut.execute('any_id')
