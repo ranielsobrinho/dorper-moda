@@ -12,7 +12,7 @@ export class UpdateStockController implements Controller {
       if (!stockData) {
         return forbidden(new InvalidParamError('stockId'))
       }
-      return Promise.resolve(noContent())
+      return noContent()
     } catch (error) {
       return serverError(error)
     }
