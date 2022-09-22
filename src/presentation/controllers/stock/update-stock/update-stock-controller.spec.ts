@@ -1,4 +1,5 @@
 import { UpdateStock } from '../../../../domain/usecases/stock/update-stock'
+import { serverError } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols/http'
 import { UpdateStockController } from './update-stock-controller'
 
@@ -40,5 +41,12 @@ describe('UpdateStockController', () => {
     const updateSpy = jest.spyOn(updateStockStub, 'execute')
     await sut.handle(makeStockDataRequest())
     expect(updateSpy).toHaveBeenCalledWith(makeStockDataRequest().body)
+  })
+
+  test('Should return 500 if UpdateStock throws', async () => {
+    const { sut, updateStockStub } = makeSut()
+    jest.spyOn(updateStockStub, 'execute').mockRejectedValueOnce(new Error())
+    const promise = await sut.handle(makeStockDataRequest())
+    expect(promise).toEqual(serverError(new Error()))
   })
 })
