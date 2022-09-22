@@ -1,6 +1,11 @@
 import { UpdateStock } from '../../../../domain/usecases/stock/update-stock'
 import { InvalidParamError } from '../../../errors'
-import { forbidden, noContent, serverError } from '../../../helpers/http-helper'
+import {
+  badRequest,
+  forbidden,
+  noContent,
+  serverError
+} from '../../../helpers/http-helper'
 import {
   Controller,
   HttpRequest,
@@ -18,7 +23,10 @@ export class UpdateStockController implements Controller {
     try {
       const { stockId } = httpRequest.params
       const { data } = httpRequest.body
-      this.validation.validate(data)
+      const error = this.validation.validate(data)
+      if (error) {
+        return badRequest(error)
+      }
       const stockData = await this.updateStock.execute({
         stockId,
         data
