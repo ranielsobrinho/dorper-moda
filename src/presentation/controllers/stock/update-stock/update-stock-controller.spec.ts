@@ -1,6 +1,11 @@
 import { UpdateStock } from '../../../../domain/usecases/stock/update-stock'
-import { InvalidParamError } from '../../../errors'
-import { forbidden, noContent, serverError } from '../../../helpers/http-helper'
+import { InvalidParamError, MissingParamError } from '../../../errors'
+import {
+  badRequest,
+  forbidden,
+  noContent,
+  serverError
+} from '../../../helpers/http-helper'
 import { Validation } from '../../../protocols'
 import { HttpRequest } from '../../../protocols/http'
 import { UpdateStockController } from './update-stock-controller'
@@ -93,5 +98,14 @@ describe('UpdateStockController', () => {
     const validationSpy = jest.spyOn(validationStub, 'validate')
     await sut.handle(makeStockDataRequest())
     expect(validationSpy).toHaveBeenCalledWith(makeStockDataRequest().body.data)
+  })
+
+  test('Should return 400 if Validation returns a error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await sut.handle(makeStockDataRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
