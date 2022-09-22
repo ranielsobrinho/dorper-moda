@@ -80,4 +80,13 @@ describe('DeleteStockUseCase', () => {
     const promise = sut.execute('1')
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return null GetStockByIdRepository returns null', async () => {
+    const { sut, getStockByIdRepositoryStub } = makeSut()
+    jest
+      .spyOn(getStockByIdRepositoryStub, 'getById')
+      .mockResolvedValueOnce(null)
+    const stockData = await sut.execute('1')
+    expect(stockData).toBeNull()
+  })
 })
