@@ -42,10 +42,11 @@ export class StockMongoRepository
     return stockData && MongoHelper.map(stockData)
   }
 
-  async delete(stockId: string): Promise<void> {
+  async delete(stockId: string): Promise<number> {
     const stockCollection = MongoHelper.getCollection('stocks')
     const objectId = new ObjectId(stockId)
-    await stockCollection.deleteOne({ _id: objectId })
+    const deletedData = await stockCollection.deleteOne({ _id: objectId })
+    return deletedData.deletedCount
   }
 
   async update(

@@ -14,5 +14,6 @@ export class UpdateStockUseCase implements UpdateStock {
       return null
     }
     await this.updateStockRepository.update(params)
+    return 'Updated'
   }
 }

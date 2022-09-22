@@ -1,5 +1,6 @@
 import { DeleteStock } from '../../../../domain/usecases/stock/delete-stock'
-import { noContent, serverError } from '../../../helpers/http-helper'
+import { InvalidParamError } from '../../../errors'
+import { noContent, serverError, forbidden } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols'
 import { DeleteStockController } from './delete-stock-controller'
 
@@ -11,7 +12,9 @@ const makeDeleteRequest = (): HttpRequest => ({
 
 const makeDeleteStockStub = (): DeleteStock => {
   class DeleteStockStub implements DeleteStock {
-    async execute(stockId: string): Promise<void> {}
+    async execute(stockId: string): Promise<string | null> {
+      return Promise.resolve('Deleted')
+    }
   }
   return new DeleteStockStub()
 }
@@ -45,6 +48,13 @@ describe('DeleteStockController', () => {
     jest.spyOn(deleteStockStub, 'execute').mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(makeDeleteRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 403 if DeleteStock returns null', async () => {
+    const { sut, deleteStockStub } = makeSut()
+    jest.spyOn(deleteStockStub, 'execute').mockResolvedValueOnce(null)
+    const httpResponse = await sut.handle(makeDeleteRequest())
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('stockId')))
   })
 
   test('Should return 204 on success', async () => {

@@ -3,7 +3,9 @@ import { DeleteStockUseCase } from './deleteStockUseCase'
 
 const makeDeleteStockRepositoryStub = (): DeleteStockRepository => {
   class DeleteStockRepositoryStub implements DeleteStockRepository {
-    async delete(stockId: string): Promise<void> {}
+    async delete(stockId: string): Promise<number> {
+      return Promise.resolve(1)
+    }
   }
   return new DeleteStockRepositoryStub()
 }
