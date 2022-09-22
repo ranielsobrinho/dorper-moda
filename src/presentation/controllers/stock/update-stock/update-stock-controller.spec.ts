@@ -1,5 +1,6 @@
 import { UpdateStock } from '../../../../domain/usecases/stock/update-stock'
-import { serverError } from '../../../helpers/http-helper'
+import { InvalidParamError } from '../../../errors'
+import { forbidden, serverError } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols/http'
 import { UpdateStockController } from './update-stock-controller'
 
@@ -48,5 +49,12 @@ describe('UpdateStockController', () => {
     jest.spyOn(updateStockStub, 'execute').mockRejectedValueOnce(new Error())
     const promise = await sut.handle(makeStockDataRequest())
     expect(promise).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 403 if UpdateStock returns null', async () => {
+    const { sut, updateStockStub } = makeSut()
+    jest.spyOn(updateStockStub, 'execute').mockResolvedValueOnce(null)
+    const httpResponse = await sut.handle(makeStockDataRequest())
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('stockId')))
   })
 })
