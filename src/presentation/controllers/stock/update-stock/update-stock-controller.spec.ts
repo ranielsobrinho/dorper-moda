@@ -1,6 +1,6 @@
 import { UpdateStock } from '../../../../domain/usecases/stock/update-stock'
 import { InvalidParamError } from '../../../errors'
-import { forbidden, serverError } from '../../../helpers/http-helper'
+import { forbidden, noContent, serverError } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols/http'
 import { UpdateStockController } from './update-stock-controller'
 
@@ -17,7 +17,9 @@ const makeStockDataRequest = (): HttpRequest => ({
 
 const makeUpdateStockStub = (): UpdateStock => {
   class UpdateStockStub implements UpdateStock {
-    async execute(params: UpdateStock.Params): Promise<UpdateStock.Result> {}
+    async execute(params: UpdateStock.Params): Promise<UpdateStock.Result> {
+      return Promise.resolve('Updated')
+    }
   }
   return new UpdateStockStub()
 }
@@ -56,5 +58,11 @@ describe('UpdateStockController', () => {
     jest.spyOn(updateStockStub, 'execute').mockResolvedValueOnce(null)
     const httpResponse = await sut.handle(makeStockDataRequest())
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('stockId')))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeStockDataRequest())
+    expect(httpResponse).toEqual(noContent())
   })
 })
