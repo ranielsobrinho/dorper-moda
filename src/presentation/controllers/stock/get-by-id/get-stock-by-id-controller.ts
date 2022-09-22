@@ -1,6 +1,6 @@
 import { GetStockById } from '../../../../domain/usecases/stock/get-stock-by-id'
 import { InvalidParamError } from '../../../errors'
-import { forbidden, noContent, serverError } from '../../../helpers/http-helper'
+import { forbidden, ok, serverError } from '../../../helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../../protocols'
 
 export class GetStockByIdController implements Controller {
@@ -12,7 +12,7 @@ export class GetStockByIdController implements Controller {
       if (!stockData) {
         return forbidden(new InvalidParamError('stockId'))
       }
-      return noContent()
+      return ok(stockData)
     } catch (error) {
       return serverError(error)
     }
