@@ -1,6 +1,7 @@
 import { UpdateStock } from '../../../../domain/usecases/stock/update-stock'
 import { InvalidParamError } from '../../../errors'
 import { forbidden, noContent, serverError } from '../../../helpers/http-helper'
+import { Validation } from '../../../protocols'
 import { HttpRequest } from '../../../protocols/http'
 import { UpdateStockController } from './update-stock-controller'
 
@@ -26,17 +27,29 @@ const makeUpdateStockStub = (): UpdateStock => {
   return new UpdateStockStub()
 }
 
+const makeValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(input: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 type SutTypes = {
   sut: UpdateStockController
   updateStockStub: UpdateStock
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const updateStockStub = makeUpdateStockStub()
-  const sut = new UpdateStockController(updateStockStub)
+  const validationStub = makeValidationStub()
+  const sut = new UpdateStockController(updateStockStub, validationStub)
   return {
     sut,
-    updateStockStub
+    updateStockStub,
+    validationStub
   }
 }
 
@@ -73,5 +86,12 @@ describe('UpdateStockController', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeStockDataRequest())
     expect(httpResponse).toEqual(noContent())
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validationSpy = jest.spyOn(validationStub, 'validate')
+    await sut.handle(makeStockDataRequest())
+    expect(validationSpy).toHaveBeenCalledWith(makeStockDataRequest().body.data)
   })
 })
