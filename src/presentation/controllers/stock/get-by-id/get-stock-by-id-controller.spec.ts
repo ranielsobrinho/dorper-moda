@@ -2,7 +2,7 @@ import { GetStockById } from '../../../../domain/usecases/stock/get-stock-by-id'
 import { StockModel } from '../../../../domain/models/stock'
 import { HttpRequest } from '../../../protocols/http'
 import { GetStockByIdController } from './get-stock-by-id-controller'
-import { forbidden, serverError } from '../../../helpers/http-helper'
+import { forbidden, serverError, ok } from '../../../helpers/http-helper'
 import { InvalidParamError } from '../../../errors'
 
 const makeFakeStockModel = (): StockModel => ({
@@ -61,5 +61,11 @@ describe('GetStockByIdController', () => {
     jest.spyOn(getByIdStub, 'execute').mockResolvedValueOnce(null)
     const httpResponse = await sut.handle(httpRequest())
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('stockId')))
+  })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(httpRequest())
+    expect(httpResponse).toEqual(ok(makeFakeStockModel()))
   })
 })
