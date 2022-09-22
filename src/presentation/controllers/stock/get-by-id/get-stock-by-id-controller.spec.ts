@@ -16,15 +16,32 @@ const httpRequest = (): HttpRequest => ({
   }
 })
 
+const makeGetStockByIdStub = (): GetStockById => {
+  class GetByIdStub implements GetStockById {
+    async execute(stockId: string): Promise<GetStockById.Result> {
+      return Promise.resolve(makeFakeStockModel())
+    }
+  }
+  return new GetByIdStub()
+}
+
+type SutTypes = {
+  sut: GetStockByIdController
+  getByIdStub: GetStockById
+}
+
+const makeSut = (): SutTypes => {
+  const getByIdStub = makeGetStockByIdStub()
+  const sut = new GetStockByIdController(getByIdStub)
+  return {
+    sut,
+    getByIdStub
+  }
+}
+
 describe('GetStockByIdController', () => {
   test('Should call GetById with correct values', async () => {
-    class GetByIdStub implements GetStockById {
-      async execute(stockId: string): Promise<GetStockById.Result> {
-        return Promise.resolve(makeFakeStockModel())
-      }
-    }
-    const getByIdStub = new GetByIdStub()
-    const sut = new GetStockByIdController(getByIdStub)
+    const { sut, getByIdStub } = makeSut()
     const getByIdSpy = jest.spyOn(getByIdStub, 'execute')
     await sut.handle(httpRequest())
     expect(getByIdSpy).toHaveBeenCalledWith(httpRequest().body.stockId)
