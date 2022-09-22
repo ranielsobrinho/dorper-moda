@@ -13,13 +13,30 @@ const makeStockDataRequest = (): HttpRequest => ({
   }
 })
 
+const makeUpdateStockStub = (): UpdateStock => {
+  class UpdateStockStub implements UpdateStock {
+    async execute(params: UpdateStock.Params): Promise<UpdateStock.Result> {}
+  }
+  return new UpdateStockStub()
+}
+
+type SutTypes = {
+  sut: UpdateStockController
+  updateStockStub: UpdateStock
+}
+
+const makeSut = (): SutTypes => {
+  const updateStockStub = makeUpdateStockStub()
+  const sut = new UpdateStockController(updateStockStub)
+  return {
+    sut,
+    updateStockStub
+  }
+}
+
 describe('UpdateStockController', () => {
   test('Should call UpdateStock with correct values', async () => {
-    class UpdateStockStub implements UpdateStock {
-      async execute(params: UpdateStock.Params): Promise<UpdateStock.Result> {}
-    }
-    const updateStockStub = new UpdateStockStub()
-    const sut = new UpdateStockController(updateStockStub)
+    const { sut, updateStockStub } = makeSut()
     const updateSpy = jest.spyOn(updateStockStub, 'execute')
     await sut.handle(makeStockDataRequest())
     expect(updateSpy).toHaveBeenCalledWith(makeStockDataRequest().body)
