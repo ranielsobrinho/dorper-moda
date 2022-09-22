@@ -1,5 +1,6 @@
 import { GetStockById } from '../../../../domain/usecases/stock/get-stock-by-id'
-import { noContent, serverError } from '../../../helpers/http-helper'
+import { InvalidParamError } from '../../../errors'
+import { forbidden, noContent, serverError } from '../../../helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../../protocols'
 
 export class GetStockByIdController implements Controller {
@@ -7,7 +8,10 @@ export class GetStockByIdController implements Controller {
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { stockId } = httpRequest.body
-      await this.getStockById.execute(stockId)
+      const stockData = await this.getStockById.execute(stockId)
+      if (!stockData) {
+        return forbidden(new InvalidParamError('stockId'))
+      }
       return noContent()
     } catch (error) {
       return serverError(error)
