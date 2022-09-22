@@ -1,5 +1,23 @@
 import { DeleteStockRepository } from '../../../protocols/db/stock/deleteStockRepository'
 import { DeleteStockUseCase } from './deleteStockUseCase'
+import { StockModel } from '../../../../domain/models/stock'
+import { GetStockByIdRepository } from '../../../protocols/db/stock/getStockByIdRepository'
+
+const makeFakeStockData = (): StockModel => ({
+  id: 'any_id',
+  modelName: 'any_name',
+  color: 'any_color',
+  quantity: 1
+})
+
+const makeGetStockByIdRepositoryStub = (): GetStockByIdRepository => {
+  class GetStockByIdRepositoryStub implements GetStockByIdRepository {
+    async getById(stockId: string): Promise<GetStockByIdRepository.Result> {
+      return Promise.resolve(makeFakeStockData())
+    }
+  }
+  return new GetStockByIdRepositoryStub()
+}
 
 const makeDeleteStockRepositoryStub = (): DeleteStockRepository => {
   class DeleteStockRepositoryStub implements DeleteStockRepository {
@@ -11,14 +29,20 @@ const makeDeleteStockRepositoryStub = (): DeleteStockRepository => {
 type SutTypes = {
   sut: DeleteStockUseCase
   deleteStockRepositoryStub: DeleteStockRepository
+  getStockByIdRepositoryStub: GetStockByIdRepository
 }
 
 const makeSut = (): SutTypes => {
   const deleteStockRepositoryStub = makeDeleteStockRepositoryStub()
-  const sut = new DeleteStockUseCase(deleteStockRepositoryStub)
+  const getStockByIdRepositoryStub = makeGetStockByIdRepositoryStub()
+  const sut = new DeleteStockUseCase(
+    deleteStockRepositoryStub,
+    getStockByIdRepositoryStub
+  )
   return {
     sut,
-    deleteStockRepositoryStub
+    deleteStockRepositoryStub,
+    getStockByIdRepositoryStub
   }
 }
 
@@ -37,5 +61,12 @@ describe('DeleteStockUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const promise = sut.execute('1')
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should call GetStockByIdRepository with correct values', async () => {
+    const { sut, getStockByIdRepositoryStub } = makeSut()
+    const getByIdSpy = jest.spyOn(getStockByIdRepositoryStub, 'getById')
+    await sut.execute('1')
+    expect(getByIdSpy).toHaveBeenCalledWith('1')
   })
 })
