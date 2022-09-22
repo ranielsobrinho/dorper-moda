@@ -93,5 +93,18 @@ describe('Stock Routes', () => {
         })
         .expect(204)
     })
+
+    test('Should return 403 if wrong id is provided', async () => {
+      await request(app)
+        .put('/api/stock/123343555224')
+        .send({
+          data: {
+            modelName: 'other_name',
+            color: 'other_color',
+            quantity: 22
+          }
+        })
+        .expect(403)
+    })
   })
 })
