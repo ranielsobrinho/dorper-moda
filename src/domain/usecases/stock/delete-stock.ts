@@ -1,3 +1,3 @@
 export interface DeleteStock {
-  execute(stockId: string): Promise<void>
+  execute(stockId: string): Promise<void | null>
 }

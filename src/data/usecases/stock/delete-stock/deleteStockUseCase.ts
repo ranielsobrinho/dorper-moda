@@ -8,8 +8,11 @@ export class DeleteStockUseCase implements DeleteStock {
     private readonly getStockByIdRepository: GetStockByIdRepository
   ) {}
 
-  async execute(stockId: string): Promise<void> {
-    await this.getStockByIdRepository.getById(stockId)
+  async execute(stockId: string): Promise<void | null> {
+    const stockData = await this.getStockByIdRepository.getById(stockId)
+    if (!stockData) {
+      return null
+    }
     await this.deleteStockRepository.delete(stockId)
   }
 }
