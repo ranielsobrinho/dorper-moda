@@ -59,7 +59,7 @@ describe('Stock Routes', () => {
   })
 
   describe('DELETE /stock/1', () => {
-    test('Should return 200 on success', async () => {
+    test('Should return 204 on success', async () => {
       const stockData = await stockCollection.insertOne({
         modelName: 'any_name',
         color: 'any_color',
@@ -71,6 +71,27 @@ describe('Stock Routes', () => {
 
     test('Should return 403 if wrong id is provided', async () => {
       await request(app).delete('/api/stock/123343555224').expect(403)
+    })
+  })
+
+  describe('UPDATE /stock/1', () => {
+    test('Should return 204 on success', async () => {
+      const stockData = await stockCollection.insertOne({
+        modelName: 'any_name',
+        color: 'any_color',
+        quantity: 1
+      })
+      const id = stockData.insertedId.toString()
+      await request(app)
+        .put(`/api/stock/${id}`)
+        .send({
+          data: {
+            modelName: 'other_name',
+            color: 'other_color',
+            quantity: 22
+          }
+        })
+        .expect(204)
     })
   })
 })
