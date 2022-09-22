@@ -8,7 +8,12 @@ export class UpdateStockController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const stockData = await this.updateStock.execute(httpRequest.body)
+      const { stockId } = httpRequest.params
+      const { data } = httpRequest.body
+      const stockData = await this.updateStock.execute({
+        stockId,
+        data
+      })
       if (!stockData) {
         return forbidden(new InvalidParamError('stockId'))
       }

@@ -7,7 +7,7 @@ export class DeleteStockController implements Controller {
   constructor(private readonly deleteStock: DeleteStock) {}
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { stockId } = httpRequest.body
+      const { stockId } = httpRequest.params
       const deletedData = await this.deleteStock.execute(stockId)
       if (!deletedData) {
         return forbidden(new InvalidParamError('stockId'))

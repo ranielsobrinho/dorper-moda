@@ -3,7 +3,7 @@ import { DeleteStockUseCase } from './deleteStockUseCase'
 
 const makeDeleteStockRepositoryStub = (): DeleteStockRepository => {
   class DeleteStockRepositoryStub implements DeleteStockRepository {
-    async delete(stockId: string): Promise<number> {
+    async delete(stockId: string): Promise<number | null> {
       return Promise.resolve(1)
     }
   }
@@ -32,6 +32,13 @@ describe('DeleteStockUseCase', () => {
     expect(deleteSpy).toHaveBeenCalledWith('1')
   })
 
+  test('Should return null if GetStockByIdRepository returns null', async () => {
+    const { sut, deleteStockRepositoryStub } = makeSut()
+    jest.spyOn(deleteStockRepositoryStub, 'delete').mockResolvedValueOnce(null)
+    const stockData = await sut.execute('any_id')
+    expect(stockData).toEqual(null)
+  })
+
   test('Should throw if DeleteStockRepository throws', async () => {
     const { sut, deleteStockRepositoryStub } = makeSut()
     jest
@@ -39,5 +46,11 @@ describe('DeleteStockUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const promise = sut.execute('1')
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return a string on success', async () => {
+    const { sut } = makeSut()
+    const result = await sut.execute('1')
+    expect(result).toBe('Deleted')
   })
 })

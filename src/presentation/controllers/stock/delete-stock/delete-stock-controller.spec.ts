@@ -5,7 +5,7 @@ import { HttpRequest } from '../../../protocols'
 import { DeleteStockController } from './delete-stock-controller'
 
 const makeDeleteRequest = (): HttpRequest => ({
-  body: {
+  params: {
     stockId: 1
   }
 })
@@ -39,7 +39,7 @@ describe('DeleteStockController', () => {
     const deleteStockSpy = jest.spyOn(deleteStockStub, 'execute')
     await sut.handle(makeDeleteRequest())
     expect(deleteStockSpy).toHaveBeenCalledWith(
-      makeDeleteRequest().body.stockId
+      makeDeleteRequest().params.stockId
     )
   })
 

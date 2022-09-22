@@ -13,7 +13,7 @@ const makeFakeStockModel = (): StockModel => ({
 })
 
 const httpRequest = (): HttpRequest => ({
-  body: {
+  params: {
     stockId: 1
   }
 })
@@ -46,7 +46,7 @@ describe('GetStockByIdController', () => {
     const { sut, getByIdStub } = makeSut()
     const getByIdSpy = jest.spyOn(getByIdStub, 'execute')
     await sut.handle(httpRequest())
-    expect(getByIdSpy).toHaveBeenCalledWith(httpRequest().body.stockId)
+    expect(getByIdSpy).toHaveBeenCalledWith(httpRequest().params.stockId)
   })
 
   test('Should return 500 if GetStockById throws', async () => {

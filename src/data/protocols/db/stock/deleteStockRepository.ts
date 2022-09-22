@@ -1,3 +1,3 @@
 export interface DeleteStockRepository {
-  delete(stockId: string): Promise<number>
+  delete(stockId: string): Promise<number | null>
 }

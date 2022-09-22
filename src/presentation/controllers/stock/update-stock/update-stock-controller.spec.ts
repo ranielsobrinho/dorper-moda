@@ -5,8 +5,10 @@ import { HttpRequest } from '../../../protocols/http'
 import { UpdateStockController } from './update-stock-controller'
 
 const makeStockDataRequest = (): HttpRequest => ({
+  params: {
+    stockId: 'any_id'
+  },
   body: {
-    stockId: 'any_id',
     data: {
       modelName: 'any_name',
       color: 'any_color',
@@ -43,7 +45,14 @@ describe('UpdateStockController', () => {
     const { sut, updateStockStub } = makeSut()
     const updateSpy = jest.spyOn(updateStockStub, 'execute')
     await sut.handle(makeStockDataRequest())
-    expect(updateSpy).toHaveBeenCalledWith(makeStockDataRequest().body)
+    expect(updateSpy).toHaveBeenCalledWith({
+      stockId: 'any_id',
+      data: {
+        modelName: 'any_name',
+        color: 'any_color',
+        quantity: 1
+      }
+    })
   })
 
   test('Should return 500 if UpdateStock throws', async () => {
