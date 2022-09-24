@@ -24,6 +24,11 @@ export class CreateSalesUseCase implements CreateSale {
       throw new Error('Algum nome de modelo não existe.')
     }
 
-    await this.checkQuantityStockRepository.checkStock(products)
+    const quantityModels = await this.checkQuantityStockRepository.checkStock(
+      products
+    )
+    if (!quantityModels) {
+      throw new Error('Quantidade indisponível de modelos.')
+    }
   }
 }
