@@ -133,4 +133,15 @@ describe('AddSalesUseCase', () => {
     const promise = sut.execute(makeSalesRequest())
     await expect(promise).rejects.toThrow(new Error())
   })
+
+  test('Should return a error if CheckQuantityStockRepository returns false', async () => {
+    const { sut, checkQuantityStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(checkQuantityStockRepositoryStub, 'checkStock')
+      .mockReturnValueOnce(Promise.resolve(false))
+    const promise = sut.execute(makeSalesRequest())
+    await expect(promise).rejects.toThrow(
+      new Error('Quantidade indisponível de modelos.')
+    )
+  })
 })
