@@ -14,7 +14,6 @@ export class GetStockByIdController implements Controller {
       }
       return ok(stockData)
     } catch (error) {
-      console.log(error)
       return serverError(error)
     }
   }
