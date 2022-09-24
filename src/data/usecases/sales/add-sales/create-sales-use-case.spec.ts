@@ -65,4 +65,13 @@ describe('AddSalesUseCase', () => {
     const promise = sut.execute(makeSalesRequest())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return a error if GetStockByNameRepository returns null', async () => {
+    const { sut, loadStockByNameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadStockByNameRepositoryStub, 'loadByName')
+      .mockResolvedValueOnce(null)
+    const salesData = await sut.execute(makeSalesRequest())
+    expect(salesData).toBeNull()
+  })
 })
