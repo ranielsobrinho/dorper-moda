@@ -110,4 +110,22 @@ describe('StockMongoRepository', () => {
       expect(stockData?.quantity).toBe(1)
     })
   })
+
+  describe('checkStock()', () => {
+    test('Should return true if the names provided exists', async () => {
+      const stock = await stockCollection.insertOne(makeStockRequest())
+      expect(stock).toBeTruthy()
+      const sut = makeSut()
+      const stockData = await sut.checkStock(['any_name', 'other_name'])
+      expect(stockData).toBeTruthy()
+    })
+
+    test('Should return false if the names provided does not exists', async () => {
+      const stock = await stockCollection.insertOne(makeStockRequest())
+      expect(stock).toBeTruthy()
+      const sut = makeSut()
+      const stockData = await sut.checkStock(['wrong_name'])
+      expect(stockData).toBeFalsy()
+    })
+  })
 })
