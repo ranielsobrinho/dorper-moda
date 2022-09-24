@@ -6,6 +6,7 @@ import { MongoHelper } from '../helpers/mongo-helper'
 import { ObjectId } from 'mongodb'
 import { DeleteStockRepository } from '../../../../data/protocols/db/stock/deleteStockRepository'
 import { UpdateStockRepository } from '../../../../data/protocols/db/stock/updateStockRepository'
+import { CheckNameStockRepository } from '../../../../data/protocols/db/stock/checkNameStockRepository'
 
 export class StockMongoRepository
   implements
@@ -14,7 +15,8 @@ export class StockMongoRepository
     LoadStocksRepository,
     GetStockByIdRepository,
     DeleteStockRepository,
-    UpdateStockRepository
+    UpdateStockRepository,
+    CheckNameStockRepository
 {
   async add(
     stockData: AddStockRepository.Params
@@ -65,5 +67,18 @@ export class StockMongoRepository
         }
       }
     )
+  }
+
+  async checkStock(
+    data: CheckNameStockRepository.Params
+  ): Promise<CheckNameStockRepository.Result> {
+    const names = Object.values(data)
+    const stockCollection = MongoHelper.getCollection('stocks')
+    const search = stockCollection.find({ modelName: { $in: names } })
+    const stockData = await search.toArray()
+    if (stockData.length >= 1) {
+      return true
+    }
+    return false
   }
 }
