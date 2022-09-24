@@ -7,8 +7,11 @@ export class CreateSalesUseCase implements CreateSale {
   ) {}
 
   async execute(params: CreateSale.Params): Promise<CreateSale.Result> {
-    await this.checkNameStockRepository.checkStock(
+    const allModelNames = await this.checkNameStockRepository.checkStock(
       params.products.map(({ modelName }) => modelName)
     )
+    if (!allModelNames) {
+      throw new Error('Algum nome de modelo não existe.')
+    }
   }
 }
