@@ -1,18 +1,10 @@
-import { StockModel } from '../../../../domain/models/stock'
-import { SalesModel } from '../../../../domain/models/sales'
+import { CreateSale } from '../../../../domain/usecases/sales/create-sales'
 import { CheckNameStockRepository } from '../../../protocols/db/stock/checkNameStockRepository'
 import { CheckQuantityStockRepository } from '../../../protocols/db/stock/checkQuantityStockRepository'
 import { CreateSalesUseCase } from './create-sales-use-case'
+import { CreateSalesRepository } from '../../../protocols/db/sales/createSalesRepository'
 
-const makeStockData = (): StockModel => ({
-  id: 'any_id',
-  modelName: 'any_name',
-  color: 'any_color',
-  quantity: 1
-})
-
-const makeSalesRequest = (): SalesModel => ({
-  id: 'any_id',
+const makeSalesRequest = (): CreateSale.Params => ({
   clientName: 'any_client_name',
   deliveryFee: 15.0,
   paymentForm: 'MASTER CARD CREDIT',
@@ -57,24 +49,39 @@ const makeCheckQuantityStockRepositoryStub =
     return new CheckQuantityStockRepositoryStub()
   }
 
+const makeCreateSalesRepositoryStub = (): CreateSalesRepository => {
+  class CreateSalesRepositoryStub implements CreateSalesRepository {
+    async execute(
+      data: CreateSalesRepository.Params
+    ): Promise<CreateSalesRepository.Result> {
+      return Promise.resolve()
+    }
+  }
+  return new CreateSalesRepositoryStub()
+}
+
 type SutTypes = {
   sut: CreateSalesUseCase
   checkNameStockRepositoryStub: CheckNameStockRepository
   checkQuantityStockRepositoryStub: CheckQuantityStockRepository
+  createSalesRepositoryStub: CreateSalesRepository
 }
 
 const makeSut = (): SutTypes => {
   const checkNameStockRepositoryStub = makeCheckNameStockRepositoryStub()
   const checkQuantityStockRepositoryStub =
     makeCheckQuantityStockRepositoryStub()
+  const createSalesRepositoryStub = makeCreateSalesRepositoryStub()
   const sut = new CreateSalesUseCase(
     checkNameStockRepositoryStub,
-    checkQuantityStockRepositoryStub
+    checkQuantityStockRepositoryStub,
+    createSalesRepositoryStub
   )
   return {
     sut,
     checkNameStockRepositoryStub,
-    checkQuantityStockRepositoryStub
+    checkQuantityStockRepositoryStub,
+    createSalesRepositoryStub
   }
 }
 
@@ -143,5 +150,12 @@ describe('AddSalesUseCase', () => {
     await expect(promise).rejects.toThrow(
       new Error('Quantidade indisponível de modelos.')
     )
+  })
+
+  test('Should call CreateSalesRepository with correct value', async () => {
+    const { sut, createSalesRepositoryStub } = makeSut()
+    const createSalesSpy = jest.spyOn(createSalesRepositoryStub, 'execute')
+    await sut.execute(makeSalesRequest())
+    expect(createSalesSpy).toHaveBeenCalledWith(makeSalesRequest())
   })
 })
