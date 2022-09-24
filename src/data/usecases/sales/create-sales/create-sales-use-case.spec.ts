@@ -75,4 +75,15 @@ describe('AddSalesUseCase', () => {
     const promise = sut.execute(makeSalesRequest())
     await expect(promise).rejects.toThrow(new Error())
   })
+
+  test('Should return a error if CheckNameStockRepository returns false', async () => {
+    const { sut, checkNameStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(checkNameStockRepositoryStub, 'checkStock')
+      .mockReturnValueOnce(Promise.resolve(false))
+    const promise = sut.execute(makeSalesRequest())
+    await expect(promise).rejects.toThrow(
+      new Error('Algum nome de modelo não existe.')
+    )
+  })
 })
