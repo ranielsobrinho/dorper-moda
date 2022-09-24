@@ -43,17 +43,38 @@ const makeCheckNameStockRepositoryStub = (): CheckNameStockRepository => {
   return new CheckNameStockRepositoryStub()
 }
 
+const makeCheckQuantityStockRepositoryStub =
+  (): CheckQuantityStockRepository => {
+    class CheckQuantityStockRepositoryStub
+      implements CheckQuantityStockRepository
+    {
+      async checkStock(
+        data: CheckQuantityStockRepository.Params
+      ): Promise<CheckQuantityStockRepository.Result> {
+        return Promise.resolve(true)
+      }
+    }
+    return new CheckQuantityStockRepositoryStub()
+  }
+
 type SutTypes = {
   sut: CreateSalesUseCase
   checkNameStockRepositoryStub: CheckNameStockRepository
+  checkQuantityStockRepositoryStub: CheckQuantityStockRepository
 }
 
 const makeSut = (): SutTypes => {
   const checkNameStockRepositoryStub = makeCheckNameStockRepositoryStub()
-  const sut = new CreateSalesUseCase(checkNameStockRepositoryStub)
+  const checkQuantityStockRepositoryStub =
+    makeCheckQuantityStockRepositoryStub()
+  const sut = new CreateSalesUseCase(
+    checkNameStockRepositoryStub,
+    checkQuantityStockRepositoryStub
+  )
   return {
     sut,
-    checkNameStockRepositoryStub
+    checkNameStockRepositoryStub,
+    checkQuantityStockRepositoryStub
   }
 }
 
@@ -84,6 +105,23 @@ describe('AddSalesUseCase', () => {
     const promise = sut.execute(makeSalesRequest())
     await expect(promise).rejects.toThrow(
       new Error('Algum nome de modelo não existe.')
+    )
+  })
+
+  test('Should call CheckQuantityStockRepository with correct value', async () => {
+    const { sut, checkQuantityStockRepositoryStub } = makeSut()
+    const getStockSpy = jest.spyOn(
+      checkQuantityStockRepositoryStub,
+      'checkStock'
+    )
+    await sut.execute(makeSalesRequest())
+    expect(getStockSpy).toHaveBeenCalledWith(
+      makeSalesRequest().products.map((product) => {
+        return {
+          modelName: product.modelName,
+          quantity: product.quantity
+        }
+      })
     )
   })
 })
