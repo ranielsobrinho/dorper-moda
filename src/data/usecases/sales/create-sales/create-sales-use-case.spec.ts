@@ -158,4 +158,13 @@ describe('AddSalesUseCase', () => {
     await sut.execute(makeSalesRequest())
     expect(createSalesSpy).toHaveBeenCalledWith(makeSalesRequest())
   })
+
+  test('Should throw if CreateSalesRepository throws', async () => {
+    const { sut, createSalesRepositoryStub } = makeSut()
+    jest
+      .spyOn(createSalesRepositoryStub, 'execute')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeSalesRequest())
+    await expect(promise).rejects.toThrow(new Error())
+  })
 })
