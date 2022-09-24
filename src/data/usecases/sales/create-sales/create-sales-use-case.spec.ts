@@ -124,4 +124,13 @@ describe('AddSalesUseCase', () => {
       })
     )
   })
+
+  test('Should throw if CheckQuantityStockRepository throws', async () => {
+    const { sut, checkQuantityStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(checkQuantityStockRepositoryStub, 'checkStock')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeSalesRequest())
+    await expect(promise).rejects.toThrow(new Error())
+  })
 })
