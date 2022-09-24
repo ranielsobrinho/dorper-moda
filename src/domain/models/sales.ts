@@ -5,7 +5,9 @@ export type SalesModel = {
   clientName: string
   deliveryFee: number
   paymentForm: string
-  products: StockModel[]
+  products: StockModelRequest[]
   soldAt: Date
   total: number
 }
+
+export type StockModelRequest = Omit<StockModel, 'id'>
