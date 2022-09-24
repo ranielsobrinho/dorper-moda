@@ -9,7 +9,10 @@ export class CreateSalesUseCase implements CreateSale {
   async execute(params: CreateSale.Params): Promise<CreateSale.Result> {
     const productNames = params.products.map((product) => product.modelName)
     for (const name of productNames) {
-      await this.loadStockByNameRepository.loadByName(name)
+      const stockData = await this.loadStockByNameRepository.loadByName(name)
+      if (!stockData) {
+        return null
+      }
     }
   }
 }

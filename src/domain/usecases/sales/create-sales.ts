@@ -6,5 +6,5 @@ export interface CreateSale {
 
 export namespace CreateSale {
   export type Params = Omit<SalesModel, 'id'>
-  export type Result = void
+  export type Result = void | null
 }
