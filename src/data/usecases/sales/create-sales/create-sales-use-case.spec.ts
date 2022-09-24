@@ -66,4 +66,13 @@ describe('AddSalesUseCase', () => {
       makeSalesRequest().products.map(({ modelName }) => modelName)
     )
   })
+
+  test('Should throw if CheckNameStockRepository throws', async () => {
+    const { sut, checkNameStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(checkNameStockRepositoryStub, 'checkStock')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeSalesRequest())
+    await expect(promise).rejects.toThrow(new Error())
+  })
 })
