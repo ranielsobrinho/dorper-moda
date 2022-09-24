@@ -1,5 +1,5 @@
 export interface CheckQuantityStockRepository {
-  checkStock(
+  checkStockQuantity(
     data: CheckQuantityStockRepository.Params
   ): Promise<CheckQuantityStockRepository.Result>
 }

@@ -40,7 +40,7 @@ const makeCheckQuantityStockRepositoryStub =
     class CheckQuantityStockRepositoryStub
       implements CheckQuantityStockRepository
     {
-      async checkStock(
+      async checkStockQuantity(
         data: CheckQuantityStockRepository.Params
       ): Promise<CheckQuantityStockRepository.Result> {
         return Promise.resolve(true)
@@ -119,7 +119,7 @@ describe('AddSalesUseCase', () => {
     const { sut, checkQuantityStockRepositoryStub } = makeSut()
     const getStockSpy = jest.spyOn(
       checkQuantityStockRepositoryStub,
-      'checkStock'
+      'checkStockQuantity'
     )
     await sut.execute(makeSalesRequest())
     expect(getStockSpy).toHaveBeenCalledWith(
@@ -135,7 +135,7 @@ describe('AddSalesUseCase', () => {
   test('Should throw if CheckQuantityStockRepository throws', async () => {
     const { sut, checkQuantityStockRepositoryStub } = makeSut()
     jest
-      .spyOn(checkQuantityStockRepositoryStub, 'checkStock')
+      .spyOn(checkQuantityStockRepositoryStub, 'checkStockQuantity')
       .mockRejectedValueOnce(new Error())
     const promise = sut.execute(makeSalesRequest())
     await expect(promise).rejects.toThrow(new Error())
@@ -144,7 +144,7 @@ describe('AddSalesUseCase', () => {
   test('Should return a error if CheckQuantityStockRepository returns false', async () => {
     const { sut, checkQuantityStockRepositoryStub } = makeSut()
     jest
-      .spyOn(checkQuantityStockRepositoryStub, 'checkStock')
+      .spyOn(checkQuantityStockRepositoryStub, 'checkStockQuantity')
       .mockReturnValueOnce(Promise.resolve(false))
     const promise = sut.execute(makeSalesRequest())
     await expect(promise).rejects.toThrow(
