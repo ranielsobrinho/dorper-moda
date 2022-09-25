@@ -151,5 +151,27 @@ describe('StockMongoRepository', () => {
       ])
       expect(stockData).toBeTruthy()
     })
+
+    test('Should return false if the quantity provided is more than product quantity', async () => {
+      await stockCollection.insertOne({
+        modelName: 'other_name',
+        color: 'other_color',
+        quantity: 10
+      })
+      const stock = await stockCollection.insertOne(makeStockRequest())
+      expect(stock).toBeTruthy()
+      const sut = makeSut()
+      const stockData = await sut.checkStockQuantity([
+        {
+          modelName: 'any_name',
+          quantity: 1
+        },
+        {
+          modelName: 'other_name',
+          quantity: 50
+        }
+      ])
+      expect(stockData).toBeFalsy()
+    })
   })
 })
