@@ -7,6 +7,7 @@ import { ObjectId } from 'mongodb'
 import { DeleteStockRepository } from '../../../../data/protocols/db/stock/deleteStockRepository'
 import { UpdateStockRepository } from '../../../../data/protocols/db/stock/updateStockRepository'
 import { CheckNameStockRepository } from '../../../../data/protocols/db/stock/checkNameStockRepository'
+import { CheckQuantityStockRepository } from '../../../../data/protocols/db/stock/checkQuantityStockRepository'
 
 export class StockMongoRepository
   implements
@@ -16,7 +17,8 @@ export class StockMongoRepository
     GetStockByIdRepository,
     DeleteStockRepository,
     UpdateStockRepository,
-    CheckNameStockRepository
+    CheckNameStockRepository,
+    CheckQuantityStockRepository
 {
   async add(
     stockData: AddStockRepository.Params
@@ -78,6 +80,32 @@ export class StockMongoRepository
     const stockData = await search.toArray()
     if (stockData.length >= 1) {
       return true
+    }
+    return false
+  }
+
+  async checkStockQuantity(
+    data: CheckQuantityStockRepository.Params
+  ): Promise<CheckQuantityStockRepository.Result> {
+    const stockCollection = MongoHelper.getCollection('stocks')
+    const search = stockCollection.find({
+      modelName: { $in: data.map(({ modelName }) => modelName) }
+    })
+    const stockData = await search.toArray()
+    for (const stock of stockData) {
+      for (const dataCompare of data) {
+        if (
+          dataCompare.modelName === stock.modelName &&
+          dataCompare.quantity <= stock.quantity
+        ) {
+          return true
+        } else if (
+          dataCompare.modelName === stock.modelName &&
+          dataCompare.quantity > stock.quantity
+        ) {
+          return false
+        }
+      }
     }
     return false
   }
