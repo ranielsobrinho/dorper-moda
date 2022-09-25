@@ -3,6 +3,7 @@ import { CheckNameStockRepository } from '../../../protocols/db/stock/checkNameS
 import { CheckQuantityStockRepository } from '../../../protocols/db/stock/checkQuantityStockRepository'
 import { CreateSalesUseCase } from './create-sales-use-case'
 import { CreateSalesRepository } from '../../../protocols/db/sales/createSalesRepository'
+import MockDate from 'mockdate'
 
 const makeSalesRequest = (): CreateSale.Params => ({
   clientName: 'any_client_name',
@@ -86,6 +87,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('AddSalesUseCase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   test('Should call CheckNameStockRepository with correct value', async () => {
     const { sut, checkNameStockRepositoryStub } = makeSut()
     const getStockSpy = jest.spyOn(checkNameStockRepositoryStub, 'checkStock')
