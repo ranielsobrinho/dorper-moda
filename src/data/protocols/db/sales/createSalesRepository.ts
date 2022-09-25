@@ -1,7 +1,7 @@
 import { SalesModel } from '../../../../domain/models/sales'
 
 export interface CreateSalesRepository {
-  execute(
+  create(
     data: CreateSalesRepository.Params
   ): Promise<CreateSalesRepository.Result>
 }

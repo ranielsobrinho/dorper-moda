@@ -31,6 +31,6 @@ export class CreateSalesUseCase implements CreateSale {
       throw new Error('Quantidade indisponível de modelos.')
     }
 
-    await this.createSalesRepository.execute(params)
+    await this.createSalesRepository.create(params)
   }
 }

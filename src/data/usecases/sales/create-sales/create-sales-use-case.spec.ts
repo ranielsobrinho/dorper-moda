@@ -52,7 +52,7 @@ const makeCheckQuantityStockRepositoryStub =
 
 const makeCreateSalesRepositoryStub = (): CreateSalesRepository => {
   class CreateSalesRepositoryStub implements CreateSalesRepository {
-    async execute(
+    async create(
       data: CreateSalesRepository.Params
     ): Promise<CreateSalesRepository.Result> {
       return Promise.resolve()
@@ -163,7 +163,7 @@ describe('AddSalesUseCase', () => {
 
   test('Should call CreateSalesRepository with correct value', async () => {
     const { sut, createSalesRepositoryStub } = makeSut()
-    const createSalesSpy = jest.spyOn(createSalesRepositoryStub, 'execute')
+    const createSalesSpy = jest.spyOn(createSalesRepositoryStub, 'create')
     await sut.execute(makeSalesRequest())
     expect(createSalesSpy).toHaveBeenCalledWith(makeSalesRequest())
   })
@@ -171,7 +171,7 @@ describe('AddSalesUseCase', () => {
   test('Should throw if CreateSalesRepository throws', async () => {
     const { sut, createSalesRepositoryStub } = makeSut()
     jest
-      .spyOn(createSalesRepositoryStub, 'execute')
+      .spyOn(createSalesRepositoryStub, 'create')
       .mockRejectedValueOnce(new Error())
     const promise = sut.execute(makeSalesRequest())
     await expect(promise).rejects.toThrow(new Error())
