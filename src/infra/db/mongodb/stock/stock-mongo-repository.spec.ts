@@ -128,4 +128,28 @@ describe('StockMongoRepository', () => {
       expect(stockData).toBeFalsy()
     })
   })
+
+  describe('checkStockQuantity()', () => {
+    test('Should return true if the quantity provided is less or equal product quantity', async () => {
+      await stockCollection.insertOne({
+        modelName: 'other_name',
+        color: 'other_color',
+        quantity: 10
+      })
+      const stock = await stockCollection.insertOne(makeStockRequest())
+      expect(stock).toBeTruthy()
+      const sut = makeSut()
+      const stockData = await sut.checkStockQuantity([
+        {
+          modelName: 'any_name',
+          quantity: 1
+        },
+        {
+          modelName: 'other_name',
+          quantity: 5
+        }
+      ])
+      expect(stockData).toBeTruthy()
+    })
+  })
 })
