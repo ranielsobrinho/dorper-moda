@@ -2,6 +2,7 @@ import { CreateSale } from '../../../../domain/usecases/sales/create-sales'
 import { CreateSalesController } from './create-sales-controller'
 import MockDate from 'mockdate'
 import { HttpRequest } from '../../../protocols'
+import { serverError } from '../../../helpers/http-helper'
 
 const makeFakeSaleRequest = (): HttpRequest => ({
   body: {
@@ -56,5 +57,14 @@ describe('CreateSalesController', () => {
     const createSalesSpy = jest.spyOn(createSalesStub, 'execute')
     await sut.handle(makeFakeSaleRequest())
     expect(createSalesSpy).toHaveBeenCalledWith(makeFakeSaleRequest().body)
+  })
+
+  test('Should return 500 if CreateSale throws', async () => {
+    const { sut, createSalesStub } = makeSut()
+    jest
+      .spyOn(createSalesStub, 'execute')
+      .mockReturnValueOnce(Promise.reject(new Error()))
+    const httpResponse = await sut.handle(makeFakeSaleRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
