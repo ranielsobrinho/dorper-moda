@@ -20,6 +20,29 @@ const makeFakeSaleRequest = (): HttpRequest => ({
   }
 })
 
+const makeCreateSalesStub = (): CreateSale => {
+  class CreateSalesStub implements CreateSale {
+    async execute(params: CreateSale.Params): Promise<CreateSale.Result> {
+      return Promise.resolve()
+    }
+  }
+  return new CreateSalesStub()
+}
+
+type SutTypes = {
+  sut: CreateSalesController
+  createSalesStub: CreateSale
+}
+
+const makeSut = (): SutTypes => {
+  const createSalesStub = makeCreateSalesStub()
+  const sut = new CreateSalesController(createSalesStub)
+  return {
+    sut,
+    createSalesStub
+  }
+}
+
 describe('CreateSalesController', () => {
   beforeAll(() => {
     MockDate.set(new Date())
@@ -29,13 +52,7 @@ describe('CreateSalesController', () => {
     MockDate.reset()
   })
   test('Should call CreateSale with correct values', async () => {
-    class CreateSalesStub implements CreateSale {
-      async execute(params: CreateSale.Params): Promise<CreateSale.Result> {
-        return Promise.resolve()
-      }
-    }
-    const createSalesStub = new CreateSalesStub()
-    const sut = new CreateSalesController(createSalesStub)
+    const { sut, createSalesStub } = makeSut()
     const createSalesSpy = jest.spyOn(createSalesStub, 'execute')
     await sut.handle(makeFakeSaleRequest())
     expect(createSalesSpy).toHaveBeenCalledWith(makeFakeSaleRequest().body)
