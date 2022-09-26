@@ -2,7 +2,7 @@ import { CreateSale } from '../../../../domain/usecases/sales/create-sales'
 import { CreateSalesController } from './create-sales-controller'
 import MockDate from 'mockdate'
 import { HttpRequest } from '../../../protocols'
-import { serverError } from '../../../helpers/http-helper'
+import { noContent, serverError } from '../../../helpers/http-helper'
 
 const makeFakeSaleRequest = (): HttpRequest => ({
   body: {
@@ -66,5 +66,11 @@ describe('CreateSalesController', () => {
       .mockReturnValueOnce(Promise.reject(new Error()))
     const httpResponse = await sut.handle(makeFakeSaleRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeSaleRequest())
+    expect(httpResponse).toEqual(noContent())
   })
 })
