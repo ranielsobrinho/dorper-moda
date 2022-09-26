@@ -18,10 +18,6 @@ const makeFakeSaleRequest = () => ({
   total: 110
 })
 
-const makeSut = (): SalesMongoRepository => {
-  return new SalesMongoRepository()
-}
-
 let salesCollection: Collection
 describe('SalesMongoRepository', () => {
   beforeAll(async () => {
@@ -39,14 +35,20 @@ describe('SalesMongoRepository', () => {
     MockDate.reset()
   })
 
-  test('Should create a new sales data on success', async () => {
-    const sut = makeSut()
-    await sut.create(makeFakeSaleRequest())
-    const salesData = await salesCollection.findOne({
-      clientName: 'any_client_name'
+  const makeSut = (): SalesMongoRepository => {
+    return new SalesMongoRepository()
+  }
+
+  describe('create()', () => {
+    test('Should create a new sales data on success', async () => {
+      const sut = makeSut()
+      await sut.create(makeFakeSaleRequest())
+      const salesData = await salesCollection.findOne({
+        clientName: 'any_client_name'
+      })
+      expect(salesData).toBeTruthy()
+      expect(salesData?._id).toBeTruthy()
+      expect(salesData?.clientName).toEqual('any_client_name')
     })
-    expect(salesData).toBeTruthy()
-    expect(salesData?._id).toBeTruthy()
-    expect(salesData?.clientName).toEqual('any_client_name')
   })
 })
