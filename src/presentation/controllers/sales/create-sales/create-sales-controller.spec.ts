@@ -1,8 +1,13 @@
 import { CreateSale } from '../../../../domain/usecases/sales/create-sales'
 import { CreateSalesController } from './create-sales-controller'
 import MockDate from 'mockdate'
-import { HttpRequest } from '../../../protocols'
-import { noContent, serverError } from '../../../helpers/http-helper'
+import { HttpRequest, Validation } from '../../../protocols'
+import {
+  badRequest,
+  noContent,
+  serverError
+} from '../../../helpers/http-helper'
+import { MissingParamError } from '../../../errors'
 
 const makeFakeSaleRequest = (): HttpRequest => ({
   body: {
@@ -30,17 +35,29 @@ const makeCreateSalesStub = (): CreateSale => {
   return new CreateSalesStub()
 }
 
+const makeValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(input: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 type SutTypes = {
   sut: CreateSalesController
   createSalesStub: CreateSale
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const createSalesStub = makeCreateSalesStub()
-  const sut = new CreateSalesController(createSalesStub)
+  const validationStub = makeValidationStub()
+  const sut = new CreateSalesController(createSalesStub, validationStub)
   return {
     sut,
-    createSalesStub
+    createSalesStub,
+    validationStub
   }
 }
 
@@ -72,5 +89,14 @@ describe('CreateSalesController', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeSaleRequest())
     expect(httpResponse).toEqual(noContent())
+  })
+
+  test('Should return 400 if Validation returns a error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await sut.handle(makeFakeSaleRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
