@@ -69,6 +69,7 @@ describe('CreateSalesController', () => {
   afterAll(() => {
     MockDate.reset()
   })
+
   test('Should call CreateSale with correct values', async () => {
     const { sut, createSalesStub } = makeSut()
     const createSalesSpy = jest.spyOn(createSalesStub, 'execute')
@@ -89,6 +90,13 @@ describe('CreateSalesController', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeFakeSaleRequest())
     expect(httpResponse).toEqual(noContent())
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    await sut.handle(makeFakeSaleRequest())
+    expect(validateSpy).toHaveBeenCalledWith(makeFakeSaleRequest().body)
   })
 
   test('Should return 400 if Validation returns a error', async () => {
