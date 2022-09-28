@@ -22,15 +22,32 @@ const makeGetSales = (): SalesModel[] => {
   ]
 }
 
+const makeGetSalesRepositoryStub = (): GetSalesRepository => {
+  class GetSalesRepositoryStub implements GetSalesRepository {
+    async getAll(): Promise<GetSalesRepository.Result> {
+      return Promise.resolve(makeGetSales())
+    }
+  }
+  return new GetSalesRepositoryStub()
+}
+
+type SutTypes = {
+  sut: GetSalesUseCase
+  getSalesRepositoryStub: GetSalesRepository
+}
+
+const makeSut = (): SutTypes => {
+  const getSalesRepositoryStub = makeGetSalesRepositoryStub()
+  const sut = new GetSalesUseCase(getSalesRepositoryStub)
+  return {
+    sut,
+    getSalesRepositoryStub
+  }
+}
+
 describe('GetSalesUseCase', () => {
   test('Should call GetSalesRepository once', async () => {
-    class GetSalesRepositoryStub implements GetSalesRepository {
-      async getAll(): Promise<GetSalesRepository.Result> {
-        return Promise.resolve(makeGetSales())
-      }
-    }
-    const getSalesRepositoryStub = new GetSalesRepositoryStub()
-    const sut = new GetSalesUseCase(getSalesRepositoryStub)
+    const { sut, getSalesRepositoryStub } = makeSut()
     const getSpy = jest.spyOn(getSalesRepositoryStub, 'getAll')
     await sut.getAll()
     expect(getSpy).toHaveBeenCalledTimes(1)
