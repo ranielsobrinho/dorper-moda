@@ -61,4 +61,10 @@ describe('GetSalesUseCase', () => {
     const promise = sut.getAll()
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return sales on success', async () => {
+    const { sut } = makeSut()
+    const sales = await sut.getAll()
+    expect(sales).toEqual(makeGetSales())
+  })
 })
