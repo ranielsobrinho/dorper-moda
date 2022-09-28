@@ -1,6 +1,6 @@
 import { SalesModel } from '../../../../domain/models/sales'
 import { GetSales } from '../../../../domain/usecases/sales/get-sales'
-import { serverError } from '../../../helpers/http-helper'
+import { noContent, serverError } from '../../../helpers/http-helper'
 import { GetSalesController } from './get-sales-controller'
 
 const makeGetSales = (): SalesModel[] => {
@@ -59,5 +59,12 @@ describe('GetSalesController', () => {
     jest.spyOn(getSalesStub, 'getAll').mockRejectedValueOnce(new Error())
     const sales = await sut.handle({})
     expect(sales).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 204 if GetSales returns empty', async () => {
+    const { sut, getSalesStub } = makeSut()
+    jest.spyOn(getSalesStub, 'getAll').mockReturnValueOnce(Promise.resolve([]))
+    const sales = await sut.handle({})
+    expect(sales).toEqual(noContent())
   })
 })
