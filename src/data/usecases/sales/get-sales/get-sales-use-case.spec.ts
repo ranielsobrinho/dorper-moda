@@ -52,4 +52,13 @@ describe('GetSalesUseCase', () => {
     await sut.getAll()
     expect(getSpy).toHaveBeenCalledTimes(1)
   })
+
+  test('Should throw if GetSalesRepository throws', async () => {
+    const { sut, getSalesRepositoryStub } = makeSut()
+    jest
+      .spyOn(getSalesRepositoryStub, 'getAll')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.getAll()
+    await expect(promise).rejects.toThrow()
+  })
 })
