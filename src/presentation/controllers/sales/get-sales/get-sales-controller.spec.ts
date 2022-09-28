@@ -1,5 +1,6 @@
 import { SalesModel } from '../../../../domain/models/sales'
 import { GetSales } from '../../../../domain/usecases/sales/get-sales'
+import { serverError } from '../../../helpers/http-helper'
 import { GetSalesController } from './get-sales-controller'
 
 const makeGetSales = (): SalesModel[] => {
@@ -51,5 +52,12 @@ describe('GetSalesController', () => {
     const getSpy = jest.spyOn(getSalesStub, 'getAll')
     await sut.handle({})
     expect(getSpy).toHaveBeenCalledTimes(1)
+  })
+
+  test('Should return 500 if GetSales throws', async () => {
+    const { sut, getSalesStub } = makeSut()
+    jest.spyOn(getSalesStub, 'getAll').mockRejectedValueOnce(new Error())
+    const sales = await sut.handle({})
+    expect(sales).toEqual(serverError(new Error()))
   })
 })
