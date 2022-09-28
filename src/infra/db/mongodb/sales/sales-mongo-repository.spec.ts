@@ -18,6 +18,22 @@ const makeFakeSaleRequest = () => ({
   total: 110
 })
 
+const makeGetSales = () => ({
+  id: 'any_id',
+  clientName: 'any_client_name',
+  deliveryFee: 25,
+  paymentForm: 'CREDIT CARD',
+  products: [
+    {
+      modelName: 'any_model_name',
+      color: 'any_color_name',
+      quantity: 1
+    }
+  ],
+  soldAt: new Date(),
+  total: 110
+})
+
 let salesCollection: Collection
 describe('SalesMongoRepository', () => {
   beforeAll(async () => {
@@ -49,6 +65,16 @@ describe('SalesMongoRepository', () => {
       expect(salesData).toBeTruthy()
       expect(salesData?._id).toBeTruthy()
       expect(salesData?.clientName).toEqual('any_client_name')
+    })
+  })
+
+  describe('getAll()', () => {
+    test('Should return array of sales on success', async () => {
+      await salesCollection.insertOne(makeGetSales())
+      const sut = makeSut()
+      const salesData = await sut.getAll()
+      expect(salesData).toBeTruthy()
+      expect(salesData).toBeInstanceOf(Array)
     })
   })
 })
