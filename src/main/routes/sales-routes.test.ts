@@ -50,4 +50,25 @@ describe('Sales Routes', () => {
         .expect(204)
     })
   })
+
+  describe('GET /sales', () => {
+    test('Should return 200 on success', async () => {
+      await salesCollection.insertOne({
+        id: 'any_id',
+        clientName: 'any_client_name',
+        deliveryFee: 25,
+        paymentForm: 'CREDIT CARD',
+        products: [
+          {
+            modelName: 'any_model_name',
+            color: 'any_color_name',
+            quantity: 1
+          }
+        ],
+        soldAt: new Date(),
+        total: 110
+      })
+      await request(app).get('/api/sales').expect(200)
+    })
+  })
 })
