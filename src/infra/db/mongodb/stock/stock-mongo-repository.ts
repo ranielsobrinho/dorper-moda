@@ -98,6 +98,11 @@ export class StockMongoRepository
           dataCompare.modelName === stock.modelName &&
           dataCompare.quantity <= stock.quantity
         ) {
+          const newQuantity = stock.quantity - dataCompare.quantity
+          await stockCollection.updateOne(
+            { modelName: stock.modelName },
+            { $set: { quantity: newQuantity } }
+          )
           return true
         } else if (
           dataCompare.modelName === stock.modelName &&
