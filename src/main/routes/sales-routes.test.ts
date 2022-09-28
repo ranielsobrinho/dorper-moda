@@ -70,5 +70,9 @@ describe('Sales Routes', () => {
       })
       await request(app).get('/api/sales').expect(200)
     })
+
+    test('Should return 204 on success', async () => {
+      await request(app).get('/api/sales').expect(204)
+    })
   })
 })
