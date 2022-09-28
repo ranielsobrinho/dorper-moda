@@ -23,7 +23,10 @@ export class CreateSalesController implements Controller {
       if (error) {
         return badRequest(error)
       }
-      await this.createSales.execute(httpRequest.body)
+      const saleError = await this.createSales.execute(httpRequest.body)
+      if (saleError === null) {
+        return badRequest(new Error('Nome do modelo ou quantidade inválida.'))
+      }
       return noContent()
     } catch (error) {
       return serverError(error)

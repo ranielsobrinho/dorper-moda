@@ -86,6 +86,17 @@ describe('CreateSalesController', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
+  test('Should return 400 if CreateSale returns null', async () => {
+    const { sut, createSalesStub } = makeSut()
+    jest
+      .spyOn(createSalesStub, 'execute')
+      .mockReturnValueOnce(Promise.resolve(null))
+    const httpResponse = await sut.handle(makeFakeSaleRequest())
+    expect(httpResponse).toEqual(
+      badRequest(new Error('Nome do modelo ou quantidade inválida.'))
+    )
+  })
+
   test('Should call Validation with correct values', async () => {
     const { sut, validationStub } = makeSut()
     const validateSpy = jest.spyOn(validationStub, 'validate')
