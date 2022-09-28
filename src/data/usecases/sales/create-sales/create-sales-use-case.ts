@@ -22,13 +22,13 @@ export class CreateSalesUseCase implements CreateSale {
       products.map(({ modelName }) => modelName)
     )
     if (!allModelNames) {
-      throw new Error('Algum nome de modelo não existe.')
+      return null
     }
 
     const quantityModels =
       await this.checkQuantityStockRepository.checkStockQuantity(products)
     if (!quantityModels) {
-      throw new Error('Quantidade indisponível de modelos.')
+      return null
     }
 
     await this.createSalesRepository.create(params)

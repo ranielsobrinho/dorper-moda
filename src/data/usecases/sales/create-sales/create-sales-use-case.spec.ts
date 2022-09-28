@@ -118,10 +118,8 @@ describe('AddSalesUseCase', () => {
     jest
       .spyOn(checkNameStockRepositoryStub, 'checkStock')
       .mockReturnValueOnce(Promise.resolve(false))
-    const promise = sut.execute(makeSalesRequest())
-    await expect(promise).rejects.toThrow(
-      new Error('Algum nome de modelo não existe.')
-    )
+    const promise = await sut.execute(makeSalesRequest())
+    expect(promise).toBeNull()
   })
 
   test('Should call CheckQuantityStockRepository with correct value', async () => {
@@ -150,15 +148,13 @@ describe('AddSalesUseCase', () => {
     await expect(promise).rejects.toThrow(new Error())
   })
 
-  test('Should return a error if CheckQuantityStockRepository returns false', async () => {
+  test('Should return null if CheckQuantityStockRepository returns false', async () => {
     const { sut, checkQuantityStockRepositoryStub } = makeSut()
     jest
       .spyOn(checkQuantityStockRepositoryStub, 'checkStockQuantity')
       .mockReturnValueOnce(Promise.resolve(false))
-    const promise = sut.execute(makeSalesRequest())
-    await expect(promise).rejects.toThrow(
-      new Error('Quantidade indisponível de modelos.')
-    )
+    const promise = await sut.execute(makeSalesRequest())
+    expect(promise).toBeNull()
   })
 
   test('Should call CreateSalesRepository with correct value', async () => {
