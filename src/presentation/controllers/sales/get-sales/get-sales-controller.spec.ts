@@ -2,6 +2,7 @@ import { SalesModel } from '../../../../domain/models/sales'
 import { GetSales } from '../../../../domain/usecases/sales/get-sales'
 import { noContent, serverError, ok } from '../../../helpers/http-helper'
 import { GetSalesController } from './get-sales-controller'
+import MockDate from 'mockdate'
 
 const makeGetSales = (): SalesModel[] => {
   return [
@@ -47,6 +48,13 @@ const makeSut = (): SutTypes => {
 }
 
 describe('GetSalesController', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
   test('Should call GetSales once', async () => {
     const { sut, getSalesStub } = makeSut()
     const getSpy = jest.spyOn(getSalesStub, 'getAll')
