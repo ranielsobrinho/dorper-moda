@@ -1,5 +1,6 @@
 import { SalesModel } from '../../../../domain/models/sales'
 import { GetSaleById } from '../../../../domain/usecases/sales/get-sale-by-id'
+import { serverError } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols'
 import { GetSaleByIdController } from './get-sale-by-id-controller'
 
@@ -54,5 +55,12 @@ describe('GetSaleByIdController', () => {
     const getSaleSpy = jest.spyOn(getSaleByIdStub, 'getById')
     await sut.handle(httpRequest())
     expect(getSaleSpy).toHaveBeenCalledWith(httpRequest().body.saleId)
+  })
+
+  test('Should return 500 if GetSaleById throws', async () => {
+    const { sut, getSaleByIdStub } = makeSut()
+    jest.spyOn(getSaleByIdStub, 'getById').mockRejectedValueOnce(new Error())
+    const httpResponse = await sut.handle(httpRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
