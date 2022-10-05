@@ -86,5 +86,11 @@ describe('SalesMongoRepository', () => {
       expect(salesData).toBeTruthy()
       expect(salesData?.id).toBeTruthy()
     })
+
+    test('Should return null on fail', async () => {
+      const sut = makeSut()
+      const salesData = await sut.getById('6338470e2c2a01971011214f')
+      expect(salesData).toBe(null)
+    })
   })
 })
