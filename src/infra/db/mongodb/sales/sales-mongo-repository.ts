@@ -24,6 +24,9 @@ export class SalesMongoRepository
     const salesCollection = MongoHelper.getCollection('sales')
     const objectId = new ObjectId(saleId)
     const saleData = await salesCollection.findOne({ _id: objectId })
+    if (!saleData) {
+      return null
+    }
     return saleData && MongoHelper.map(saleData)
   }
 }
