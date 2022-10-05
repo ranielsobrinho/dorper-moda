@@ -1,9 +1,10 @@
 import { SalesModel } from '../../../../domain/models/sales'
 import { GetSaleById } from '../../../../domain/usecases/sales/get-sale-by-id'
 import { InvalidParamError } from '../../../errors'
-import { badRequest, serverError } from '../../../helpers/http-helper'
+import { badRequest, serverError, ok } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols'
 import { GetSaleByIdController } from './get-sale-by-id-controller'
+import MockDate from 'mockdate'
 
 const makeGetSale = (): SalesModel => ({
   id: 'any_id',
@@ -51,6 +52,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('GetSaleByIdController', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   test('Should call GetSaleById with correct values', async () => {
     const { sut, getSaleByIdStub } = makeSut()
     const getSaleSpy = jest.spyOn(getSaleByIdStub, 'getById')
@@ -70,5 +79,11 @@ describe('GetSaleByIdController', () => {
     jest.spyOn(getSaleByIdStub, 'getById').mockResolvedValueOnce(null)
     const httpResponse = await sut.handle(httpRequest())
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('saleId')))
+  })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(httpRequest())
+    expect(httpResponse).toEqual(ok(makeGetSale()))
   })
 })
