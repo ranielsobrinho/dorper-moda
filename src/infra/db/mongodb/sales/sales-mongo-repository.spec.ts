@@ -77,4 +77,14 @@ describe('SalesMongoRepository', () => {
       expect(salesData).toBeInstanceOf(Array)
     })
   })
+
+  describe('getById()', () => {
+    test('Should return a sale on success', async () => {
+      const sale = await salesCollection.insertOne(makeGetSales())
+      const sut = makeSut()
+      const salesData = await sut.getById(sale.insertedId.toString())
+      expect(salesData).toBeTruthy()
+      expect(salesData?.id).toBeTruthy()
+    })
+  })
 })
