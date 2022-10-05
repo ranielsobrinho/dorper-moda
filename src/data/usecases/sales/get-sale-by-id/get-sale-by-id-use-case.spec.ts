@@ -1,5 +1,6 @@
 import { GetSaleByIdRepository } from '../../../protocols/db/sales/get-sale-by-id-repository'
 import { GetSaleByIdUseCase } from './get-sale-by-id-use-case'
+import MockDate from 'mockdate'
 
 const makeGetSale = (): GetSaleByIdRepository.Result => ({
   id: 'any_id',
@@ -41,6 +42,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('GetSaleByIdUseCase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   test('Should call GetSaleByIdRepository with correct values', async () => {
     const { sut, getSaleByIdRepositoryStub } = makeSut()
     const getByIdSpy = jest.spyOn(getSaleByIdRepositoryStub, 'getById')
@@ -62,5 +71,11 @@ describe('GetSaleByIdUseCase', () => {
     jest.spyOn(getSaleByIdRepositoryStub, 'getById').mockResolvedValueOnce(null)
     const sale = await sut.getById('any_id')
     expect(sale).toEqual(null)
+  })
+
+  test('Should return sale data on success', async () => {
+    const { sut } = makeSut()
+    const sale = await sut.getById('any_id')
+    expect(sale).toEqual(makeGetSale())
   })
 })
