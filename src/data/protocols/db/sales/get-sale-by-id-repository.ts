@@ -5,5 +5,5 @@ export interface GetSaleByIdRepository {
 }
 
 export namespace GetSaleByIdRepository {
-  export type Result = SalesModel
+  export type Result = SalesModel | null
 }

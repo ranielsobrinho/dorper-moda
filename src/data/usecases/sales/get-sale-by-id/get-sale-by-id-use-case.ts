@@ -5,8 +5,11 @@ import { GetSaleByIdRepository } from '../../../protocols/db/sales/get-sale-by-i
 export class GetSaleByIdUseCase implements GetSaleById {
   constructor(private readonly getSaleByIdRepository: GetSaleByIdRepository) {}
 
-  async getById(saleId: string): Promise<SalesModel> {
-    await this.getSaleByIdRepository.getById(saleId)
+  async getById(saleId: string): Promise<SalesModel | null> {
+    const saleData = await this.getSaleByIdRepository.getById(saleId)
+    if (!saleData) {
+      return null
+    }
     const makeGetSale = (): GetSaleByIdRepository.Result => ({
       id: 'any_id',
       clientName: 'any_client_name',
@@ -22,6 +25,7 @@ export class GetSaleByIdUseCase implements GetSaleById {
       soldAt: new Date(),
       total: 110
     })
+
     return Promise.resolve(makeGetSale())
   }
 }

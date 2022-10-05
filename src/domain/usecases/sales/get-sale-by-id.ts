@@ -1,5 +1,5 @@
 import { SalesModel } from '../../models/sales'
 
 export interface GetSaleById {
-  getById(saleId: string): Promise<SalesModel>
+  getById(saleId: string): Promise<SalesModel | null>
 }
