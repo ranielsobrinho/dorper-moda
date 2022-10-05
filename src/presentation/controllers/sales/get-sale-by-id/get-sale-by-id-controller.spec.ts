@@ -23,7 +23,7 @@ const makeGetSale = (): SalesModel => ({
 })
 
 const httpRequest = (): HttpRequest => ({
-  body: {
+  params: {
     saleId: 1
   }
 })
@@ -64,7 +64,7 @@ describe('GetSaleByIdController', () => {
     const { sut, getSaleByIdStub } = makeSut()
     const getSaleSpy = jest.spyOn(getSaleByIdStub, 'getById')
     await sut.handle(httpRequest())
-    expect(getSaleSpy).toHaveBeenCalledWith(httpRequest().body.saleId)
+    expect(getSaleSpy).toHaveBeenCalledWith(httpRequest().params.saleId)
   })
 
   test('Should return 500 if GetSaleById throws', async () => {

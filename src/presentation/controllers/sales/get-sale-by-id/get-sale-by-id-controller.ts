@@ -8,7 +8,7 @@ export class GetSaleByIdController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { saleId } = httpRequest.body
+      const { saleId } = httpRequest.params
       const saleData = await this.getSaleById.getById(saleId)
 
       if (!saleData) {
