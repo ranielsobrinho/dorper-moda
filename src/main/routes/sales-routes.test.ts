@@ -96,5 +96,9 @@ describe('Sales Routes', () => {
       const saleId = sale.insertedId.toString()
       await request(app).get(`/api/sales/${saleId}`).expect(200)
     })
+
+    test('Should return 400 on success', async () => {
+      await request(app).get('/api/sales/123343555224').expect(400)
+    })
   })
 })
