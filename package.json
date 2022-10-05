@@ -1,6 +1,6 @@
 {
   "name": "dorper-moda",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A system to control stock and sales process to a feshion shop",
   "main": "index.js",
   "scripts": {
