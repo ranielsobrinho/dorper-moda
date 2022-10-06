@@ -3,9 +3,14 @@ import { GetSalesRepository } from '../../../../data/protocols/db/sales/get-sale
 import { GetSaleByIdRepository } from '../../../../data/protocols/db/sales/get-sale-by-id-repository'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { ObjectId } from 'mongodb'
+import { UpdateSaleRepository } from '../../../../data/protocols/db/sales/update-sale-repository'
 
 export class SalesMongoRepository
-  implements CreateSalesRepository, GetSalesRepository, GetSaleByIdRepository
+  implements
+    CreateSalesRepository,
+    GetSalesRepository,
+    GetSaleByIdRepository,
+    UpdateSaleRepository
 {
   async create(
     params: CreateSalesRepository.Params
@@ -28,5 +33,25 @@ export class SalesMongoRepository
       return null
     }
     return saleData && MongoHelper.map(saleData)
+  }
+
+  async update(
+    params: UpdateSaleRepository.Params
+  ): Promise<UpdateSaleRepository.Result> {
+    const { saleId, data } = params
+    const salesCollection = MongoHelper.getCollection('sales')
+    const objectId = new ObjectId(saleId)
+    await salesCollection.findOneAndUpdate(
+      { _id: objectId },
+      {
+        $set: {
+          clientName: data.clientName,
+          deliveryFee: data.deliveryFee,
+          paymentForm: data.paymentForm,
+          products: data.products,
+          total: data.total
+        }
+      }
+    )
   }
 }
