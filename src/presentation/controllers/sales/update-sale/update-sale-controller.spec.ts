@@ -2,7 +2,8 @@ import { UpdateSale } from '../../../../domain/usecases/sales/update-sale'
 import { HttpRequest } from '../../../protocols'
 import { UpdateSaleController } from './update-sale-controller'
 import MockDate from 'mockdate'
-import { serverError } from '../../../helpers/http-helper'
+import { badRequest, serverError } from '../../../helpers/http-helper'
+import { InvalidParamError } from '../../../errors'
 
 const makeFakeSaleRequest = (): HttpRequest => ({
   params: {
@@ -88,5 +89,12 @@ describe('UpdateSaleController', () => {
     jest.spyOn(updateSaleStub, 'execute').mockRejectedValueOnce(new Error())
     const httpRequest = await sut.handle(makeFakeSaleRequest())
     expect(httpRequest).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 400 if UpdateSale returns null', async () => {
+    const { sut, updateSaleStub } = makeSut()
+    jest.spyOn(updateSaleStub, 'execute').mockResolvedValueOnce(null)
+    const httpRequest = await sut.handle(makeFakeSaleRequest())
+    expect(httpRequest).toEqual(badRequest(new InvalidParamError('saleId')))
   })
 })
