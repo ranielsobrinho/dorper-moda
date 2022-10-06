@@ -5,7 +5,10 @@ export class UpdateSaleUseCase implements UpdateSale {
   constructor(private readonly getSaleByIdRepository: GetSaleByIdRepository) {}
 
   async execute(params: UpdateSale.Params): Promise<UpdateSale.Result> {
-    await this.getSaleByIdRepository.getById(params.saleId)
+    const existingSale = await this.getSaleByIdRepository.getById(params.saleId)
+    if (!existingSale) {
+      return null
+    }
     return 'ok'
   }
 }
