@@ -5,15 +5,25 @@ import {
   noContent,
   serverError
 } from '../../../helpers/http-helper'
-import { Controller, HttpRequest, HttpResponse } from '../../../protocols'
+import {
+  Controller,
+  HttpRequest,
+  HttpResponse,
+  Validation
+} from '../../../protocols'
 
 export class UpdateSaleController implements Controller {
-  constructor(private readonly updateSale: UpdateSale) {}
+  constructor(
+    private readonly updateSale: UpdateSale,
+    private readonly validation: Validation
+  ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { saleId } = httpRequest.params
       const { data } = httpRequest.body
+
+      this.validation.validate(data)
 
       const updateData = await this.updateSale.execute({
         saleId,
