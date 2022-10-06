@@ -75,4 +75,11 @@ describe('UpdateSaleUseCase', () => {
     const promise = sut.execute(makeUpdateRequest())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return null if GetSaleByIdRepository returns null', async () => {
+    const { sut, getSaleByIdRepositoryStub } = makeSut()
+    jest.spyOn(getSaleByIdRepositoryStub, 'getById').mockResolvedValueOnce(null)
+    const saleUpdate = await sut.execute(makeUpdateRequest())
+    expect(saleUpdate).toEqual(null)
+  })
 })
