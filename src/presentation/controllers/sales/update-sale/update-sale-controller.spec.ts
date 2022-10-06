@@ -43,6 +43,29 @@ const makeUpdateSaleRequest = (): UpdateSale.Params => ({
   }
 })
 
+const makeUpdateSaleStub = (): UpdateSale => {
+  class UpdateSaleStub implements UpdateSale {
+    async execute(params: UpdateSale.Params): Promise<UpdateSale.Result> {
+      return Promise.resolve('ok')
+    }
+  }
+  return new UpdateSaleStub()
+}
+
+type SutTypes = {
+  sut: UpdateSaleController
+  updateSaleStub: UpdateSale
+}
+
+const makeSut = (): SutTypes => {
+  const updateSaleStub = makeUpdateSaleStub()
+  const sut = new UpdateSaleController(updateSaleStub)
+  return {
+    sut,
+    updateSaleStub
+  }
+}
+
 describe('UpdateSaleController', () => {
   beforeAll(() => {
     MockDate.set(new Date())
@@ -53,13 +76,7 @@ describe('UpdateSaleController', () => {
   })
 
   test('Should call UpdateSale with correct values', async () => {
-    class UpdateSaleStub implements UpdateSale {
-      async execute(params: UpdateSale.Params): Promise<UpdateSale.Result> {
-        return Promise.resolve('ok')
-      }
-    }
-    const updateSaleStub = new UpdateSaleStub()
-    const sut = new UpdateSaleController(updateSaleStub)
+    const { sut, updateSaleStub } = makeSut()
     const updateSaleSpy = jest.spyOn(updateSaleStub, 'execute')
     await sut.handle(makeFakeSaleRequest())
     expect(updateSaleSpy).toHaveBeenCalledWith(makeUpdateSaleRequest())
