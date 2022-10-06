@@ -21,7 +21,10 @@ export class SalesMongoRepository
 
   async getAll(): Promise<GetSalesRepository.Result> {
     const salesCollection = MongoHelper.getCollection('sales')
-    const salesData = await salesCollection.find().toArray()
+    const salesData = await salesCollection
+      .find()
+      .sort({ soldAt: -1 })
+      .toArray()
     return MongoHelper.mapCollection(salesData)
   }
 
