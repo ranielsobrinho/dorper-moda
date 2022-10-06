@@ -36,15 +36,32 @@ const makeGetSale = (): GetSaleByIdRepository.Result => ({
   total: 110
 })
 
+const makeGetSaleByIdRepositoryStub = (): GetSaleByIdRepository => {
+  class GetSaleByIdRepositoryStub implements GetSaleByIdRepository {
+    async getById(saleId: string): Promise<GetSaleByIdRepository.Result> {
+      return Promise.resolve(makeGetSale())
+    }
+  }
+  return new GetSaleByIdRepositoryStub()
+}
+
+type SutTypes = {
+  sut: UpdateSaleUseCase
+  getSaleByIdRepositoryStub: GetSaleByIdRepository
+}
+
+const makeSut = (): SutTypes => {
+  const getSaleByIdRepositoryStub = makeGetSaleByIdRepositoryStub()
+  const sut = new UpdateSaleUseCase(getSaleByIdRepositoryStub)
+  return {
+    sut,
+    getSaleByIdRepositoryStub
+  }
+}
+
 describe('UpdateSaleUseCase', () => {
   test('Should call GetSaleByIdRepository with correct values', async () => {
-    class GetSaleByIdRepositoryStub implements GetSaleByIdRepository {
-      async getById(saleId: string): Promise<GetSaleByIdRepository.Result> {
-        return Promise.resolve(makeGetSale())
-      }
-    }
-    const getSaleByIdRepositoryStub = new GetSaleByIdRepositoryStub()
-    const sut = new UpdateSaleUseCase(getSaleByIdRepositoryStub)
+    const { sut, getSaleByIdRepositoryStub } = makeSut()
     const getByIdSpy = jest.spyOn(getSaleByIdRepositoryStub, 'getById')
     await sut.execute(makeUpdateRequest())
     expect(getByIdSpy).toHaveBeenCalledWith('any_id')
