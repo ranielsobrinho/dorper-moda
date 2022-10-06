@@ -7,7 +7,7 @@ import {
   noContent,
   serverError
 } from '../../../helpers/http-helper'
-import { InvalidParamError } from '../../../errors'
+import { InvalidParamError, MissingParamError } from '../../../errors'
 
 const makeFakeSaleRequest = (): HttpRequest => ({
   params: {
@@ -125,5 +125,14 @@ describe('UpdateSaleController', () => {
     const validationSpy = jest.spyOn(validationStub, 'validate')
     await sut.handle(makeFakeSaleRequest())
     expect(validationSpy).toHaveBeenCalledWith(makeFakeSaleRequest().body.data)
+  })
+
+  test('Should return 400 if Validation returns a error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await sut.handle(makeFakeSaleRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
