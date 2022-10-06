@@ -1,5 +1,5 @@
 import { UpdateSale } from '../../../../domain/usecases/sales/update-sale'
-import { HttpRequest } from '../../../protocols'
+import { HttpRequest, Validation } from '../../../protocols'
 import { UpdateSaleController } from './update-sale-controller'
 import MockDate from 'mockdate'
 import {
@@ -58,17 +58,29 @@ const makeUpdateSaleStub = (): UpdateSale => {
   return new UpdateSaleStub()
 }
 
+const makeValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(input: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 type SutTypes = {
   sut: UpdateSaleController
   updateSaleStub: UpdateSale
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const updateSaleStub = makeUpdateSaleStub()
-  const sut = new UpdateSaleController(updateSaleStub)
+  const validationStub = makeValidationStub()
+  const sut = new UpdateSaleController(updateSaleStub, validationStub)
   return {
     sut,
-    updateSaleStub
+    updateSaleStub,
+    validationStub
   }
 }
 
@@ -106,5 +118,12 @@ describe('UpdateSaleController', () => {
     const { sut } = makeSut()
     const httpRequest = await sut.handle(makeFakeSaleRequest())
     expect(httpRequest).toEqual(noContent())
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validationSpy = jest.spyOn(validationStub, 'validate')
+    await sut.handle(makeFakeSaleRequest())
+    expect(validationSpy).toHaveBeenCalledWith(makeFakeSaleRequest().body.data)
   })
 })
