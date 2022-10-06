@@ -23,7 +23,10 @@ export class UpdateSaleController implements Controller {
       const { saleId } = httpRequest.params
       const { data } = httpRequest.body
 
-      this.validation.validate(data)
+      const error = this.validation.validate(data)
+      if (error) {
+        return badRequest(error)
+      }
 
       const updateData = await this.updateSale.execute({
         saleId,
