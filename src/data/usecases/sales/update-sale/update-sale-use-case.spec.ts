@@ -1,5 +1,6 @@
 import { UpdateSale } from '../../../../domain/usecases/sales/update-sale'
 import { GetSaleByIdRepository } from '../../../protocols/db/sales/get-sale-by-id-repository'
+import { UpdateSaleRepository } from '../../../protocols/db/sales/update-sale-repository'
 import { UpdateSaleUseCase } from './update-sale-use-case'
 
 const makeUpdateRequest = (): UpdateSale.Params => ({
@@ -45,17 +46,32 @@ const makeGetSaleByIdRepositoryStub = (): GetSaleByIdRepository => {
   return new GetSaleByIdRepositoryStub()
 }
 
+const makeUpdateSaleRepositoryStub = (): UpdateSaleRepository => {
+  class UpdateSaleRepositoryStub implements UpdateSaleRepository {
+    async update(
+      params: UpdateSaleRepository.Params
+    ): Promise<UpdateSaleRepository.Result> {}
+  }
+  return new UpdateSaleRepositoryStub()
+}
+
 type SutTypes = {
   sut: UpdateSaleUseCase
   getSaleByIdRepositoryStub: GetSaleByIdRepository
+  updateSaleRepositoryStub: UpdateSaleRepository
 }
 
 const makeSut = (): SutTypes => {
   const getSaleByIdRepositoryStub = makeGetSaleByIdRepositoryStub()
-  const sut = new UpdateSaleUseCase(getSaleByIdRepositoryStub)
+  const updateSaleRepositoryStub = makeUpdateSaleRepositoryStub()
+  const sut = new UpdateSaleUseCase(
+    getSaleByIdRepositoryStub,
+    updateSaleRepositoryStub
+  )
   return {
     sut,
-    getSaleByIdRepositoryStub
+    getSaleByIdRepositoryStub,
+    updateSaleRepositoryStub
   }
 }
 
@@ -81,5 +97,12 @@ describe('UpdateSaleUseCase', () => {
     jest.spyOn(getSaleByIdRepositoryStub, 'getById').mockResolvedValueOnce(null)
     const saleUpdate = await sut.execute(makeUpdateRequest())
     expect(saleUpdate).toEqual(null)
+  })
+
+  test('Should call UpdateSaleRepository with correct values', async () => {
+    const { sut, updateSaleRepositoryStub } = makeSut()
+    const updateSpy = jest.spyOn(updateSaleRepositoryStub, 'update')
+    await sut.execute(makeUpdateRequest())
+    expect(updateSpy).toHaveBeenCalledWith(makeUpdateRequest())
   })
 })
