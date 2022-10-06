@@ -101,4 +101,66 @@ describe('Sales Routes', () => {
       await request(app).get('/api/sales/123343555224').expect(400)
     })
   })
+
+  describe('PUT /sales/saleId', () => {
+    test('Should return 204 on success', async () => {
+      const sale = await salesCollection.insertOne({
+        id: 'any_id',
+        clientName: 'any_client_name',
+        deliveryFee: 25,
+        paymentForm: 'CREDIT CARD',
+        products: [
+          {
+            modelName: 'any_model_name',
+            color: 'any_color_name',
+            quantity: 1
+          }
+        ],
+        soldAt: new Date(),
+        total: 110
+      })
+      const saleId = sale.insertedId.toString()
+      await request(app)
+        .put(`/api/sales/${saleId}`)
+        .send({
+          data: {
+            clientName: 'other_client_name',
+            deliveryFee: 25,
+            paymentForm: 'CREDIT CARD',
+            products: [
+              {
+                modelName: 'any_model_name',
+                color: 'any_color_name',
+                quantity: 1
+              }
+            ],
+            soldAt: new Date(),
+            total: 110
+          }
+        })
+        .expect(204)
+    })
+
+    test('Should return 403 if wrong id is provided', async () => {
+      await request(app)
+        .put('/api/sales/123343555224')
+        .send({
+          data: {
+            clientName: 'other_client_name',
+            deliveryFee: 25,
+            paymentForm: 'CREDIT CARD',
+            products: [
+              {
+                modelName: 'any_model_name',
+                color: 'any_color_name',
+                quantity: 1
+              }
+            ],
+            soldAt: new Date(),
+            total: 110
+          }
+        })
+        .expect(400)
+    })
+  })
 })
