@@ -105,7 +105,6 @@ describe('Sales Routes', () => {
   describe('PUT /sales/saleId', () => {
     test('Should return 204 on success', async () => {
       const sale = await salesCollection.insertOne({
-        id: 'any_id',
         clientName: 'any_client_name',
         deliveryFee: 25,
         paymentForm: 'CREDIT CARD',
