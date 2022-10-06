@@ -105,4 +105,13 @@ describe('UpdateSaleUseCase', () => {
     await sut.execute(makeUpdateRequest())
     expect(updateSpy).toHaveBeenCalledWith(makeUpdateRequest())
   })
+
+  test('Should throw if UpdateSaleRepository throws', async () => {
+    const { sut, updateSaleRepositoryStub } = makeSut()
+    jest
+      .spyOn(updateSaleRepositoryStub, 'update')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeUpdateRequest())
+    await expect(promise).rejects.toThrow()
+  })
 })
