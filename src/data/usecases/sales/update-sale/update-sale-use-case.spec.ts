@@ -114,4 +114,10 @@ describe('UpdateSaleUseCase', () => {
     const promise = sut.execute(makeUpdateRequest())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return ok on success', async () => {
+    const { sut } = makeSut()
+    const update = await sut.execute(makeUpdateRequest())
+    expect(update).toBe('ok')
+  })
 })
