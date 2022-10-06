@@ -93,4 +93,38 @@ describe('SalesMongoRepository', () => {
       expect(salesData).toBe(null)
     })
   })
+
+  describe('update()', () => {
+    test('Should update a sale on success', async () => {
+      const insertedId = await salesCollection.insertOne(makeFakeSaleRequest())
+      const sale = await salesCollection.findOne({ _id: insertedId.insertedId })
+      expect(sale).toBeTruthy()
+      expect(sale?._id).toBeTruthy()
+      expect(sale?.clientName).toBe('any_client_name')
+      expect(sale?.total).toBe(110)
+      const sut = makeSut()
+      await sut.update({
+        saleId: insertedId.insertedId.toString(),
+        data: {
+          clientName: 'other_client_name',
+          deliveryFee: 25,
+          paymentForm: 'CREDIT CARD',
+          products: [
+            {
+              modelName: 'any_model_name',
+              color: 'any_color_name',
+              quantity: 1
+            }
+          ],
+          soldAt: new Date(),
+          total: 150
+        }
+      })
+      const saleUpdate = await salesCollection.findOne({ _id: sale?._id })
+      expect(saleUpdate).toBeTruthy()
+      expect(saleUpdate?._id).toBeTruthy()
+      expect(saleUpdate?.clientName).toBe('other_client_name')
+      expect(saleUpdate?.total).toBe(150)
+    })
+  })
 })
