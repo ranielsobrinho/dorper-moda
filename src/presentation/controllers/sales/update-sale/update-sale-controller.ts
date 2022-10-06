@@ -24,7 +24,7 @@ export class UpdateSaleController implements Controller {
         return badRequest(new InvalidParamError('saleId'))
       }
 
-      return Promise.resolve(noContent())
+      return noContent()
     } catch (error) {
       return serverError(error)
     }
