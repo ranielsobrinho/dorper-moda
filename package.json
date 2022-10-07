@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/main/server.js",
-    "build": "rimraf dist/ && tsc",
+    "build": "rimraf dist/ && npx tsc",
     "up": "npm run build && sudo docker compose up -d",
     "down": "sudo docker compose down",
     "prepare": "husky install",
