@@ -6,8 +6,12 @@ let stockCollection: Collection
 
 const makeStockRequest = () => ({
   modelName: 'any_name',
-  color: 'any_color',
-  quantity: 1
+  description: [
+    {
+      color: 'any_color',
+      quantity: 1
+    }
+  ]
 })
 
 describe('StockMongoRepository', () => {
@@ -36,8 +40,7 @@ describe('StockMongoRepository', () => {
       expect(stockData).toBeTruthy()
       expect(stockData?._id).toBeTruthy()
       expect(stockData?.modelName).toBe('any_name')
-      expect(stockData?.color).toBe('any_color')
-      expect(stockData?.quantity).toBe(1)
+      expect(stockData?.description).toBeTruthy()
     })
   })
 
@@ -49,8 +52,7 @@ describe('StockMongoRepository', () => {
       expect(stockData).toBeTruthy()
       expect(stockData?.id).toBeTruthy()
       expect(stockData?.modelName).toBe('any_name')
-      expect(stockData?.color).toBe('any_color')
-      expect(stockData?.quantity).toBe(1)
+      expect(stockData?.description).toBeTruthy()
     })
   })
 
@@ -89,8 +91,7 @@ describe('StockMongoRepository', () => {
       expect(stock).toBeTruthy()
       expect(stock?._id).toBeTruthy()
       expect(stock?.modelName).toBe('any_name')
-      expect(stock?.color).toBe('any_color')
-      expect(stock?.quantity).toBe(1)
+      expect(stock?.description).toBeTruthy()
 
       const sut = makeSut()
       const id = inserted.insertedId.toString()
@@ -98,16 +99,19 @@ describe('StockMongoRepository', () => {
         stockId: id,
         data: {
           modelName: 'other_name',
-          color: 'any_color',
-          quantity: 1
+          description: [
+            {
+              color: 'any_color',
+              quantity: 1
+            }
+          ]
         }
       })
       const stockData = await stockCollection.findOne({ _id: stock?._id })
       expect(stockData).toBeTruthy()
       expect(stockData?._id).toBeTruthy()
       expect(stockData?.modelName).toBe('other_name')
-      expect(stockData?.color).toBe('any_color')
-      expect(stockData?.quantity).toBe(1)
+      expect(stockData?.description).toBeTruthy()
     })
   })
 
@@ -133,8 +137,12 @@ describe('StockMongoRepository', () => {
     test('Should return true if the quantity provided is less or equal product quantity', async () => {
       await stockCollection.insertOne({
         modelName: 'other_name',
-        color: 'other_color',
-        quantity: 10
+        description: [
+          {
+            color: 'other_color',
+            quantity: 10
+          }
+        ]
       })
       const stock = await stockCollection.insertOne(makeStockRequest())
       expect(stock).toBeTruthy()
@@ -142,11 +150,17 @@ describe('StockMongoRepository', () => {
       const stockData = await sut.checkStockQuantity([
         {
           modelName: 'any_name',
-          quantity: 1
+          description: {
+            color: 'any_color',
+            quantity: 1
+          }
         },
         {
           modelName: 'other_name',
-          quantity: 5
+          description: {
+            color: 'other_color',
+            quantity: 1
+          }
         }
       ])
       expect(stockData).toBeTruthy()
@@ -155,8 +169,12 @@ describe('StockMongoRepository', () => {
     test('Should return false if the quantity provided is more than product quantity', async () => {
       await stockCollection.insertOne({
         modelName: 'other_name',
-        color: 'other_color',
-        quantity: 10
+        description: [
+          {
+            color: 'other_color',
+            quantity: 10
+          }
+        ]
       })
       const stock = await stockCollection.insertOne(makeStockRequest())
       expect(stock).toBeTruthy()
@@ -164,11 +182,17 @@ describe('StockMongoRepository', () => {
       const stockData = await sut.checkStockQuantity([
         {
           modelName: 'any_name',
-          quantity: 1
+          description: {
+            color: 'any_color',
+            quantity: 1
+          }
         },
         {
           modelName: 'other_name',
-          quantity: 50
+          description: {
+            color: 'other_color',
+            quantity: 50
+          }
         }
       ])
       expect(stockData).toBeFalsy()

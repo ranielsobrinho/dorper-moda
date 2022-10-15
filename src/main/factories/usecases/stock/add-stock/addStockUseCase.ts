@@ -4,5 +4,5 @@ import { StockMongoRepository } from '../../../../../infra/db/mongodb/stock/stoc
 
 export const makeAddStockUseCase = (): AddStock => {
   const stockMongoRepository = new StockMongoRepository()
-  return new AddStockUseCase(stockMongoRepository, stockMongoRepository)
+  return new AddStockUseCase(stockMongoRepository)
 }

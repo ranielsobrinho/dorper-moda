@@ -11,5 +11,8 @@ export namespace CheckQuantityStockRepository {
 
 type params = {
   modelName: string
-  quantity: number
+  description: {
+    color: string
+    quantity: number
+  }
 }

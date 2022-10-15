@@ -2,6 +2,7 @@ import { UpdateSale } from '../../../../domain/usecases/sales/update-sale'
 import { GetSaleByIdRepository } from '../../../protocols/db/sales/get-sale-by-id-repository'
 import { UpdateSaleRepository } from '../../../protocols/db/sales/update-sale-repository'
 import { UpdateSaleUseCase } from './update-sale-use-case'
+import MockDate from 'mockdate'
 
 const makeUpdateRequest = (): UpdateSale.Params => ({
   saleId: 'any_id',
@@ -12,8 +13,12 @@ const makeUpdateRequest = (): UpdateSale.Params => ({
     products: [
       {
         modelName: 'any_model_name',
-        color: 'any_color_name',
-        quantity: 1
+        description: [
+          {
+            color: 'any_color_name',
+            quantity: 1
+          }
+        ]
       }
     ],
     soldAt: new Date(),
@@ -29,8 +34,12 @@ const makeGetSale = (): GetSaleByIdRepository.Result => ({
   products: [
     {
       modelName: 'any_model_name',
-      color: 'any_color_name',
-      quantity: 1
+      description: [
+        {
+          color: 'any_color_name',
+          quantity: 1
+        }
+      ]
     }
   ],
   soldAt: new Date(),
@@ -76,6 +85,14 @@ const makeSut = (): SutTypes => {
 }
 
 describe('UpdateSaleUseCase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
+
   test('Should call GetSaleByIdRepository with correct values', async () => {
     const { sut, getSaleByIdRepositoryStub } = makeSut()
     const getByIdSpy = jest.spyOn(getSaleByIdRepositoryStub, 'getById')

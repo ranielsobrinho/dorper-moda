@@ -7,8 +7,12 @@ const makeFakeStockModel = (): StockModel[] => {
     {
       id: 'any_id',
       modelName: 'any_model',
-      color: 'any_color',
-      quantity: 1
+      description: [
+        {
+          color: 'any_color',
+          quantity: 1
+        }
+      ]
     }
   ]
 }
@@ -50,7 +54,7 @@ describe('LoadStocksUseCase', () => {
       .spyOn(loadStocksRepositoryStub, 'loadAll')
       .mockReturnValueOnce(Promise.reject(new Error()))
     const promise = sut.loadAll()
-    expect(promise).rejects.toThrow()
+    await expect(promise).rejects.toThrow()
   })
 
   test('Should return an array of stock if LoadStocksRepository succeeds', async () => {

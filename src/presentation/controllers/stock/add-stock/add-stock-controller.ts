@@ -23,11 +23,10 @@ export class AddStockController implements Controller {
       if (error) {
         return badRequest(error)
       }
-      const { modelName, color, quantity } = httpRequest.body
+      const { modelName, description } = httpRequest.body
       await this.addStockUseCase.execute({
         modelName,
-        color,
-        quantity
+        description
       })
       return noContent()
     } catch (error) {

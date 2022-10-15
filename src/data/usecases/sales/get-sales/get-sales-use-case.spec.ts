@@ -1,6 +1,7 @@
 import { SalesModel } from '../../../../domain/models/sales'
 import { GetSalesRepository } from '../../../protocols/db/sales/get-sales-repository'
 import { GetSalesUseCase } from './get-sales-use-case'
+import MockDate from 'mockdate'
 
 const makeGetSales = (): SalesModel[] => {
   return [
@@ -12,8 +13,12 @@ const makeGetSales = (): SalesModel[] => {
       products: [
         {
           modelName: 'any_model_name',
-          color: 'any_color_name',
-          quantity: 1
+          description: [
+            {
+              color: 'any_color_name',
+              quantity: 1
+            }
+          ]
         }
       ],
       soldAt: new Date(),
@@ -46,6 +51,13 @@ const makeSut = (): SutTypes => {
 }
 
 describe('GetSalesUseCase', () => {
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.reset()
+  })
   test('Should call GetSalesRepository once', async () => {
     const { sut, getSalesRepositoryStub } = makeSut()
     const getSpy = jest.spyOn(getSalesRepositoryStub, 'getAll')

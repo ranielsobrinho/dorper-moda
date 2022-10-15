@@ -7,16 +7,24 @@ const makeStockDataRequest = (): UpdateStockRepository.Params => ({
   stockId: 'any_id',
   data: {
     modelName: 'any_name',
-    color: 'any_color',
-    quantity: 1
+    description: [
+      {
+        color: 'any_color',
+        quantity: 1
+      }
+    ]
   }
 })
 
 const makeFakeStockData = (): StockModel => ({
   id: 'any_id',
   modelName: 'any_name',
-  color: 'any_color',
-  quantity: 1
+  description: [
+    {
+      color: 'any_color',
+      quantity: 1
+    }
+  ]
 })
 
 const makeUpdateStockRepositoryStub = (): UpdateStockRepository => {
