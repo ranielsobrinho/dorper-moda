@@ -24,8 +24,12 @@ describe('Stock Routes', () => {
         .post('/api/stock')
         .send({
           modelName: 'any_name',
-          color: 'any_color',
-          quantity: 1
+          description: [
+            {
+              color: 'any_color',
+              quantity: 1
+            }
+          ]
         })
         .expect(204)
     })
@@ -35,8 +39,12 @@ describe('Stock Routes', () => {
     test('Should return 200 on success', async () => {
       await stockCollection.insertOne({
         modelName: 'any_name',
-        color: 'any_color',
-        quantity: 1
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
       })
       await request(app).get('/api/stock').expect(200)
     })
@@ -46,8 +54,12 @@ describe('Stock Routes', () => {
     test('Should return 200 on success', async () => {
       const stockData = await stockCollection.insertOne({
         modelName: 'any_name',
-        color: 'any_color',
-        quantity: 1
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
       })
       const id = stockData.insertedId.toString()
       await request(app).get(`/api/stock/${id}`).expect(200)
@@ -62,8 +74,12 @@ describe('Stock Routes', () => {
     test('Should return 204 on success', async () => {
       const stockData = await stockCollection.insertOne({
         modelName: 'any_name',
-        color: 'any_color',
-        quantity: 1
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
       })
       const id = stockData.insertedId.toString()
       await request(app).delete(`/api/stock/${id}`).expect(204)
@@ -78,8 +94,12 @@ describe('Stock Routes', () => {
     test('Should return 204 on success', async () => {
       const stockData = await stockCollection.insertOne({
         modelName: 'any_name',
-        color: 'any_color',
-        quantity: 1
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
       })
       const id = stockData.insertedId.toString()
       await request(app)
@@ -87,8 +107,12 @@ describe('Stock Routes', () => {
         .send({
           data: {
             modelName: 'other_name',
-            color: 'other_color',
-            quantity: 22
+            description: [
+              {
+                color: 'other_color',
+                quantity: 22
+              }
+            ]
           }
         })
         .expect(204)
@@ -100,8 +124,12 @@ describe('Stock Routes', () => {
         .send({
           data: {
             modelName: 'other_name',
-            color: 'other_color',
-            quantity: 22
+            description: [
+              {
+                color: 'other_color',
+                quantity: 22
+              }
+            ]
           }
         })
         .expect(403)

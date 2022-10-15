@@ -64,8 +64,7 @@ export class StockMongoRepository
       {
         $set: {
           modelName: data.modelName,
-          color: data.color,
-          quantity: data.quantity
+          description: data.description
         }
       }
     )
@@ -94,21 +93,30 @@ export class StockMongoRepository
     const stockData = await search.toArray()
     for (const stock of stockData) {
       for (const dataCompare of data) {
-        if (
-          dataCompare.modelName === stock.modelName &&
-          dataCompare.quantity <= stock.quantity
-        ) {
-          const newQuantity = stock.quantity - dataCompare.quantity
-          await stockCollection.updateOne(
-            { modelName: stock.modelName },
-            { $set: { quantity: newQuantity } }
-          )
-          return true
-        } else if (
-          dataCompare.modelName === stock.modelName &&
-          dataCompare.quantity > stock.quantity
-        ) {
-          return false
+        if (dataCompare.modelName === stock.modelName) {
+          for (const description of stock.description) {
+            if (
+              dataCompare.description.color === description.color &&
+              dataCompare.description.quantity <= description.quantity
+            ) {
+              const newQuantity =
+                description.quantity - dataCompare.description.quantity
+              const descriptionDto = {
+                color: description.color,
+                quantity: newQuantity
+              }
+              await stockCollection.updateOne(
+                { modelName: stock.modelName },
+                { $set: { description: descriptionDto } }
+              )
+              return true
+            } else if (
+              dataCompare.modelName === stock.modelName &&
+              dataCompare.description.quantity > description.quantity
+            ) {
+              return false
+            }
+          }
         }
       }
     }

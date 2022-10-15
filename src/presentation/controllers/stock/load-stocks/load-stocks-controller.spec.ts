@@ -8,8 +8,12 @@ const makeFakeStockModel = (): StockModel[] => {
     {
       id: 'any_id',
       modelName: 'any_model',
-      color: 'any_color',
-      quantity: 1
+      description: [
+        {
+          color: 'any_color',
+          quantity: 1
+        }
+      ]
     }
   ]
 }

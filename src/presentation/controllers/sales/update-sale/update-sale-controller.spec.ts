@@ -21,8 +21,12 @@ const makeFakeSaleRequest = (): HttpRequest => ({
       products: [
         {
           modelName: 'any_model_name',
-          color: 'any_color_name',
-          quantity: 1
+          description: [
+            {
+              color: 'any_color_name',
+              quantity: 1
+            }
+          ]
         }
       ],
       soldAt: new Date(),
@@ -40,8 +44,12 @@ const makeUpdateSaleRequest = (): UpdateSale.Params => ({
     products: [
       {
         modelName: 'any_model_name',
-        color: 'any_color_name',
-        quantity: 1
+        description: [
+          {
+            color: 'any_color_name',
+            quantity: 1
+          }
+        ]
       }
     ],
     soldAt: new Date(),

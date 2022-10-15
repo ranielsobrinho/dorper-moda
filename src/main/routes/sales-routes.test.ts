@@ -28,8 +28,12 @@ describe('Sales Routes', () => {
     test('Should return 204 on success', async () => {
       await stockCollection.insertOne({
         modelName: 'any_model_name',
-        color: 'any_color_name',
-        quantity: 10
+        description: [
+          {
+            color: 'any_color_name',
+            quantity: 10
+          }
+        ]
       })
       await request(app)
         .post('/api/sales')
@@ -40,8 +44,12 @@ describe('Sales Routes', () => {
           products: [
             {
               modelName: 'any_model_name',
-              color: 'any_color_name',
-              quantity: 1
+              description: [
+                {
+                  color: 'any_color_name',
+                  quantity: 1
+                }
+              ]
             }
           ],
           soldAt: new Date(),
@@ -61,8 +69,12 @@ describe('Sales Routes', () => {
         products: [
           {
             modelName: 'any_model_name',
-            color: 'any_color_name',
-            quantity: 1
+            description: [
+              {
+                color: 'any_color_name',
+                quantity: 1
+              }
+            ]
           }
         ],
         soldAt: new Date(),
@@ -86,8 +98,12 @@ describe('Sales Routes', () => {
         products: [
           {
             modelName: 'any_model_name',
-            color: 'any_color_name',
-            quantity: 1
+            description: [
+              {
+                color: 'any_color_name',
+                quantity: 1
+              }
+            ]
           }
         ],
         soldAt: new Date(),
@@ -111,8 +127,12 @@ describe('Sales Routes', () => {
         products: [
           {
             modelName: 'any_model_name',
-            color: 'any_color_name',
-            quantity: 1
+            description: [
+              {
+                color: 'any_color_name',
+                quantity: 1
+              }
+            ]
           }
         ],
         soldAt: new Date(),
@@ -129,8 +149,12 @@ describe('Sales Routes', () => {
             products: [
               {
                 modelName: 'any_model_name',
-                color: 'any_color_name',
-                quantity: 1
+                description: [
+                  {
+                    color: 'any_color_name',
+                    quantity: 1
+                  }
+                ]
               }
             ],
             soldAt: new Date(),
@@ -151,8 +175,12 @@ describe('Sales Routes', () => {
             products: [
               {
                 modelName: 'any_model_name',
-                color: 'any_color_name',
-                quantity: 1
+                description: [
+                  {
+                    color: 'any_color_name',
+                    quantity: 1
+                  }
+                ]
               }
             ],
             soldAt: new Date(),

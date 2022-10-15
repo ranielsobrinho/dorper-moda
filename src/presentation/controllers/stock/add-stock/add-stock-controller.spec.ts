@@ -11,8 +11,12 @@ import { MissingParamError } from '../../../errors'
 const makeAddStockRequest = (): HttpRequest => ({
   body: {
     modelName: 'any_name',
-    color: 'any_color',
-    quantity: 1
+    description: [
+      {
+        color: 'any_color',
+        quantity: 1
+      }
+    ]
   }
 })
 

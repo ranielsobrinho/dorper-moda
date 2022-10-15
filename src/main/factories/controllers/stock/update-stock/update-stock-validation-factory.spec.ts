@@ -11,7 +11,7 @@ describe('UpdateStockValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
     makeUpdateStockValidation()
     const validations: Validation[] = []
-    for (const field of ['modelName', 'color', 'quantity']) {
+    for (const field of ['modelName', 'description']) {
       validations.push(new RequiredFieldValidation(field))
     }
     expect(ValidationComposite).toHaveBeenCalledWith(validations)

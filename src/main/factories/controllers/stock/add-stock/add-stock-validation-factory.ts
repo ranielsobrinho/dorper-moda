@@ -6,7 +6,7 @@ import {
 
 export const makeAddStockValidation = (): ValidationComposite => {
   const validations: Validation[] = []
-  for (const field of ['modelName', 'color', 'quantity']) {
+  for (const field of ['modelName', 'description']) {
     validations.push(new RequiredFieldValidation(field))
   }
   return new ValidationComposite(validations)

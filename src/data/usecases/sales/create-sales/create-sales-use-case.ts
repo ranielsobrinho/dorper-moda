@@ -14,7 +14,10 @@ export class CreateSalesUseCase implements CreateSale {
     const products = params.products.map((product) => {
       return {
         modelName: product.modelName,
-        quantity: product.quantity
+        description: {
+          color: product.description[0].color,
+          quantity: product.description[0].quantity
+        }
       }
     })
 

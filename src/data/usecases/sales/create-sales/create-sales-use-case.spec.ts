@@ -12,13 +12,21 @@ const makeSalesRequest = (): CreateSale.Params => ({
   products: [
     {
       modelName: 'any_model_name',
-      color: 'any_color',
-      quantity: 2
+      description: [
+        {
+          color: 'any_color',
+          quantity: 2
+        }
+      ]
     },
     {
       modelName: 'other_model_name',
-      color: 'other_color',
-      quantity: 5
+      description: [
+        {
+          color: 'other_color',
+          quantity: 5
+        }
+      ]
     }
   ],
   soldAt: new Date(),
@@ -133,7 +141,10 @@ describe('AddSalesUseCase', () => {
       makeSalesRequest().products.map((product) => {
         return {
           modelName: product.modelName,
-          quantity: product.quantity
+          description: {
+            color: product.description[0].color,
+            quantity: product.description[0].quantity
+          }
         }
       })
     )
