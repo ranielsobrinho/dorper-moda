@@ -16,10 +16,6 @@ const app = express()
 app.use(morgan(':date[iso] :method :url :status :body - :total-time ms'))
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'https://dorper-moda-frontend.vercel.app/'
-    ],
     methods: ['POST', 'GET', 'PUT', 'DELETE']
   })
 )
