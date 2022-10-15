@@ -14,11 +14,7 @@ morgan.token('body', (req: express.Request) => {
 
 const app = express()
 app.use(morgan(':date[iso] :method :url :status :body - :total-time ms'))
-app.use(
-  cors({
-    methods: ['POST', 'GET', 'PUT', 'DELETE']
-  })
-)
+app.use(cors())
 setupMiddlewares(app)
 setupRoutes(app)
 
