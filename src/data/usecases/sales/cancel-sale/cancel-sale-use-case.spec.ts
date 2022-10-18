@@ -45,9 +45,7 @@ const makeRefundStockRepository = (): RefundStockRepository => {
 
 const makeCancelSaleRepository = (): CancelSaleRepository => {
   class CancelSaleRepositoryStub implements CancelSaleRepository {
-    async cancelSale(
-      params: CancelSaleRepository.Params
-    ): Promise<CancelSaleRepository.Result> {}
+    async cancelSale(saleId: string): Promise<CancelSaleRepository.Result> {}
   }
   return new CancelSaleRepositoryStub()
 }
@@ -118,5 +116,12 @@ describe('CancelSaleUseCase', () => {
     await expect(cancelSale).rejects.toThrow(
       new Error('Não foi possível retornar os valores iniciais do produto')
     )
+  })
+
+  test('Should call CancelSaleRepository with correct values', async () => {
+    const { sut, cancelSaleRepositoryStub } = makeSut()
+    const cancelSaleSpy = jest.spyOn(cancelSaleRepositoryStub, 'cancelSale')
+    await sut.cancel('any_id')
+    expect(cancelSaleSpy).toHaveBeenCalledWith(makeGetSale()?.id)
   })
 })
