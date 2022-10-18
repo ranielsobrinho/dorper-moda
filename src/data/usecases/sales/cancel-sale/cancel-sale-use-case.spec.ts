@@ -1,4 +1,6 @@
 import { GetSaleByIdRepository } from '../../../protocols/db/sales/get-sale-by-id-repository'
+import { CancelSaleRepository } from '../../../protocols/db/sales/cancel-sale-repository'
+import { RefundStockRepository } from '../../../protocols/db/stock/refund-stock-repository'
 import { CancelSaleUseCase } from './cancel-sale-use-case'
 
 const makeGetSale = (): GetSaleByIdRepository.Result => ({
@@ -30,17 +32,47 @@ const makeGetSaleByIdRepository = (): GetSaleByIdRepository => {
   return new GetSaleByIdRepositoryStub()
 }
 
+const makeRefundStockRepository = (): RefundStockRepository => {
+  class RefundStockRepositoryStub implements RefundStockRepository {
+    async refundStock(
+      params: RefundStockRepository.Params
+    ): Promise<RefundStockRepository.Result> {
+      return true
+    }
+  }
+  return new RefundStockRepositoryStub()
+}
+
+const makeCancelSaleRepository = (): CancelSaleRepository => {
+  class CancelSaleRepositoryStub implements CancelSaleRepository {
+    async cancelSale(
+      params: CancelSaleRepository.Params
+    ): Promise<CancelSaleRepository.Result> {}
+  }
+  return new CancelSaleRepositoryStub()
+}
+
 type SutTypes = {
   sut: CancelSaleUseCase
   getSaleByIdRepositoryStub: GetSaleByIdRepository
+  cancelSaleRepositoryStub: CancelSaleRepository
+  refundStockRepositoryStub: RefundStockRepository
 }
 
 const makeSut = (): SutTypes => {
   const getSaleByIdRepositoryStub = makeGetSaleByIdRepository()
-  const sut = new CancelSaleUseCase(getSaleByIdRepositoryStub)
+  const refundStockRepositoryStub = makeRefundStockRepository()
+  const cancelSaleRepositoryStub = makeCancelSaleRepository()
+  const sut = new CancelSaleUseCase(
+    getSaleByIdRepositoryStub,
+    refundStockRepositoryStub,
+    cancelSaleRepositoryStub
+  )
   return {
     sut,
-    getSaleByIdRepositoryStub
+    getSaleByIdRepositoryStub,
+    cancelSaleRepositoryStub,
+    refundStockRepositoryStub
   }
 }
 
@@ -59,5 +91,12 @@ describe('CancelSaleUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const promise = sut.cancel('any_id')
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should call RefundStockRepository with correct values', async () => {
+    const { sut, refundStockRepositoryStub } = makeSut()
+    const refundStockSpy = jest.spyOn(refundStockRepositoryStub, 'refundStock')
+    await sut.cancel('any_id')
+    expect(refundStockSpy).toHaveBeenCalledWith(makeGetSale()?.products)
   })
 })
