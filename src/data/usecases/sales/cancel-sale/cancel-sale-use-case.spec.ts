@@ -99,4 +99,13 @@ describe('CancelSaleUseCase', () => {
     await sut.cancel('any_id')
     expect(refundStockSpy).toHaveBeenCalledWith(makeGetSale()?.products)
   })
+
+  test('Should throw if RefundStockRepository throws', async () => {
+    const { sut, refundStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(refundStockRepositoryStub, 'refundStock')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.cancel('any_id')
+    await expect(promise).rejects.toThrow()
+  })
 })
