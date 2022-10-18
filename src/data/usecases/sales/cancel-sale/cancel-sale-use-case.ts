@@ -25,7 +25,10 @@ export class CancelSaleUseCase implements CancelSale {
           'Não foi possível retornar os valores iniciais do produto'
         )
       }
-      await this.cancelSaleRepository.cancelSale(saleData.id)
+      const cancelSale = await this.cancelSaleRepository.cancelSale(saleData.id)
+      if (!cancelSale) {
+        throw new Error('Não foi possível deletar essa venda')
+      }
     }
   }
 }

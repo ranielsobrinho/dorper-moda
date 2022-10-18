@@ -3,5 +3,5 @@ export interface CancelSaleRepository {
 }
 
 export namespace CancelSaleRepository {
-  export type Result = void | Error
+  export type Result = boolean
 }
