@@ -19,7 +19,12 @@ export class CancelSaleUseCase implements CancelSale {
           description: stock.description
         }
       })
-      await this.refundStockRepository.refundStock(products)
+      const refundStock = await this.refundStockRepository.refundStock(products)
+      if (!refundStock) {
+        throw new Error(
+          'Não foi possível retornar os valores iniciais do produto'
+        )
+      }
     }
   }
 }
