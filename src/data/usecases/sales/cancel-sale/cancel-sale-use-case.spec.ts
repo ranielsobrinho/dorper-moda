@@ -45,7 +45,9 @@ const makeRefundStockRepository = (): RefundStockRepository => {
 
 const makeCancelSaleRepository = (): CancelSaleRepository => {
   class CancelSaleRepositoryStub implements CancelSaleRepository {
-    async cancelSale(saleId: string): Promise<CancelSaleRepository.Result> {}
+    async cancelSale(saleId: string): Promise<CancelSaleRepository.Result> {
+      return true
+    }
   }
   return new CancelSaleRepositoryStub()
 }
@@ -132,5 +134,16 @@ describe('CancelSaleUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const promise = sut.cancel('any_id')
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should throw if CancelSaleRepository returns false', async () => {
+    const { sut, cancelSaleRepositoryStub } = makeSut()
+    jest
+      .spyOn(cancelSaleRepositoryStub, 'cancelSale')
+      .mockResolvedValueOnce(false)
+    const cancelSale = sut.cancel('any_id')
+    await expect(cancelSale).rejects.toThrow(
+      new Error('Não foi possível deletar essa venda')
+    )
   })
 })
