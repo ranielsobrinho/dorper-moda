@@ -108,4 +108,15 @@ describe('CancelSaleUseCase', () => {
     const promise = sut.cancel('any_id')
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should throw if RefundStockRepository returns false', async () => {
+    const { sut, refundStockRepositoryStub } = makeSut()
+    jest
+      .spyOn(refundStockRepositoryStub, 'refundStock')
+      .mockResolvedValueOnce(false)
+    const cancelSale = sut.cancel('any_id')
+    await expect(cancelSale).rejects.toThrow(
+      new Error('Não foi possível retornar os valores iniciais do produto')
+    )
+  })
 })
