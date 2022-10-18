@@ -25,6 +25,7 @@ export class CancelSaleUseCase implements CancelSale {
           'Não foi possível retornar os valores iniciais do produto'
         )
       }
+      await this.cancelSaleRepository.cancelSale(saleData.id)
     }
   }
 }
