@@ -205,4 +205,67 @@ describe('StockMongoRepository', () => {
       expect(stockData).toBeFalsy()
     })
   })
+
+  describe('refundStock()', () => {
+    test('Should update stock data on success', async () => {
+      await stockCollection.insertOne(makeStockRequest())
+      await stockCollection.insertOne({
+        modelName: 'other_name',
+        description: [
+          {
+            color: 'other_color',
+            quantity: 10
+          }
+        ]
+      })
+      const sut = makeSut()
+      const stockData = await sut.refundStock([
+        {
+          modelName: 'any_name',
+          description: [
+            {
+              color: 'any_color',
+              quantity: 45
+            },
+            {
+              color: 'any_other_color',
+              quantity: 25
+            }
+          ]
+        },
+        {
+          modelName: 'other_name',
+          description: [
+            {
+              color: 'other_color',
+              quantity: 1
+            }
+          ]
+        }
+      ])
+      expect(stockData).toBeTruthy()
+      const stockUpdate = await stockCollection.findOne({
+        modelName: 'any_name'
+      })
+      expect(stockUpdate?.description).toEqual([
+        {
+          color: 'any_color',
+          quantity: 45
+        },
+        {
+          color: 'any_other_color',
+          quantity: 25
+        }
+      ])
+      const stockUpdate2 = await stockCollection.findOne({
+        modelName: 'other_name'
+      })
+      expect(stockUpdate2?.description).toEqual([
+        {
+          color: 'other_color',
+          quantity: 1
+        }
+      ])
+    })
+  })
 })
