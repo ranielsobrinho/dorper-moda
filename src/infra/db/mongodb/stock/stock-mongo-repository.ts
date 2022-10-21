@@ -8,6 +8,7 @@ import { DeleteStockRepository } from '../../../../data/protocols/db/stock/delet
 import { UpdateStockRepository } from '../../../../data/protocols/db/stock/updateStockRepository'
 import { CheckNameStockRepository } from '../../../../data/protocols/db/stock/checkNameStockRepository'
 import { CheckQuantityStockRepository } from '../../../../data/protocols/db/stock/checkQuantityStockRepository'
+import { RefundStockRepository } from '../../../../data/protocols/db/stock/refund-stock-repository'
 
 export class StockMongoRepository
   implements
@@ -18,7 +19,8 @@ export class StockMongoRepository
     DeleteStockRepository,
     UpdateStockRepository,
     CheckNameStockRepository,
-    CheckQuantityStockRepository
+    CheckQuantityStockRepository,
+    RefundStockRepository
 {
   async add(
     stockData: AddStockRepository.Params
@@ -121,5 +123,21 @@ export class StockMongoRepository
       }
     }
     return false
+  }
+
+  async refundStock(
+    params: RefundStockRepository.Params
+  ): Promise<RefundStockRepository.Result> {
+    const stockCollection = MongoHelper.getCollection('stocks')
+    for (const stock of params) {
+      const success = await stockCollection.updateOne(
+        { modelName: stock.modelName },
+        { $set: { description: stock.description } }
+      )
+      if (success.modifiedCount === 0) {
+        return false
+      }
+    }
+    return true
   }
 }
