@@ -139,4 +139,13 @@ describe('SalesMongoRepository', () => {
       expect(saleUpdate?.total).toBe(150)
     })
   })
+
+  describe('cancelSale()', () => {
+    test('Should return true on delete success', async () => {
+      const sale = await salesCollection.insertOne(makeGetSales())
+      const sut = makeSut()
+      const salesData = await sut.cancelSale(sale.insertedId.toString())
+      expect(salesData).toBeTruthy()
+    })
+  })
 })
