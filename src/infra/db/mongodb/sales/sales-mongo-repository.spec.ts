@@ -1,5 +1,5 @@
 import { MongoHelper } from '../helpers/mongo-helper'
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { SalesMongoRepository } from './sales-mongo-repository'
 import MockDate from 'mockdate'
 
@@ -146,6 +146,14 @@ describe('SalesMongoRepository', () => {
       const sut = makeSut()
       const salesData = await sut.cancelSale(sale.insertedId.toString())
       expect(salesData).toBeTruthy()
+    })
+
+    test('Should return false if delete fails', async () => {
+      const sale = await salesCollection.insertOne(makeGetSales())
+      await salesCollection.deleteOne({ _id: sale.insertedId })
+      const sut = makeSut()
+      const salesData = await sut.cancelSale(sale.insertedId.toString())
+      expect(salesData).toBeFalsy()
     })
   })
 })
