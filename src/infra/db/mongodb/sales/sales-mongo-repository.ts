@@ -4,13 +4,15 @@ import { GetSaleByIdRepository } from '../../../../data/protocols/db/sales/get-s
 import { MongoHelper } from '../helpers/mongo-helper'
 import { ObjectId } from 'mongodb'
 import { UpdateSaleRepository } from '../../../../data/protocols/db/sales/update-sale-repository'
+import { CancelSaleRepository } from '../../../../data/protocols/db/sales/cancel-sale-repository'
 
 export class SalesMongoRepository
   implements
     CreateSalesRepository,
     GetSalesRepository,
     GetSaleByIdRepository,
-    UpdateSaleRepository
+    UpdateSaleRepository,
+    CancelSaleRepository
 {
   async create(
     params: CreateSalesRepository.Params
@@ -56,5 +58,15 @@ export class SalesMongoRepository
         }
       }
     )
+  }
+
+  async cancelSale(saleId: string): Promise<CancelSaleRepository.Result> {
+    const salesCollection = MongoHelper.getCollection('sales')
+    const objectId = new ObjectId(saleId)
+    const deletedSale = await salesCollection.deleteOne({ _id: objectId })
+    if (deletedSale.deletedCount > 0) {
+      return true
+    }
+    return false
   }
 }
