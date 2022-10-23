@@ -8,13 +8,30 @@ const makeFakeRequest = (): HttpRequest => ({
   }
 })
 
+const makeCancelSaleStub = (): CancelSale => {
+  class CancelSaleStub implements CancelSale {
+    async cancel(saleId: string): Promise<void | Error> {}
+  }
+  return new CancelSaleStub()
+}
+
+type SutTypes = {
+  sut: CancelSaleController
+  cancelSaleStub: CancelSale
+}
+
+const makeSut = (): SutTypes => {
+  const cancelSaleStub = makeCancelSaleStub()
+  const sut = new CancelSaleController(cancelSaleStub)
+  return {
+    sut,
+    cancelSaleStub
+  }
+}
+
 describe('CancelSaleController', () => {
   test('Should call CancelSale with correct values', async () => {
-    class CancelSaleStub implements CancelSale {
-      async cancel(saleId: string): Promise<void | Error> {}
-    }
-    const cancelSaleStub = new CancelSaleStub()
-    const sut = new CancelSaleController(cancelSaleStub)
+    const { sut, cancelSaleStub } = makeSut()
     const cancelSpy = jest.spyOn(cancelSaleStub, 'cancel')
     await sut.handle(makeFakeRequest())
     expect(cancelSpy).toHaveBeenCalledWith(makeFakeRequest().params.saleId)
