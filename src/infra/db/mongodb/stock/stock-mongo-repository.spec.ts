@@ -215,6 +215,10 @@ describe('StockMongoRepository', () => {
           {
             color: 'other_color',
             quantity: 10
+          },
+          {
+            color: 'any_other_color',
+            quantity: 15
           }
         ]
       })
@@ -226,10 +230,6 @@ describe('StockMongoRepository', () => {
             {
               color: 'any_color',
               quantity: 45
-            },
-            {
-              color: 'any_other_color',
-              quantity: 25
             }
           ]
         },
@@ -250,11 +250,7 @@ describe('StockMongoRepository', () => {
       expect(stockUpdate?.description).toEqual([
         {
           color: 'any_color',
-          quantity: 45
-        },
-        {
-          color: 'any_other_color',
-          quantity: 25
+          quantity: 46
         }
       ])
       const stockUpdate2 = await stockCollection.findOne({
@@ -263,7 +259,11 @@ describe('StockMongoRepository', () => {
       expect(stockUpdate2?.description).toEqual([
         {
           color: 'other_color',
-          quantity: 1
+          quantity: 11
+        },
+        {
+          color: 'any_other_color',
+          quantity: 15
         }
       ])
     })
