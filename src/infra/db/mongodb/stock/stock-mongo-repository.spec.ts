@@ -267,5 +267,30 @@ describe('StockMongoRepository', () => {
         }
       ])
     })
+
+    test('Should return false on fail', async () => {
+      await stockCollection.insertOne(makeStockRequest())
+      const sut = makeSut()
+      await sut.refundStock([
+        {
+          modelName: 'wrong_name',
+          description: [
+            {
+              color: 'wrong_color',
+              quantity: 1
+            }
+          ]
+        }
+      ])
+      const stockUpdate = await stockCollection.findOne({
+        modelName: 'any_name'
+      })
+      expect(stockUpdate?.description).toEqual([
+        {
+          color: 'any_color',
+          quantity: 1
+        }
+      ])
+    })
   })
 })
