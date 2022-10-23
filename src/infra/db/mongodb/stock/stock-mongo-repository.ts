@@ -150,7 +150,7 @@ export class StockMongoRepository
                   },
                   { $set: { 'description.$.quantity': newQuantity } }
                 )
-                if (success.modifiedCount === 0) {
+                if (success.matchedCount < 1) {
                   return false
                 }
               }
