@@ -129,13 +129,34 @@ export class StockMongoRepository
     params: RefundStockRepository.Params
   ): Promise<RefundStockRepository.Result> {
     const stockCollection = MongoHelper.getCollection('stocks')
-    for (const stock of params) {
-      const success = await stockCollection.updateOne(
-        { modelName: stock.modelName },
-        { $set: { description: stock.description } }
-      )
-      if (success.modifiedCount === 0) {
-        return false
+    const search = stockCollection.find({
+      modelName: { $in: params.map(({ modelName }) => modelName) }
+    })
+    const stockData = await search.toArray()
+
+    for (const stock of stockData) {
+      for (const dataCompare of params) {
+        if (dataCompare.modelName === stock.modelName) {
+          for (const dataDescription of dataCompare.description) {
+            for (const description of stock.description) {
+              if (dataDescription.color === description.color) {
+                const newQuantity =
+                  Number(description.quantity) +
+                  Number(dataDescription.quantity)
+                const success = await stockCollection.updateOne(
+                  {
+                    modelName: dataCompare.modelName,
+                    'description.color': dataDescription.color
+                  },
+                  { $set: { 'description.$.quantity': newQuantity } }
+                )
+                if (success.modifiedCount === 0) {
+                  return false
+                }
+              }
+            }
+          }
+        }
       }
     }
     return true
