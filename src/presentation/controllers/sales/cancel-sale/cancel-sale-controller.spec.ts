@@ -1,10 +1,15 @@
 import { SalesModel } from '../../../../domain/models/sales'
 import { CancelSale } from '../../../../domain/usecases/sales/cancel-sale'
 import { GetSaleById } from '../../../../domain/usecases/sales/get-sale-by-id'
-import { noContent, serverError } from '../../../helpers/http-helper'
+import {
+  badRequest,
+  noContent,
+  serverError
+} from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols/http'
 import { CancelSaleController } from './cancel-sale-controller'
 import MockDate from 'mockdate'
+import { InvalidParamError } from '../../../errors'
 
 const makeFakeRequest = (): HttpRequest => ({
   params: {
@@ -86,6 +91,13 @@ describe('CancelSaleController', () => {
     jest.spyOn(getSaleByIdStub, 'getById').mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 400 if GetSaleById returns null', async () => {
+    const { sut, getSaleByIdStub } = makeSut()
+    jest.spyOn(getSaleByIdStub, 'getById').mockResolvedValueOnce(null)
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('saleId')))
   })
 
   test('Should call CancelSale with correct values', async () => {
