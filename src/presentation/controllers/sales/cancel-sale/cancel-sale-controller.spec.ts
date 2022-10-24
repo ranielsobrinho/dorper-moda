@@ -1,5 +1,5 @@
 import { CancelSale } from '../../../../domain/usecases/sales/cancel-sale'
-import { serverError } from '../../../helpers/http-helper'
+import { noContent, serverError } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols/http'
 import { CancelSaleController } from './cancel-sale-controller'
 
@@ -43,5 +43,11 @@ describe('CancelSaleController', () => {
     jest.spyOn(cancelSaleStub, 'cancel').mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 204 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(noContent())
   })
 })
