@@ -83,7 +83,7 @@ describe('Sales Routes', () => {
       await request(app).get('/api/sales').expect(200)
     })
 
-    test('Should return 204 on success', async () => {
+    test('Should return 204 if wrong sale id is provided', async () => {
       await request(app).get('/api/sales').expect(204)
     })
   })
@@ -113,7 +113,7 @@ describe('Sales Routes', () => {
       await request(app).get(`/api/sales/${saleId}`).expect(200)
     })
 
-    test('Should return 400 on success', async () => {
+    test('Should return 400 if wrong sale id is provided', async () => {
       await request(app).get('/api/sales/123343555224').expect(400)
     })
   })
@@ -213,6 +213,10 @@ describe('Sales Routes', () => {
         })
         const saleId = sale.insertedId.toString()
         await request(app).delete(`/api/sales/${saleId}`).expect(204)
+      })
+
+      test('Should return 400 if wrong sale id is provided', async () => {
+        await request(app).delete('/api/sales/123343555224').expect(400)
       })
     })
   })
