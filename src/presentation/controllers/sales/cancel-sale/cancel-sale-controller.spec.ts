@@ -73,11 +73,19 @@ describe('CancelSaleController', () => {
   afterAll(() => {
     MockDate.reset()
   })
+
   test('Should call GetSaleById with correct values', async () => {
     const { sut, getSaleByIdStub } = makeSut()
     const getByIdSpy = jest.spyOn(getSaleByIdStub, 'getById')
     await sut.handle(makeFakeRequest())
     expect(getByIdSpy).toHaveBeenCalledWith(makeFakeRequest().params.saleId)
+  })
+
+  test('Should return 500 if GetSaleById throws', async () => {
+    const { sut, getSaleByIdStub } = makeSut()
+    jest.spyOn(getSaleByIdStub, 'getById').mockRejectedValueOnce(new Error())
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 
   test('Should call CancelSale with correct values', async () => {
