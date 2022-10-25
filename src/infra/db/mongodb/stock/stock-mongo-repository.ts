@@ -137,7 +137,6 @@ export class StockMongoRepository
       for (const dataCompare of params) {
         if (dataCompare.modelName === stock.modelName) {
           for (const dataDescription of dataCompare.description) {
-            console.log('description', stock)
             for (const description of stock.description) {
               if (dataDescription.color === description.color) {
                 const newQuantity =
