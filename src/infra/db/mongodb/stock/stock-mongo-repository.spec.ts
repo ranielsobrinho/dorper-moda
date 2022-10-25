@@ -204,6 +204,38 @@ describe('StockMongoRepository', () => {
       ])
       expect(stockData).toBeFalsy()
     })
+
+    test('Should return false if the name provided is wrong', async () => {
+      await stockCollection.insertOne({
+        modelName: 'other_name',
+        description: [
+          {
+            color: 'other_color',
+            quantity: 10
+          }
+        ]
+      })
+      const stock = await stockCollection.insertOne(makeStockRequest())
+      expect(stock).toBeTruthy()
+      const sut = makeSut()
+      const stockData = await sut.checkStockQuantity([
+        {
+          modelName: 'wrong_name',
+          description: {
+            color: 'wrong_color',
+            quantity: 1
+          }
+        },
+        {
+          modelName: 'other_wrong_name',
+          description: {
+            color: 'other_wrong_color',
+            quantity: 50
+          }
+        }
+      ])
+      expect(stockData).toBeFalsy()
+    })
   })
 
   describe('refundStock()', () => {
