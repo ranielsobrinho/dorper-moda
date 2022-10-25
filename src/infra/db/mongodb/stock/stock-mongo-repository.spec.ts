@@ -167,10 +167,12 @@ describe('StockMongoRepository', () => {
       const stockUpdated = await stockCollection.findOne({
         modelName: 'other_name'
       })
-      expect(stockUpdated?.description).toEqual({
-        color: 'other_color',
-        quantity: 9
-      })
+      expect(stockUpdated?.description).toEqual([
+        {
+          color: 'other_color',
+          quantity: 9
+        }
+      ])
     })
 
     test('Should return false if the quantity provided is more than product quantity', async () => {

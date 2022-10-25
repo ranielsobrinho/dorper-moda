@@ -103,13 +103,12 @@ export class StockMongoRepository
             ) {
               const newQuantity =
                 description.quantity - dataCompare.description.quantity
-              const descriptionDto = {
-                color: description.color,
-                quantity: newQuantity
-              }
               await stockCollection.updateOne(
-                { modelName: stock.modelName },
-                { $set: { description: descriptionDto } }
+                {
+                  modelName: dataCompare.modelName,
+                  'description.color': description.color
+                },
+                { $set: { 'description.$.quantity': newQuantity } }
               )
               return true
             } else if (
@@ -138,6 +137,7 @@ export class StockMongoRepository
       for (const dataCompare of params) {
         if (dataCompare.modelName === stock.modelName) {
           for (const dataDescription of dataCompare.description) {
+            console.log('description', stock)
             for (const description of stock.description) {
               if (dataDescription.color === description.color) {
                 const newQuantity =
