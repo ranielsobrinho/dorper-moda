@@ -13,11 +13,7 @@ export class CreateSalesUseCase implements CreateSale {
   async execute(params: CreateSale.Params): Promise<CreateSale.Result> {
     const products = params.products.map((product) => {
       return {
-        modelName: product.modelName,
-        description: {
-          color: product.description[0].color,
-          quantity: product.description[0].quantity
-        }
+        modelName: product.modelName
       }
     })
 
@@ -29,7 +25,9 @@ export class CreateSalesUseCase implements CreateSale {
     }
 
     const quantityModels =
-      await this.checkQuantityStockRepository.checkStockQuantity(products)
+      await this.checkQuantityStockRepository.checkStockQuantity(
+        params.products
+      )
     if (!quantityModels) {
       return null
     }

@@ -1,3 +1,5 @@
+import { StockModel } from '../../../../domain/models/stock'
+
 export interface CheckQuantityStockRepository {
   checkStockQuantity(
     data: CheckQuantityStockRepository.Params
@@ -9,10 +11,4 @@ export namespace CheckQuantityStockRepository {
   export type Result = boolean
 }
 
-type params = {
-  modelName: string
-  description: {
-    color: string
-    quantity: number
-  }
-}
+type params = Omit<StockModel, 'id'>

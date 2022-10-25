@@ -137,17 +137,7 @@ describe('AddSalesUseCase', () => {
       'checkStockQuantity'
     )
     await sut.execute(makeSalesRequest())
-    expect(getStockSpy).toHaveBeenCalledWith(
-      makeSalesRequest().products.map((product) => {
-        return {
-          modelName: product.modelName,
-          description: {
-            color: product.description[0].color,
-            quantity: product.description[0].quantity
-          }
-        }
-      })
-    )
+    expect(getStockSpy).toHaveBeenCalledWith(makeSalesRequest().products)
   })
 
   test('Should throw if CheckQuantityStockRepository throws', async () => {
