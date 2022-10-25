@@ -96,32 +96,33 @@ export class StockMongoRepository
     for (const stock of stockData) {
       for (const dataCompare of data) {
         if (dataCompare.modelName === stock.modelName) {
-          for (const description of stock.description) {
-            if (
-              dataCompare.description.color === description.color &&
-              dataCompare.description.quantity <= description.quantity
-            ) {
-              const newQuantity =
-                description.quantity - dataCompare.description.quantity
-              await stockCollection.updateOne(
-                {
-                  modelName: dataCompare.modelName,
-                  'description.color': description.color
-                },
-                { $set: { 'description.$.quantity': newQuantity } }
-              )
-              return true
-            } else if (
-              dataCompare.modelName === stock.modelName &&
-              dataCompare.description.quantity > description.quantity
-            ) {
-              return false
+          for (const dataDescription of dataCompare.description) {
+            for (const description of stock.description) {
+              if (
+                dataDescription.color === description.color &&
+                dataDescription.quantity <= description.quantity
+              ) {
+                const newQuantity =
+                  description.quantity - dataDescription.quantity
+                await stockCollection.updateOne(
+                  {
+                    modelName: dataCompare.modelName,
+                    'description.color': description.color
+                  },
+                  { $set: { 'description.$.quantity': newQuantity } }
+                )
+              } else if (
+                dataCompare.modelName === stock.modelName &&
+                dataDescription.quantity > description.quantity
+              ) {
+                return false
+              }
             }
           }
         }
       }
     }
-    return false
+    return true
   }
 
   async refundStock(

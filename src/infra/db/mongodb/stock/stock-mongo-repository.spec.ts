@@ -136,41 +136,72 @@ describe('StockMongoRepository', () => {
   describe('checkStockQuantity()', () => {
     test('Should return true if the quantity provided is less or equal product quantity', async () => {
       await stockCollection.insertOne({
+        modelName: 'any_name',
+        description: [
+          {
+            color: 'any_color',
+            quantity: 10
+          }
+        ]
+      })
+      await stockCollection.insertOne({
         modelName: 'other_name',
         description: [
           {
             color: 'other_color',
             quantity: 10
+          },
+          {
+            color: 'any_other_color',
+            quantity: 15
           }
         ]
       })
-      const stock = await stockCollection.insertOne(makeStockRequest())
-      expect(stock).toBeTruthy()
       const sut = makeSut()
       const stockData = await sut.checkStockQuantity([
         {
           modelName: 'any_name',
-          description: {
-            color: 'any_color',
-            quantity: 1
-          }
+          description: [
+            {
+              color: 'any_color',
+              quantity: 1
+            }
+          ]
         },
         {
           modelName: 'other_name',
-          description: {
-            color: 'other_color',
-            quantity: 1
-          }
+          description: [
+            {
+              color: 'other_color',
+              quantity: 1
+            }
+          ]
         }
       ])
+
       expect(stockData).toBeTruthy()
+
       const stockUpdated = await stockCollection.findOne({
-        modelName: 'other_name'
+        modelName: 'any_name'
       })
       expect(stockUpdated?.description).toEqual([
         {
+          color: 'any_color',
+          quantity: 9
+        }
+      ])
+
+      const otherStockUpdated = await stockCollection.findOne({
+        modelName: 'other_name'
+      })
+      expect(otherStockUpdated?.description).toEqual([
+        {
           color: 'other_color',
           quantity: 9
+        },
+        {
+          color: 'any_other_color',
+          quantity: 15
         }
       ])
     })
@@ -191,49 +222,21 @@ describe('StockMongoRepository', () => {
       const stockData = await sut.checkStockQuantity([
         {
           modelName: 'any_name',
-          description: {
-            color: 'any_color',
-            quantity: 1
-          }
+          description: [
+            {
+              color: 'any_color',
+              quantity: 1
+            }
+          ]
         },
         {
           modelName: 'other_name',
-          description: {
-            color: 'other_color',
-            quantity: 50
-          }
-        }
-      ])
-      expect(stockData).toBeFalsy()
-    })
-
-    test('Should return false if the name provided is wrong', async () => {
-      await stockCollection.insertOne({
-        modelName: 'other_name',
-        description: [
-          {
-            color: 'other_color',
-            quantity: 10
-          }
-        ]
-      })
-      const stock = await stockCollection.insertOne(makeStockRequest())
-      expect(stock).toBeTruthy()
-      const sut = makeSut()
-      const stockData = await sut.checkStockQuantity([
-        {
-          modelName: 'wrong_name',
-          description: {
-            color: 'wrong_color',
-            quantity: 1
-          }
-        },
-        {
-          modelName: 'other_wrong_name',
-          description: {
-            color: 'other_wrong_color',
-            quantity: 50
-          }
+          description: [
+            {
+              color: 'other_color',
+              quantity: 50
+            }
+          ]
         }
       ])
       expect(stockData).toBeFalsy()
