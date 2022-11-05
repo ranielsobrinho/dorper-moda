@@ -2,7 +2,8 @@ import { LoadStockByNameController } from './load-stock-by-name-controller'
 import { LoadStockByName } from '../../../../domain/usecases/stock/load-stock-by-name'
 import { HttpRequest } from '../../../protocols/http'
 import { StockModel } from '../../../../domain/models/stock'
-import { serverError } from '../../../helpers/http-helper'
+import { forbidden, serverError } from '../../../helpers/http-helper'
+import { InvalidParamError } from '../../../errors'
 
 const makeFakeStockModel = (): StockModel => ({
   id: 'any_id',
@@ -61,5 +62,14 @@ describe('LoadStockByNameController', () => {
       .mockReturnValueOnce(Promise.reject(new Error()))
     const httpResponse = await sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 403 if LoadStockByName returns null', async () => {
+    const { sut, loadStockByNameStub } = makeSut()
+    jest
+      .spyOn(loadStockByNameStub, 'loadByName')
+      .mockReturnValueOnce(Promise.resolve(null))
+    const httpResponse = await sut.handle(makeHttpRequest())
+    expect(httpResponse).toEqual(forbidden(new InvalidParamError('stockName')))
   })
 })
