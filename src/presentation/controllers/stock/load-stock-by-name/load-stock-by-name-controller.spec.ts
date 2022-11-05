@@ -2,7 +2,7 @@ import { LoadStockByNameController } from './load-stock-by-name-controller'
 import { LoadStockByName } from '../../../../domain/usecases/stock/load-stock-by-name'
 import { HttpRequest } from '../../../protocols/http'
 import { StockModel } from '../../../../domain/models/stock'
-import { forbidden, serverError } from '../../../helpers/http-helper'
+import { forbidden, serverError, ok } from '../../../helpers/http-helper'
 import { InvalidParamError } from '../../../errors'
 
 const makeFakeStockModel = (): StockModel => ({
@@ -71,5 +71,11 @@ describe('LoadStockByNameController', () => {
       .mockReturnValueOnce(Promise.resolve(null))
     const httpResponse = await sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('stockName')))
+  })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeHttpRequest())
+    expect(httpResponse).toEqual(ok(makeFakeStockModel()))
   })
 })
