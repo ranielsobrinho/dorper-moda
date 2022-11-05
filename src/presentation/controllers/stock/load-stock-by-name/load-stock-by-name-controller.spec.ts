@@ -17,7 +17,7 @@ const makeFakeStockModel = (): StockModel => ({
 })
 
 const makeHttpRequest = (): HttpRequest => ({
-  body: {
+  params: {
     stockName: 'any_name'
   }
 })
@@ -51,7 +51,7 @@ describe('LoadStockByNameController', () => {
     const loadStockByNameSpy = jest.spyOn(loadStockByNameStub, 'loadByName')
     await sut.handle(makeHttpRequest())
     expect(loadStockByNameSpy).toHaveBeenCalledWith(
-      makeHttpRequest().body.stockName
+      makeHttpRequest().params.stockName
     )
   })
 

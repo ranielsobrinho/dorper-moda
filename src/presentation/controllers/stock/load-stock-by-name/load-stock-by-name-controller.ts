@@ -8,7 +8,7 @@ export class LoadStockByNameController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { stockName } = httpRequest.body
+      const { stockName } = httpRequest.params
       const stock = await this.loadStockByName.loadByName(stockName)
       if (!stock) {
         return forbidden(new InvalidParamError('stockName'))
