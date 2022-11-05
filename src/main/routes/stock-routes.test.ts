@@ -86,6 +86,22 @@ describe('Stock Routes', () => {
         .send({ stockName: 'any_name' })
         .expect(200)
     })
+
+    test('Should return 403 if wrong stock name is provided', async () => {
+      await stockCollection.insertOne({
+        modelName: 'any_name',
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
+      })
+      await request(app)
+        .post('/api/stock/by-name')
+        .send({ stockName: 'wrong_name' })
+        .expect(403)
+    })
   })
 
   describe('DELETE /stock/1', () => {
