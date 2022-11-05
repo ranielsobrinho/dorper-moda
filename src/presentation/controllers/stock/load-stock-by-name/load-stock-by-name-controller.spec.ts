@@ -20,15 +20,32 @@ const makeHttpRequest = (): HttpRequest => ({
   }
 })
 
+const makeLoadStockByNameStub = (): LoadStockByName => {
+  class LoadStockByNameStub implements LoadStockByName {
+    async loadByName(stockName: string): Promise<LoadStockByName.Result> {
+      return Promise.resolve(makeFakeStockModel())
+    }
+  }
+  return new LoadStockByNameStub()
+}
+
+type SutTypes = {
+  sut: LoadStockByNameController
+  loadStockByNameStub: LoadStockByName
+}
+
+const makeSut = (): SutTypes => {
+  const loadStockByNameStub = makeLoadStockByNameStub()
+  const sut = new LoadStockByNameController(loadStockByNameStub)
+  return {
+    sut,
+    loadStockByNameStub
+  }
+}
+
 describe('LoadStockByNameController', () => {
   test('Should call LoadStockByName with correct value', async () => {
-    class LoadStockByNameStub implements LoadStockByName {
-      async loadByName(stockName: string): Promise<LoadStockByName.Result> {
-        return Promise.resolve(makeFakeStockModel())
-      }
-    }
-    const loadStockByNameStub = new LoadStockByNameStub()
-    const sut = new LoadStockByNameController(loadStockByNameStub)
+    const { sut, loadStockByNameStub } = makeSut()
     const loadStockByNameSpy = jest.spyOn(loadStockByNameStub, 'loadByName')
     await sut.handle(makeHttpRequest())
     expect(loadStockByNameSpy).toHaveBeenCalledWith(
