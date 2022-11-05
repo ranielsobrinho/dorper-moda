@@ -13,18 +13,33 @@ const makeFakeStockModel = (): StockModel => ({
   ]
 })
 
+const makeLoadStockByNameRepositoryStub = (): LoadStockByNameRepository => {
+  class LoadStockByNameRepositoryStub implements LoadStockByNameRepository {
+    async loadByName(name: string): Promise<LoadStockByNameRepository.Result> {
+      return Promise.resolve(makeFakeStockModel())
+    }
+  }
+  return new LoadStockByNameRepositoryStub()
+}
+
+type SutTypes = {
+  sut: LoadStockByNameUseCase
+  loadStockByNameRepositoryStub: LoadStockByNameRepository
+}
+
+const makeSut = (): SutTypes => {
+  const loadStockByNameRepositoryStub = makeLoadStockByNameRepositoryStub()
+  const sut = new LoadStockByNameUseCase(loadStockByNameRepositoryStub)
+  return {
+    sut,
+    loadStockByNameRepositoryStub
+  }
+}
+
 describe('LoadStockByNameUseCase', () => {
   test('Should call getStockByNameRepository with correct value', async () => {
-    class GetStockByNameRepositoryStub implements LoadStockByNameRepository {
-      async loadByName(
-        name: string
-      ): Promise<LoadStockByNameRepository.Result> {
-        return Promise.resolve(makeFakeStockModel())
-      }
-    }
-    const getStockByNameRepositoryStub = new GetStockByNameRepositoryStub()
-    const sut = new LoadStockByNameUseCase(getStockByNameRepositoryStub)
-    const getByNameSpy = jest.spyOn(getStockByNameRepositoryStub, 'loadByName')
+    const { sut, loadStockByNameRepositoryStub } = makeSut()
+    const getByNameSpy = jest.spyOn(loadStockByNameRepositoryStub, 'loadByName')
     await sut.loadByName('any_name')
     expect(getByNameSpy).toHaveBeenCalledWith('any_name')
   })
