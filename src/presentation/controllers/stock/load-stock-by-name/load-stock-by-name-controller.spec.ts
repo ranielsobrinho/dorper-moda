@@ -2,8 +2,14 @@ import { LoadStockByNameController } from './load-stock-by-name-controller'
 import { LoadStockByName } from '../../../../domain/usecases/stock/load-stock-by-name'
 import { HttpRequest } from '../../../protocols/http'
 import { StockModel } from '../../../../domain/models/stock'
-import { forbidden, serverError, ok } from '../../../helpers/http-helper'
-import { InvalidParamError } from '../../../errors'
+import {
+  forbidden,
+  serverError,
+  ok,
+  badRequest
+} from '../../../helpers/http-helper'
+import { InvalidParamError, MissingParamError } from '../../../errors'
+import { Validation } from '../../../protocols'
 
 const makeFakeStockModel = (): StockModel => ({
   id: 'any_id',
@@ -17,7 +23,7 @@ const makeFakeStockModel = (): StockModel => ({
 })
 
 const makeHttpRequest = (): HttpRequest => ({
-  params: {
+  body: {
     stockName: 'any_name'
   }
 })
@@ -31,17 +37,29 @@ const makeLoadStockByNameStub = (): LoadStockByName => {
   return new LoadStockByNameStub()
 }
 
+const makeValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(input: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 type SutTypes = {
   sut: LoadStockByNameController
   loadStockByNameStub: LoadStockByName
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const loadStockByNameStub = makeLoadStockByNameStub()
-  const sut = new LoadStockByNameController(loadStockByNameStub)
+  const validationStub = makeValidationStub()
+  const sut = new LoadStockByNameController(loadStockByNameStub, validationStub)
   return {
     sut,
-    loadStockByNameStub
+    loadStockByNameStub,
+    validationStub
   }
 }
 
@@ -51,7 +69,7 @@ describe('LoadStockByNameController', () => {
     const loadStockByNameSpy = jest.spyOn(loadStockByNameStub, 'loadByName')
     await sut.handle(makeHttpRequest())
     expect(loadStockByNameSpy).toHaveBeenCalledWith(
-      makeHttpRequest().params.stockName
+      makeHttpRequest().body.stockName
     )
   })
 
@@ -77,5 +95,20 @@ describe('LoadStockByNameController', () => {
     const { sut } = makeSut()
     const httpResponse = await sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(ok(makeFakeStockModel()))
+  })
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validationSpy = jest.spyOn(validationStub, 'validate')
+    await sut.handle(makeHttpRequest())
+    expect(validationSpy).toHaveBeenCalledWith(makeHttpRequest().body)
+  })
+
+  test('Should return 400 if Validation returns a error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await sut.handle(makeHttpRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })

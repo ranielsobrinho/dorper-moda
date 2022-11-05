@@ -70,6 +70,24 @@ describe('Stock Routes', () => {
     })
   })
 
+  describe('GET /stock/any_name', () => {
+    test('Should return 200 on success', async () => {
+      await stockCollection.insertOne({
+        modelName: 'any_name',
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
+      })
+      await request(app)
+        .post('/api/stock/by-name')
+        .send({ stockName: 'any_name' })
+        .expect(200)
+    })
+  })
+
   describe('DELETE /stock/1', () => {
     test('Should return 204 on success', async () => {
       const stockData = await stockCollection.insertOne({
