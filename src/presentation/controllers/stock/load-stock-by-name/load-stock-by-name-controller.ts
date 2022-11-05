@@ -1,6 +1,6 @@
 import { LoadStockByName } from '../../../../domain/usecases/stock/load-stock-by-name'
 import { InvalidParamError } from '../../../errors'
-import { forbidden, noContent, serverError } from '../../../helpers/http-helper'
+import { forbidden, ok, serverError } from '../../../helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../../protocols'
 
 export class LoadStockByNameController implements Controller {
@@ -13,7 +13,7 @@ export class LoadStockByNameController implements Controller {
       if (!stock) {
         return forbidden(new InvalidParamError('stockName'))
       }
-      return noContent()
+      return ok(stock)
     } catch (error) {
       return serverError(error)
     }
