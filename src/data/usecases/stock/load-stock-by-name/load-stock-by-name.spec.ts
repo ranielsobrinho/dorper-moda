@@ -37,10 +37,19 @@ const makeSut = (): SutTypes => {
 }
 
 describe('LoadStockByNameUseCase', () => {
-  test('Should call getStockByNameRepository with correct value', async () => {
+  test('Should call loadStockByNameRepository with correct value', async () => {
     const { sut, loadStockByNameRepositoryStub } = makeSut()
     const getByNameSpy = jest.spyOn(loadStockByNameRepositoryStub, 'loadByName')
     await sut.loadByName('any_name')
     expect(getByNameSpy).toHaveBeenCalledWith('any_name')
+  })
+
+  test('Should throw if loadStockByNameRepository throws', async () => {
+    const { sut, loadStockByNameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadStockByNameRepositoryStub, 'loadByName')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.loadByName('any_name')
+    await expect(promise).rejects.toThrow(new Error())
   })
 })
