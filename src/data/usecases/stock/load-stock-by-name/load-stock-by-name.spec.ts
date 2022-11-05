@@ -52,4 +52,13 @@ describe('LoadStockByNameUseCase', () => {
     const promise = sut.loadByName('any_name')
     await expect(promise).rejects.toThrow(new Error())
   })
+
+  test('Should return null if loadStockByNameRepository returns null', async () => {
+    const { sut, loadStockByNameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadStockByNameRepositoryStub, 'loadByName')
+      .mockResolvedValueOnce(null)
+    const stock = await sut.loadByName('any_name')
+    expect(stock).toEqual(null)
+  })
 })
