@@ -1,5 +1,5 @@
 import { DeleteStock } from '../../../../domain/usecases/stock/delete-stock'
-import { DeleteStockRepository } from '../../../protocols/db/stock/deleteStockRepository'
+import { DeleteStockRepository } from '../../../protocols/db/stock/delete-stock-repository'
 
 export class DeleteStockUseCase implements DeleteStock {
   constructor(private readonly deleteStockRepository: DeleteStockRepository) {}

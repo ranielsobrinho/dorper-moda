@@ -1,5 +1,5 @@
 import { StockModel } from '../../../../domain/models/stock'
-import { LoadStockByNameRepository } from '../../../protocols/db/stock/loadStockByNameRepository'
+import { LoadStockByNameRepository } from '../../../protocols/db/stock/load-stock-by-name-repository'
 import { LoadStockByNameUseCase } from './load-stock-by-name'
 
 const makeFakeStockModel = (): StockModel => ({

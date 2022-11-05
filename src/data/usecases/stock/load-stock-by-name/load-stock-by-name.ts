@@ -1,5 +1,5 @@
 import { LoadStockByName } from '../../../../domain/usecases/stock/load-stock-by-name'
-import { LoadStockByNameRepository } from '../../../protocols/db/stock/loadStockByNameRepository'
+import { LoadStockByNameRepository } from '../../../protocols/db/stock/load-stock-by-name-repository'
 
 export class LoadStockByNameUseCase implements LoadStockByName {
   constructor(

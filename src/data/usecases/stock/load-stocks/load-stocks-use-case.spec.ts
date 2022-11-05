@@ -1,6 +1,6 @@
 import { StockModel } from '../../../../domain/models/stock'
-import { LoadStocksRepository } from '../../../protocols/db/stock/loadStocksRepository'
-import { LoadStocksUseCase } from './loadStocksUseCase'
+import { LoadStocksRepository } from '../../../protocols/db/stock/load-stocks-repository'
+import { LoadStocksUseCase } from './load-stocks-use-case'
 
 const makeFakeStockModel = (): StockModel[] => {
   return [

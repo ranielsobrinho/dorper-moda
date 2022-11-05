@@ -1,5 +1,5 @@
 import { GetStockById } from '../../../../domain/usecases/stock/get-stock-by-id'
-import { GetStockByIdRepository } from '../../../protocols/db/stock/getStockByIdRepository'
+import { GetStockByIdRepository } from '../../../protocols/db/stock/get-stock-by-id-repository'
 
 export class GetStockByIdUseCase implements GetStockById {
   constructor(

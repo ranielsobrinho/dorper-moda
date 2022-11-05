@@ -1,5 +1,5 @@
 import { AddStock } from '../../../../domain/usecases/stock/add-stock'
-import { AddStockRepository } from '../../../protocols/db/stock/addStockRepository'
+import { AddStockRepository } from '../../../protocols/db/stock/add-stock-repository'
 
 export class AddStockUseCase implements AddStock {
   constructor(private readonly addStockRepository: AddStockRepository) {}

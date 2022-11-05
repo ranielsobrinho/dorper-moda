@@ -1,5 +1,5 @@
-import { DeleteStockRepository } from '../../../protocols/db/stock/deleteStockRepository'
-import { DeleteStockUseCase } from './deleteStockUseCase'
+import { DeleteStockRepository } from '../../../protocols/db/stock/delete-stock-repository'
+import { DeleteStockUseCase } from './delete-stock-use-case'
 
 const makeDeleteStockRepositoryStub = (): DeleteStockRepository => {
   class DeleteStockRepositoryStub implements DeleteStockRepository {

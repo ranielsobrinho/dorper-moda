@@ -1,6 +1,6 @@
-import { UpdateStockRepository } from '../../../protocols/db/stock/updateStockRepository'
-import { GetStockByIdRepository } from '../../../protocols/db/stock/getStockByIdRepository'
-import { UpdateStockUseCase } from './updateStockUseCase'
+import { UpdateStockRepository } from '../../../protocols/db/stock/update-stock-repository'
+import { GetStockByIdRepository } from '../../../protocols/db/stock/get-stock-by-id-repository'
+import { UpdateStockUseCase } from './update-stock-use-case'
 import { StockModel } from '../../../../domain/models/stock'
 
 const makeStockDataRequest = (): UpdateStockRepository.Params => ({

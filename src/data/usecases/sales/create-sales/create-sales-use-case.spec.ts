@@ -1,8 +1,8 @@
 import { CreateSale } from '../../../../domain/usecases/sales/create-sales'
-import { CheckNameStockRepository } from '../../../protocols/db/stock/checkNameStockRepository'
-import { CheckQuantityStockRepository } from '../../../protocols/db/stock/checkQuantityStockRepository'
+import { CheckNameStockRepository } from '../../../protocols/db/stock/check-name-stock-repository'
+import { CheckQuantityStockRepository } from '../../../protocols/db/stock/check-quantity-stock-repository'
 import { CreateSalesUseCase } from './create-sales-use-case'
-import { CreateSalesRepository } from '../../../protocols/db/sales/createSalesRepository'
+import { CreateSalesRepository } from '../../../protocols/db/sales/create-sales-repository'
 import MockDate from 'mockdate'
 
 const makeSalesRequest = (): CreateSale.Params => ({

@@ -1,4 +1,4 @@
-import { CreateSalesRepository } from '../../../../data/protocols/db/sales/createSalesRepository'
+import { CreateSalesRepository } from '../../../../data/protocols/db/sales/create-sales-repository'
 import { GetSalesRepository } from '../../../../data/protocols/db/sales/get-sales-repository'
 import { GetSaleByIdRepository } from '../../../../data/protocols/db/sales/get-sale-by-id-repository'
 import { MongoHelper } from '../helpers/mongo-helper'

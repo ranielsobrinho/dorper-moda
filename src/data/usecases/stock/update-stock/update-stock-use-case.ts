@@ -1,6 +1,6 @@
 import { UpdateStock } from '../../../../domain/usecases/stock/update-stock'
-import { GetStockByIdRepository } from '../../../protocols/db/stock/getStockByIdRepository'
-import { UpdateStockRepository } from '../../../protocols/db/stock/updateStockRepository'
+import { GetStockByIdRepository } from '../../../protocols/db/stock/get-stock-by-id-repository'
+import { UpdateStockRepository } from '../../../protocols/db/stock/update-stock-repository'
 
 export class UpdateStockUseCase implements UpdateStock {
   constructor(

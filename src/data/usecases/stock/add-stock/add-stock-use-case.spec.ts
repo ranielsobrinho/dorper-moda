@@ -1,5 +1,5 @@
-import { AddStockRepository } from '../../../protocols/db/stock/addStockRepository'
-import { AddStockUseCase } from './addStockUseCase'
+import { AddStockRepository } from '../../../protocols/db/stock/add-stock-repository'
+import { AddStockUseCase } from './add-stock-use-case'
 
 const makeStockDataRequest = (): AddStockRepository.Params => ({
   modelName: 'any_name',

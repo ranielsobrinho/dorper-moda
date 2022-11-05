@@ -1,4 +1,4 @@
-import { AddStockUseCase } from '../../../../../data/usecases/stock/add-stock/addStockUseCase'
+import { AddStockUseCase } from '../../../../../data/usecases/stock/add-stock/add-stock-use-case'
 import { AddStock } from '../../../../../domain/usecases/stock/add-stock'
 import { StockMongoRepository } from '../../../../../infra/db/mongodb/stock/stock-mongo-repository'
 

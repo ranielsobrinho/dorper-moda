@@ -1,7 +1,7 @@
 import { CreateSale } from '../../../../domain/usecases/sales/create-sales'
-import { CreateSalesRepository } from '../../../protocols/db/sales/createSalesRepository'
-import { CheckNameStockRepository } from '../../../protocols/db/stock/checkNameStockRepository'
-import { CheckQuantityStockRepository } from '../../../protocols/db/stock/checkQuantityStockRepository'
+import { CreateSalesRepository } from '../../../protocols/db/sales/create-sales-repository'
+import { CheckNameStockRepository } from '../../../protocols/db/stock/check-name-stock-repository'
+import { CheckQuantityStockRepository } from '../../../protocols/db/stock/check-quantity-stock-repository'
 
 export class CreateSalesUseCase implements CreateSale {
   constructor(

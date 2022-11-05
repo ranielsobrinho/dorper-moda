@@ -1,6 +1,6 @@
 import { StockModel } from '../../../../domain/models/stock'
-import { GetStockByIdRepository } from '../../../protocols/db/stock/getStockByIdRepository'
-import { GetStockByIdUseCase } from './getStockByIdUseCase'
+import { GetStockByIdRepository } from '../../../protocols/db/stock/get-stock-by-id-repository'
+import { GetStockByIdUseCase } from './get-stock-by-id-use-case'
 
 const makeFakeStockData = (): StockModel => ({
   id: 'any_id',
