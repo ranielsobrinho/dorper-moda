@@ -7,7 +7,10 @@ export class LoadStockByNameUseCase implements LoadStockByName {
   ) {}
 
   async loadByName(stockName: string): Promise<LoadStockByName.Result> {
-    await this.loadStockByNameRepository.loadByName(stockName)
+    const stock = await this.loadStockByNameRepository.loadByName(stockName)
+    if (stock) {
+      return stock
+    }
     return null
   }
 }
