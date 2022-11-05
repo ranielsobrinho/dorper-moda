@@ -61,4 +61,10 @@ describe('LoadStockByNameUseCase', () => {
     const stock = await sut.loadByName('any_name')
     expect(stock).toEqual(null)
   })
+
+  test('Should return a stock on success', async () => {
+    const { sut } = makeSut()
+    const stock = await sut.loadByName('any_name')
+    expect(stock).toEqual(makeFakeStockModel())
+  })
 })
