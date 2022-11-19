@@ -24,7 +24,7 @@ const makeLoadAccountByUsernameRepositoryStub =
       async loadByUsername(
         username: string
       ): Promise<LoadAccountByUsernameRepository.Result> {
-        return makeAccountModel()
+        return null
       }
     }
     return new LoadAccountByUsernameRepositoryStub()
@@ -65,5 +65,16 @@ describe('CreateAccountUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const promise = sut.execute(makeCreateAccountRequest())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should throw if loadAccountByUsernameRepository returns an account', async () => {
+    const { sut, loadAccountByUsernameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadAccountByUsernameRepositoryStub, 'loadByUsername')
+      .mockResolvedValueOnce(makeAccountModel())
+    const promise = sut.execute(makeCreateAccountRequest())
+    await expect(promise).rejects.toThrow(
+      new Error('Já existe uma conta com esse username.')
+    )
   })
 })
