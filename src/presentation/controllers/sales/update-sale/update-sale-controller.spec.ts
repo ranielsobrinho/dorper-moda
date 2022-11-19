@@ -29,6 +29,7 @@ const makeFakeSaleRequest = (): HttpRequest => ({
           ]
         }
       ],
+      description: 'any_description',
       soldAt: new Date(),
       total: 110
     }
@@ -52,6 +53,7 @@ const makeUpdateSaleRequest = (): UpdateSale.Params => ({
         ]
       }
     ],
+    description: 'any_description',
     soldAt: new Date(),
     total: 110
   }

@@ -21,6 +21,7 @@ const makeUpdateRequest = (): UpdateSale.Params => ({
         ]
       }
     ],
+    description: 'any_description',
     soldAt: new Date(),
     total: 110
   }
@@ -42,6 +43,7 @@ const makeGetSale = (): GetSaleByIdRepository.Result => ({
       ]
     }
   ],
+  description: 'any_description',
   soldAt: new Date(),
   total: 110
 })

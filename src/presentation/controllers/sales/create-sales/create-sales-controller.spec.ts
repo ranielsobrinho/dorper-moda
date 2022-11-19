@@ -21,6 +21,7 @@ const makeFakeSaleRequest = (): HttpRequest => ({
         quantity: 1
       }
     ],
+    description: 'any_description',
     soldAt: new Date(),
     total: 110
   }

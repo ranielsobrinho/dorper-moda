@@ -6,6 +6,7 @@ export type SalesModel = {
   deliveryFee: number
   paymentForm: string
   products: StockModelRequest[]
+  description: string
   soldAt: Date
   total: number
 }

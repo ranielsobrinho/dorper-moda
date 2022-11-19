@@ -11,6 +11,7 @@ export const makeUpdateSaleValidation = (): ValidationComposite => {
     'deliveryFee',
     'paymentForm',
     'products',
+    'description',
     'total'
   ]) {
     validations.push(new RequiredFieldValidation(field))

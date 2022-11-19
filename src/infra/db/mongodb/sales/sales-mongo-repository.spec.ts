@@ -18,6 +18,7 @@ const makeFakeSaleRequest = () => ({
       ]
     }
   ],
+  description: 'any_description',
   soldAt: new Date(),
   total: 110
 })
@@ -38,6 +39,7 @@ const makeGetSales = () => ({
       ]
     }
   ],
+  description: 'any_description',
   soldAt: new Date(),
   total: 110
 })
@@ -128,6 +130,7 @@ describe('SalesMongoRepository', () => {
               ]
             }
           ],
+          description: 'any_description',
           soldAt: new Date(),
           total: 150
         }

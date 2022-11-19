@@ -29,6 +29,7 @@ const makeSalesRequest = (): CreateSale.Params => ({
       ]
     }
   ],
+  description: 'any_description',
   soldAt: new Date(),
   total: 100.0
 })

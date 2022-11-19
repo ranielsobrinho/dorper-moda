@@ -21,6 +21,7 @@ const makeGetSales = (): SalesModel[] => {
           ]
         }
       ],
+      description: 'any_description',
       soldAt: new Date(),
       total: 110
     }

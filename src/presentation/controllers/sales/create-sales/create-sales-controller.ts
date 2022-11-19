@@ -23,13 +23,20 @@ export class CreateSalesController implements Controller {
       if (error) {
         return badRequest(error)
       }
-      const { clientName, deliveryFee, paymentForm, products, total } =
-        httpRequest.body
+      const {
+        clientName,
+        deliveryFee,
+        paymentForm,
+        products,
+        description,
+        total
+      } = httpRequest.body
       const saleError = await this.createSales.execute({
         clientName,
         deliveryFee,
         paymentForm,
         products,
+        description,
         soldAt: new Date(),
         total
       })

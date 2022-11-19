@@ -18,6 +18,7 @@ const makeGetSale = (): GetSaleByIdRepository.Result => ({
       ]
     }
   ],
+  description: 'any_description',
   soldAt: new Date(),
   total: 110
 })

@@ -52,6 +52,7 @@ describe('Sales Routes', () => {
               ]
             }
           ],
+          description: 'any_description',
           soldAt: new Date(),
           total: 110
         })
@@ -77,6 +78,7 @@ describe('Sales Routes', () => {
             ]
           }
         ],
+        description: 'any_description',
         soldAt: new Date(),
         total: 110
       })
@@ -106,6 +108,7 @@ describe('Sales Routes', () => {
             ]
           }
         ],
+        description: 'any_description',
         soldAt: new Date(),
         total: 110
       })
@@ -135,6 +138,7 @@ describe('Sales Routes', () => {
             ]
           }
         ],
+        description: 'any_description',
         soldAt: new Date(),
         total: 110
       })
@@ -157,6 +161,7 @@ describe('Sales Routes', () => {
                 ]
               }
             ],
+            description: 'any_description',
             soldAt: new Date(),
             total: 110
           }
@@ -183,6 +188,7 @@ describe('Sales Routes', () => {
                 ]
               }
             ],
+            description: 'any_description',
             soldAt: new Date(),
             total: 110
           }
@@ -208,6 +214,7 @@ describe('Sales Routes', () => {
               ]
             }
           ],
+          description: 'any_description',
           soldAt: new Date(),
           total: 110
         })

@@ -54,6 +54,7 @@ export class SalesMongoRepository
           deliveryFee: data.deliveryFee,
           paymentForm: data.paymentForm,
           products: data.products,
+          description: data.description,
           total: data.total
         }
       }
