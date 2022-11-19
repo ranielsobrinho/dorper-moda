@@ -1,5 +1,5 @@
 export type AccountModel = {
-  id: number
+  id: string
   username: string
   password: string
   isAdmin: boolean
