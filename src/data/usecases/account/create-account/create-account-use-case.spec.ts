@@ -16,8 +16,8 @@ const makeCreateAccountRequest = (): CreateAccountModel => ({
   isAdmin: false
 })
 
-describe('CreateAccountUseCase', () => {
-  test('Should call loadAccountByUsernameRepository with correct values', async () => {
+const makeLoadAccountByUsernameRepositoryStub =
+  (): LoadAccountByUsernameRepository => {
     class LoadAccountByUsernameRepositoryStub
       implements LoadAccountByUsernameRepository
     {
@@ -27,9 +27,27 @@ describe('CreateAccountUseCase', () => {
         return makeAccountModel()
       }
     }
-    const loadAccountByUsernameRepositoryStub =
-      new LoadAccountByUsernameRepositoryStub()
-    const sut = new CreateAccountUseCase(loadAccountByUsernameRepositoryStub)
+    return new LoadAccountByUsernameRepositoryStub()
+  }
+
+type SutTypes = {
+  sut: CreateAccountUseCase
+  loadAccountByUsernameRepositoryStub: LoadAccountByUsernameRepository
+}
+
+const makeSut = (): SutTypes => {
+  const loadAccountByUsernameRepositoryStub =
+    makeLoadAccountByUsernameRepositoryStub()
+  const sut = new CreateAccountUseCase(loadAccountByUsernameRepositoryStub)
+  return {
+    sut,
+    loadAccountByUsernameRepositoryStub
+  }
+}
+
+describe('CreateAccountUseCase', () => {
+  test('Should call loadAccountByUsernameRepository with correct values', async () => {
+    const { sut, loadAccountByUsernameRepositoryStub } = makeSut()
     const loadAccountSpy = jest.spyOn(
       loadAccountByUsernameRepositoryStub,
       'loadByUsername'
