@@ -57,4 +57,13 @@ describe('CreateAccountUseCase', () => {
       makeCreateAccountRequest().username
     )
   })
+
+  test('Should throw if loadAccountByUsernameRepository throws', async () => {
+    const { sut, loadAccountByUsernameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadAccountByUsernameRepositoryStub, 'loadByUsername')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeCreateAccountRequest())
+    await expect(promise).rejects.toThrow()
+  })
 })
