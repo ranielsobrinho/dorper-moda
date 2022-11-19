@@ -8,7 +8,12 @@ export class CreateAccountUseCase implements CreateAccount {
 
   async execute(params: CreateAccount.Params): Promise<CreateAccount.Result> {
     const { username } = params
-    await this.loadAccountByUsernameRepository.loadByUsername(username)
+    const account = await this.loadAccountByUsernameRepository.loadByUsername(
+      username
+    )
+    if (account) {
+      throw new Error('Já existe uma conta com esse username.')
+    }
     return null
   }
 }
