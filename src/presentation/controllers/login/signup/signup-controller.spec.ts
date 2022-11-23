@@ -1,6 +1,6 @@
 import { AccountModel } from '../../../../domain/models/account'
 import { CreateAccount } from '../../../../domain/usecases/account/create-account'
-import { serverError } from '../../../helpers/http-helper'
+import { badRequest, serverError } from '../../../helpers/http-helper'
 import { HttpRequest } from '../../../protocols/http'
 import { SignupController } from './signup-controller'
 
@@ -55,5 +55,14 @@ describe('SignupController', () => {
     jest.spyOn(createAccountStub, 'execute').mockRejectedValueOnce(new Error())
     const httpResponse = await sut.handle(makeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should return 400 if CreateAccount returns null', async () => {
+    const { sut, createAccountStub } = makeSut()
+    jest.spyOn(createAccountStub, 'execute').mockResolvedValueOnce(null)
+    const httpResponse = await sut.handle(makeRequest())
+    expect(httpResponse).toEqual(
+      badRequest(new Error('Já existe uma conta com esse nome de usuário'))
+    )
   })
 })
