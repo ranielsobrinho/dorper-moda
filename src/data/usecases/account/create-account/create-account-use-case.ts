@@ -18,10 +18,13 @@ export class CreateAccountUseCase implements CreateAccount {
     if (account) {
       throw new Error('Já existe uma conta com esse username.')
     }
-    const hashedPassword = await this.encrypter.generate(password)
-    await this.addAccountRepository.create(
-      Object.assign({}, params, { password: hashedPassword })
-    )
+    if (!account) {
+      const hashedPassword = await this.encrypter.generate(password)
+      const createdAccount = await this.addAccountRepository.create(
+        Object.assign({}, params, { password: hashedPassword })
+      )
+      return createdAccount
+    }
     return null
   }
 }
