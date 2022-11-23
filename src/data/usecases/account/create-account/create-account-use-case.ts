@@ -12,13 +12,9 @@ export class CreateAccountUseCase implements CreateAccount {
 
   async execute(params: CreateAccount.Params): Promise<CreateAccount.Result> {
     const { username, password } = params
-    const account = await this.loadAccountByUsernameRepository.loadByUsername(
-      username
-    )
-    if (account) {
-      throw new Error('Já existe uma conta com esse username.')
-    }
-    if (!account) {
+    const existingAccount =
+      await this.loadAccountByUsernameRepository.loadByUsername(username)
+    if (!existingAccount) {
       const hashedPassword = await this.encrypter.generate(password)
       const createdAccount = await this.addAccountRepository.create(
         Object.assign({}, params, { password: hashedPassword })

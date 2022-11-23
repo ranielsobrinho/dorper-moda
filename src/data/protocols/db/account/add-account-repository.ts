@@ -9,5 +9,5 @@ export interface AddAccountRepository {
 
 export namespace AddAccountRepository {
   export type Params = CreateAccountModel
-  export type Result = AccountModel
+  export type Result = AccountModel | null
 }

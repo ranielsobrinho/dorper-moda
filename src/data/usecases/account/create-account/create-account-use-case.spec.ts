@@ -110,10 +110,8 @@ describe('CreateAccountUseCase', () => {
     jest
       .spyOn(loadAccountByUsernameRepositoryStub, 'loadByUsername')
       .mockResolvedValueOnce(makeAccountModel())
-    const promise = sut.execute(makeCreateAccountRequest())
-    await expect(promise).rejects.toThrow(
-      new Error('Já existe uma conta com esse username.')
-    )
+    const promise = await sut.execute(makeCreateAccountRequest())
+    expect(promise).toBeNull()
   })
 
   test('Should call Encrypter with correct values', async () => {
