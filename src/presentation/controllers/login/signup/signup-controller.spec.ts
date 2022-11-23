@@ -18,17 +18,32 @@ const makeAccountModel = (): AccountModel => ({
   isAdmin: false
 })
 
+const makeCreateAccountStub = (): CreateAccount => {
+  class CreateAccountStub implements CreateAccount {
+    async execute(params: CreateAccount.Params): Promise<CreateAccount.Result> {
+      return makeAccountModel()
+    }
+  }
+  return new CreateAccountStub()
+}
+
+type SutTypes = {
+  sut: SignupController
+  createAccountStub: CreateAccount
+}
+
+const makeSut = (): SutTypes => {
+  const createAccountStub = makeCreateAccountStub()
+  const sut = new SignupController(createAccountStub)
+  return {
+    sut,
+    createAccountStub
+  }
+}
+
 describe('SignupController', () => {
   test('Should call CreateAccount with correct values', async () => {
-    class CreateAccountStub implements CreateAccount {
-      async execute(
-        params: CreateAccount.Params
-      ): Promise<CreateAccount.Result> {
-        return makeAccountModel()
-      }
-    }
-    const createAccountStub = new CreateAccountStub()
-    const sut = new SignupController(createAccountStub)
+    const { sut, createAccountStub } = makeSut()
     const createAccountSpy = jest.spyOn(createAccountStub, 'execute')
     await sut.handle(makeRequest())
     expect(createAccountSpy).toHaveBeenCalledWith(makeRequest().body)
