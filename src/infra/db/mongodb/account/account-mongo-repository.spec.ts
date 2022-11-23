@@ -50,5 +50,11 @@ describe('AccountMongoRepository', () => {
       expect(accountData?.password).toEqual('hashed_password')
       expect(accountData?.isAdmin).toBeFalsy()
     })
+
+    test('Should return null on fail', async () => {
+      const sut = makeSut()
+      const accountData = await sut.loadByUsername('any_username')
+      expect(accountData).toBeFalsy()
+    })
   })
 })
