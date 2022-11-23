@@ -140,4 +140,13 @@ describe('CreateAccountUseCase', () => {
       makeCreateAccountWithHashedPassword()
     )
   })
+
+  test('Should throw if AddAccountRepository throws', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut()
+    jest
+      .spyOn(addAccountRepositoryStub, 'create')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeCreateAccountRequest())
+    await expect(promise).rejects.toThrow()
+  })
 })
