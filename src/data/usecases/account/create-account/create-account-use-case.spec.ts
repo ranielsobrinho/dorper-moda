@@ -8,7 +8,7 @@ import { CreateAccountUseCase } from './create-account-use-case'
 const makeAccountModel = (): AccountModel => ({
   id: 'any_id',
   username: 'any_username',
-  password: 'any_password',
+  password: 'hashed_password',
   isAdmin: false
 })
 
@@ -148,5 +148,11 @@ describe('CreateAccountUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const promise = sut.execute(makeCreateAccountRequest())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return an account on success', async () => {
+    const { sut } = makeSut()
+    const account = await sut.execute(makeCreateAccountRequest())
+    expect(account).toEqual(makeAccountModel())
   })
 })
