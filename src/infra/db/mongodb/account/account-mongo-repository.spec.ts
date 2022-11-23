@@ -38,4 +38,17 @@ describe('AccountMongoRepository', () => {
       expect(accountData?.isAdmin).toBeFalsy()
     })
   })
+
+  describe('loadByUsername()', () => {
+    test('Should return an account on success', async () => {
+      const sut = makeSut()
+      await accountCollection.insertOne(makeCreateAccountRequest())
+      const accountData = await sut.loadByUsername('any_username')
+      expect(accountData).toBeTruthy()
+      expect(accountData?.id).toBeTruthy()
+      expect(accountData?.username).toEqual('any_username')
+      expect(accountData?.password).toEqual('hashed_password')
+      expect(accountData?.isAdmin).toBeFalsy()
+    })
+  })
 })
