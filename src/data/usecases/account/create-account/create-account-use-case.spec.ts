@@ -2,6 +2,7 @@ import { AccountModel } from '../../../../domain/models/account'
 import { CreateAccountModel } from '../../../../domain/usecases/account/create-account'
 import { LoadAccountByUsernameRepository } from '../../../protocols/db/account/load-account-by-username-repository'
 import { Encrypter } from '../../../protocols/criptography/encrypter'
+import { AddAccountRepository } from '../../../protocols/db/account/add-account-repository'
 import { CreateAccountUseCase } from './create-account-use-case'
 
 const makeAccountModel = (): AccountModel => ({
@@ -14,6 +15,12 @@ const makeAccountModel = (): AccountModel => ({
 const makeCreateAccountRequest = (): CreateAccountModel => ({
   username: 'any_username',
   password: 'any_password',
+  isAdmin: false
+})
+
+const makeCreateAccountWithHashedPassword = (): CreateAccountModel => ({
+  username: 'any_username',
+  password: 'hashed_password',
   isAdmin: false
 })
 
@@ -40,24 +47,39 @@ const makeEncrypterStub = (): Encrypter => {
   return new EncrypterStub()
 }
 
+const makeAddAccountRepositoryStub = (): AddAccountRepository => {
+  class AddAccountRepositoryStub implements AddAccountRepository {
+    async create(
+      params: AddAccountRepository.Params
+    ): Promise<AddAccountRepository.Result> {
+      return makeAccountModel()
+    }
+  }
+  return new AddAccountRepositoryStub()
+}
+
 type SutTypes = {
   sut: CreateAccountUseCase
   loadAccountByUsernameRepositoryStub: LoadAccountByUsernameRepository
   encrypterStub: Encrypter
+  addAccountRepositoryStub: AddAccountRepository
 }
 
 const makeSut = (): SutTypes => {
   const loadAccountByUsernameRepositoryStub =
     makeLoadAccountByUsernameRepositoryStub()
   const encrypterStub = makeEncrypterStub()
+  const addAccountRepositoryStub = makeAddAccountRepositoryStub()
   const sut = new CreateAccountUseCase(
     loadAccountByUsernameRepositoryStub,
-    encrypterStub
+    encrypterStub,
+    addAccountRepositoryStub
   )
   return {
     sut,
     loadAccountByUsernameRepositoryStub,
-    encrypterStub
+    encrypterStub,
+    addAccountRepositoryStub
   }
 }
 
@@ -108,5 +130,14 @@ describe('CreateAccountUseCase', () => {
     jest.spyOn(encrypterStub, 'generate').mockRejectedValueOnce(new Error())
     const promise = sut.execute(makeCreateAccountRequest())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should call AddAccountRepository with correct values', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut()
+    const addAccountSpy = jest.spyOn(addAccountRepositoryStub, 'create')
+    await sut.execute(makeCreateAccountRequest())
+    expect(addAccountSpy).toHaveBeenCalledWith(
+      makeCreateAccountWithHashedPassword()
+    )
   })
 })
