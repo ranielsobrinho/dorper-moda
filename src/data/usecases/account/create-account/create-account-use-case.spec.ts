@@ -102,4 +102,11 @@ describe('CreateAccountUseCase', () => {
       makeCreateAccountRequest().password
     )
   })
+
+  test('Should throw if Encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut()
+    jest.spyOn(encrypterStub, 'generate').mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeCreateAccountRequest())
+    await expect(promise).rejects.toThrow()
+  })
 })
