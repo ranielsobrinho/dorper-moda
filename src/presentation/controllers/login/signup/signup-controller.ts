@@ -1,9 +1,5 @@
 import { CreateAccount } from '../../../../domain/usecases/account/create-account'
-import {
-  badRequest,
-  noContent,
-  serverError
-} from '../../../helpers/http-helper'
+import { badRequest, serverError, ok } from '../../../helpers/http-helper'
 import {
   Controller,
   HttpRequest,
@@ -30,7 +26,7 @@ export class SignupController implements Controller {
           new Error('Já existe uma conta com esse nome de usuário')
         )
       }
-      return noContent()
+      return ok(account)
     } catch (error) {
       return serverError(error)
     }
