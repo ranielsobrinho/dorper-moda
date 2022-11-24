@@ -1,7 +1,7 @@
 import { AccountModel } from '../../../../domain/models/account'
 import { CreateAccount } from '../../../../domain/usecases/account/create-account'
 import { MissingParamError } from '../../../errors'
-import { badRequest, serverError } from '../../../helpers/http-helper'
+import { badRequest, serverError, ok } from '../../../helpers/http-helper'
 import { Validation } from '../../../protocols'
 import { HttpRequest } from '../../../protocols/http'
 import { SignupController } from './signup-controller'
@@ -94,5 +94,11 @@ describe('SignupController', () => {
       .mockReturnValueOnce(new MissingParamError('any_field'))
     const httpResponse = await sut.handle(makeRequest())
     expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
+  })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle(makeRequest())
+    expect(httpResponse).toEqual(ok(makeAccountModel()))
   })
 })
