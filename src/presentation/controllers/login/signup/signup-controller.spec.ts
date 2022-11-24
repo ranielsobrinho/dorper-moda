@@ -1,6 +1,7 @@
 import { AccountModel } from '../../../../domain/models/account'
 import { CreateAccount } from '../../../../domain/usecases/account/create-account'
 import { badRequest, serverError } from '../../../helpers/http-helper'
+import { Validation } from '../../../protocols'
 import { HttpRequest } from '../../../protocols/http'
 import { SignupController } from './signup-controller'
 
@@ -28,17 +29,29 @@ const makeCreateAccountStub = (): CreateAccount => {
   return new CreateAccountStub()
 }
 
+const makeValidationStub = (): Validation => {
+  class ValidationStub implements Validation {
+    validate(input: any): Error | null {
+      return null
+    }
+  }
+  return new ValidationStub()
+}
+
 type SutTypes = {
   sut: SignupController
   createAccountStub: CreateAccount
+  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const createAccountStub = makeCreateAccountStub()
-  const sut = new SignupController(createAccountStub)
+  const validationStub = makeValidationStub()
+  const sut = new SignupController(createAccountStub, validationStub)
   return {
     sut,
-    createAccountStub
+    createAccountStub,
+    validationStub
   }
 }
 
@@ -64,5 +77,12 @@ describe('SignupController', () => {
     expect(httpResponse).toEqual(
       badRequest(new Error('Já existe uma conta com esse nome de usuário'))
     )
+  })
+
+  test('Should call Validation with correct values', async () => {
+    const { sut, validationStub } = makeSut()
+    const validateSpy = jest.spyOn(validationStub, 'validate')
+    await sut.handle(makeRequest())
+    expect(validateSpy).toHaveBeenCalledWith(makeRequest().body)
   })
 })
