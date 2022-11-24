@@ -4,13 +4,23 @@ import {
   noContent,
   serverError
 } from '../../../helpers/http-helper'
-import { Controller, HttpRequest, HttpResponse } from '../../../protocols'
+import {
+  Controller,
+  HttpRequest,
+  HttpResponse,
+  Validation
+} from '../../../protocols'
 
 export class SignupController implements Controller {
-  constructor(private readonly createAccountUseCase: CreateAccount) {}
+  constructor(
+    private readonly createAccountUseCase: CreateAccount,
+    private readonly validation: Validation
+  ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      const error = this.validation.validate(httpRequest.body)
+
       const account = await this.createAccountUseCase.execute(httpRequest.body)
       if (!account) {
         return badRequest(
