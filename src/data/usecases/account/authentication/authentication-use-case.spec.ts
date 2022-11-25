@@ -85,8 +85,8 @@ describe('AuthenticatioUseCase', () => {
     jest
       .spyOn(loadAccountByUsernameRepositoryStub, 'loadByUsername')
       .mockResolvedValueOnce(null)
-    const promise = await sut.auth(makeAuthenticationRequest())
-    expect(promise).toBeNull()
+    const accessToken = await sut.auth(makeAuthenticationRequest())
+    expect(accessToken).toBeNull()
   })
 
   test('Should call HashComparer with correct values', async () => {
@@ -104,5 +104,12 @@ describe('AuthenticatioUseCase', () => {
     jest.spyOn(hashComparerStub, 'compare').mockRejectedValueOnce(new Error())
     const promise = sut.auth(makeAuthenticationRequest())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return null if HashComparer returns false', async () => {
+    const { sut, hashComparerStub } = makeSut()
+    jest.spyOn(hashComparerStub, 'compare').mockResolvedValueOnce(false)
+    const accessToken = await sut.auth(makeAuthenticationRequest())
+    expect(accessToken).toBeNull()
   })
 })
