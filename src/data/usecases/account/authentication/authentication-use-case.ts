@@ -21,8 +21,8 @@ export class AuthenticationUseCase implements Authentication {
         account?.password
       )
       if (isValid) {
-        await this.tokenGenerator.generate(account.id)
-        return 'lalala'
+        const accessToken = await this.tokenGenerator.generate(account.id)
+        return accessToken
       }
     }
     return null
