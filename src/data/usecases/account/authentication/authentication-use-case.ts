@@ -1,11 +1,13 @@
 import { Authentication } from '../../../../domain/usecases/account/authentication'
 import { HashComparer } from '../../../protocols/criptography/hash-comparer'
+import { TokenGenerator } from '../../../protocols/criptography/token-generator'
 import { LoadAccountByUsernameRepository } from '../../../protocols/db/account/load-account-by-username-repository'
 
 export class AuthenticationUseCase implements Authentication {
   constructor(
     private readonly loadAccountByUsernameRepository: LoadAccountByUsernameRepository,
-    private readonly hashComparer: HashComparer
+    private readonly hashComparer: HashComparer,
+    private readonly tokenGenerator: TokenGenerator
   ) {}
 
   async auth(params: Authentication.Params): Promise<Authentication.Result> {
@@ -19,6 +21,7 @@ export class AuthenticationUseCase implements Authentication {
         account?.password
       )
       if (isValid) {
+        await this.tokenGenerator.generate(account.id)
         return 'lalala'
       }
     }
