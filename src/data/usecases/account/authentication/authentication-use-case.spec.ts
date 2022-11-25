@@ -57,4 +57,13 @@ describe('AuthenticatioUseCase', () => {
     const promise = sut.auth(makeAuthenticationRequest())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return null if loadAccountByUsernameRepository returns null', async () => {
+    const { sut, loadAccountByUsernameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadAccountByUsernameRepositoryStub, 'loadByUsername')
+      .mockResolvedValueOnce(null)
+    const promise = await sut.auth(makeAuthenticationRequest())
+    expect(promise).toBeNull()
+  })
 })
