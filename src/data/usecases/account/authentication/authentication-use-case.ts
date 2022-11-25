@@ -14,8 +14,13 @@ export class AuthenticationUseCase implements Authentication {
       username
     )
     if (account) {
-      await this.hashComparer.compare(password, account?.password)
-      return 'lalala'
+      const isValid = await this.hashComparer.compare(
+        password,
+        account?.password
+      )
+      if (isValid) {
+        return 'lalala'
+      }
     }
     return null
   }
