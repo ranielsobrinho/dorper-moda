@@ -19,7 +19,7 @@ describe('Login Routes', () => {
   })
 
   describe('POST /singup', () => {
-    test('Should return 204 on success', async () => {
+    test('Should return 200 on success', async () => {
       await request(app)
         .post('/api/signup')
         .send({
@@ -28,6 +28,22 @@ describe('Login Routes', () => {
           isAdmin: false
         })
         .expect(200)
+    })
+
+    test('Should return 400 if username already exists', async () => {
+      await accountCollection.insertOne({
+        username: 'any_name',
+        password: 'hashed_password',
+        isAdmin: false
+      })
+      await request(app)
+        .post('/api/signup')
+        .send({
+          username: 'any_name',
+          password: '123456789',
+          isAdmin: false
+        })
+        .expect(400)
     })
   })
 })
