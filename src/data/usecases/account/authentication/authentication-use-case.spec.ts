@@ -133,4 +133,13 @@ describe('AuthenticatioUseCase', () => {
     await sut.auth(makeAuthenticationRequest())
     expect(tokenGeneratorSpy).toHaveBeenCalledWith(makeAccountModel().id)
   })
+
+  test('Should throw if TokenGenerator throws', async () => {
+    const { sut, tokenGeneratorStub } = makeSut()
+    jest
+      .spyOn(tokenGeneratorStub, 'generate')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.auth(makeAuthenticationRequest())
+    await expect(promise).rejects.toThrow()
+  })
 })
