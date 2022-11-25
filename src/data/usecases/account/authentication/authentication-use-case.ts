@@ -6,9 +6,14 @@ export class AuthenticationUseCase implements Authentication {
     private readonly loadAccountByUsernameRepository: LoadAccountByUsernameRepository
   ) {}
 
-  async auth(params: Authentication.Params): Promise<string> {
+  async auth(params: Authentication.Params): Promise<Authentication.Result> {
     const { username } = params
-    await this.loadAccountByUsernameRepository.loadByUsername(username)
-    return 'lalala'
+    const account = await this.loadAccountByUsernameRepository.loadByUsername(
+      username
+    )
+    if (account) {
+      return 'lalala'
+    }
+    return null
   }
 }

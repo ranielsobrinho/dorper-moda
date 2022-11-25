@@ -4,9 +4,10 @@ export type AuthenticationModel = {
 }
 
 export interface Authentication {
-  auth(params: Authentication.Params): Promise<string>
+  auth(params: Authentication.Params): Promise<Authentication.Result>
 }
 
 export namespace Authentication {
   export type Params = AuthenticationModel
+  export type Result = string | null
 }
