@@ -142,4 +142,10 @@ describe('AuthenticatioUseCase', () => {
     const promise = sut.auth(makeAuthenticationRequest())
     await expect(promise).rejects.toThrow()
   })
+
+  test('Should return accessToken on success', async () => {
+    const { sut } = makeSut()
+    const accessToken = await sut.auth(makeAuthenticationRequest())
+    expect(accessToken).toEqual('any_token')
+  })
 })
