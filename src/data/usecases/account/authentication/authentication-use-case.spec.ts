@@ -48,4 +48,13 @@ describe('AuthenticatioUseCase', () => {
       makeAuthenticationRequest().username
     )
   })
+
+  test('Should throw if loadAccountByUsernameRepository throws', async () => {
+    const { sut, loadAccountByUsernameRepositoryStub } = makeSut()
+    jest
+      .spyOn(loadAccountByUsernameRepositoryStub, 'loadByUsername')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.auth(makeAuthenticationRequest())
+    await expect(promise).rejects.toThrow()
+  })
 })
