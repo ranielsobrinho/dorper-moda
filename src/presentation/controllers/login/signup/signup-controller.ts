@@ -19,8 +19,15 @@ export class SignupController implements Controller {
       if (error) {
         return badRequest(error)
       }
+      const { username, password, isAdmin } = httpRequest.body
+      const defaultAdminValue = isAdmin || false
 
-      const account = await this.createAccountUseCase.execute(httpRequest.body)
+      const account = await this.createAccountUseCase.execute({
+        username,
+        password,
+        isAdmin: defaultAdminValue
+      })
+
       if (!account) {
         return badRequest(
           new Error('Já existe uma conta com esse nome de usuário')
