@@ -28,5 +28,11 @@ describe('JwtAdapter', () => {
       const promise = sut.generate('any_id')
       await expect(promise).rejects.toThrow()
     })
+
+    test('Should return accessToken on success', async () => {
+      const sut = makeSut()
+      const accessToken = await sut.generate('any_id')
+      expect(accessToken).toBe('any_token')
+    })
   })
 })
