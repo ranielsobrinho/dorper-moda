@@ -1,7 +1,13 @@
 import { Authentication } from '../../../../domain/usecases/account/authentication'
 import { HttpRequest, Validation } from '../../../protocols'
 import { LoginController } from './login-controller'
-import { serverError, unauthorized, ok } from '../../../helpers/http-helper'
+import {
+  serverError,
+  unauthorized,
+  ok,
+  badRequest
+} from '../../../helpers/http-helper'
+import { MissingParamError } from '../../../errors'
 
 const makeAuthenticationStub = (): Authentication => {
   class AuthenticationStub implements Authentication {
@@ -81,5 +87,14 @@ describe('LoginController', () => {
     const validateSpy = jest.spyOn(validationStub, 'validate')
     await sut.handle(makeFakeRequest())
     expect(validateSpy).toHaveBeenCalledWith(makeFakeRequest().body)
+  })
+
+  test('Should return 400 if Validation returns a error', async () => {
+    const { sut, validationStub } = makeSut()
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 })
