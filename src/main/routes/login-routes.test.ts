@@ -1,4 +1,5 @@
 import { Collection } from 'mongodb'
+import { hash } from 'bcrypt'
 import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 import request from 'supertest'
 import app from '../config/app'
@@ -44,6 +45,23 @@ describe('Login Routes', () => {
           isAdmin: false
         })
         .expect(400)
+    })
+  })
+
+  describe('POST /login', () => {
+    test('Should return 200 on success', async () => {
+      const password = await hash('123456789', 12)
+      await accountCollection.insertOne({
+        username: 'raniel_sobrinho',
+        password
+      })
+      await request(app)
+        .post('/api/login')
+        .send({
+          username: 'raniel_sobrinho',
+          password: '123456789'
+        })
+        .expect(200)
     })
   })
 })
