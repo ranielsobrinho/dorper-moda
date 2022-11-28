@@ -1,6 +1,7 @@
 import { Authentication } from '../../../../domain/usecases/account/authentication'
 import { HttpRequest } from '../../../protocols'
 import { LoginController } from './login-controller'
+import { unauthorized } from '../../../helpers/http-helper'
 
 const makeAuthenticationStub = (): Authentication => {
   class AuthenticationStub implements Authentication {
@@ -41,5 +42,12 @@ describe('LoginController', () => {
       username: 'any_username',
       password: 'any_password'
     })
+  })
+
+  test('Should return 401 if invalid credentials are provided', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce(null)
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
