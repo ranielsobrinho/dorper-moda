@@ -1,7 +1,7 @@
 import { Authentication } from '../../../../domain/usecases/account/authentication'
 import { HttpRequest } from '../../../protocols'
 import { LoginController } from './login-controller'
-import { unauthorized } from '../../../helpers/http-helper'
+import { serverError, unauthorized } from '../../../helpers/http-helper'
 
 const makeAuthenticationStub = (): Authentication => {
   class AuthenticationStub implements Authentication {
@@ -49,5 +49,12 @@ describe('LoginController', () => {
     jest.spyOn(authenticationStub, 'auth').mockResolvedValueOnce(null)
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(unauthorized())
+  })
+
+  test('Should return 500 if Authentication throws', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(new Error())
+    const httpResponse = await sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error()))
   })
 })
