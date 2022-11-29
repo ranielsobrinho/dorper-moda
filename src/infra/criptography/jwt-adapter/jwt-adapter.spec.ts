@@ -55,5 +55,11 @@ describe('JwtAdapter', () => {
       const promise = sut.verify('any_token')
       await expect(promise).rejects.toThrow()
     })
+
+    test('Should return a value on verify success', async () => {
+      const sut = makeSut()
+      const verifiedToken = await sut.verify('any_token')
+      expect(verifiedToken).toBe('any_value')
+    })
   })
 })
