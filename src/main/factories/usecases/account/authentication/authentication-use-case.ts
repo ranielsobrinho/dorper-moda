@@ -1,4 +1,4 @@
-import { AuthenticationUseCase } from '../../../../../data/usecases/account/authentication/authentication-use-case'
+import { AuthenticationUseCase } from '../../../../../data/usecases/authentication/authentication/authentication-use-case'
 import { Authentication } from '../../../../../domain/usecases/authentication/authentication'
 import { BcryptAdapter } from '../../../../../infra/criptography/bcrypt-adapter/bcrypt-adapter'
 import { JwtAdapter } from '../../../../../infra/criptography/jwt-adapter/jwt-adapter'
