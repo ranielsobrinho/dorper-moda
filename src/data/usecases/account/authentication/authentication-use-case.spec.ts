@@ -1,7 +1,7 @@
 import { LoadAccountByUsernameRepository } from '../../../protocols/db/account/load-account-by-username-repository'
 import { HashComparer } from '../../../protocols/criptography/hash-comparer'
 import { TokenGenerator } from '../../../protocols/criptography/token-generator'
-import { AuthenticationModel } from '../../../../domain/usecases/account/authentication'
+import { AuthenticationModel } from '../../../../domain/usecases/authentication/authentication'
 import { AuthenticationUseCase } from './authentication-use-case'
 import { AccountModel } from '../../../../domain/models/account'
 
