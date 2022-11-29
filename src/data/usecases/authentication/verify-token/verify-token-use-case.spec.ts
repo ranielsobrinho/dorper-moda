@@ -38,4 +38,11 @@ describe('VerifyTokenUseCase', () => {
     const verifiedToken = await sut.execute('any_token')
     expect(verifiedToken).toBeNull()
   })
+
+  test('Should throw if Decrypter throws', async () => {
+    const { sut, decrypterStub } = makeSut()
+    jest.spyOn(decrypterStub, 'verify').mockRejectedValueOnce(new Error())
+    const promise = sut.execute('any_token')
+    await expect(promise).rejects.toThrow()
+  })
 })
