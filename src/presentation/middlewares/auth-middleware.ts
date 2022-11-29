@@ -1,5 +1,6 @@
 import { VerifyToken } from '../../domain/usecases/authentication/verify-token'
-import { noContent } from '../helpers/http-helper'
+import { AccessDeniedError } from '../errors'
+import { forbidden, noContent } from '../helpers/http-helper'
 import { HttpRequest, HttpResponse } from '../protocols'
 import { Middleware } from '../protocols/middleware'
 
@@ -8,7 +9,10 @@ export class AuthMiddleware implements Middleware {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     const accessToken = httpRequest.headers?.['x-access-token']
-    await this.verifyToken.execute(accessToken)
-    return noContent()
+    if (accessToken) {
+      await this.verifyToken.execute(accessToken)
+      return noContent()
+    }
+    return forbidden(new AccessDeniedError())
   }
 }
