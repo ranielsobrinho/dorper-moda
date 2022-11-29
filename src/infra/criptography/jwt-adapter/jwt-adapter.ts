@@ -10,11 +10,8 @@ export class JwtAdapter implements TokenGenerator, TokenVerify {
     return accessToken
   }
 
-  async verify(token: string): Promise<string | null> {
+  async verify(token: string): Promise<string> {
     const verifiedToken: any = jwt.verify(token, this.salt)
-    if (!verifiedToken) {
-      return null
-    }
     return verifiedToken
   }
 }
