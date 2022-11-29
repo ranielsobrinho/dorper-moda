@@ -1,6 +1,8 @@
 import { VerifyToken } from '../../domain/usecases/authentication/verify-token'
+import { forbidden } from '../helpers/http-helper'
 import { HttpRequest } from '../protocols'
 import { AuthMiddleware } from './auth-middleware'
+import { AccessDeniedError } from '../errors'
 
 const makeRequest = (): HttpRequest => ({
   headers: {
@@ -35,5 +37,11 @@ describe('Auth Middleware', () => {
     const verifyTokenSpy = jest.spyOn(verifyTokenStub, 'execute')
     await sut.handle(makeRequest())
     expect(verifyTokenSpy).toHaveBeenCalledWith('any_token')
+  })
+
+  test('Should return 403 if no x-access-token is provided', async () => {
+    const { sut } = makeSut()
+    const httpResponse = await sut.handle({})
+    expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
   })
 })
