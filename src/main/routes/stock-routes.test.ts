@@ -214,7 +214,25 @@ describe('Stock Routes', () => {
     })
 
     test('Should return 403 if wrong id is provided', async () => {
-      await request(app).delete('/api/stock/123343555224').expect(403)
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .delete('/api/stock/123343555224')
+        .set('x-access-token', accessToken)
+        .expect(403)
+    })
+
+    test('Should return 403 if no accessToken is provided', async () => {
+      const stockData = await stockCollection.insertOne({
+        modelName: 'any_name',
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
+      })
+      const id = stockData.insertedId.toString()
+      await request(app).delete(`/api/stock/${id}`).expect(403)
     })
   })
 
