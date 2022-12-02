@@ -49,6 +49,21 @@ describe('Stock Routes', () => {
         })
         .expect(204)
     })
+
+    test('Should return 403 if no accessToken is provided', async () => {
+      await request(app)
+        .post('/api/stock')
+        .send({
+          modelName: 'any_name',
+          description: [
+            {
+              color: 'any_color',
+              quantity: 1
+            }
+          ]
+        })
+        .expect(403)
+    })
   })
 
   describe('GET /stock', () => {
