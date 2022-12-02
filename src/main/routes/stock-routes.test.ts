@@ -284,5 +284,32 @@ describe('Stock Routes', () => {
         })
         .expect(403)
     })
+
+    test('Should return 403 if no accessToken is provided', async () => {
+      const stockData = await stockCollection.insertOne({
+        modelName: 'any_name',
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
+      })
+      const id = stockData.insertedId.toString()
+      await request(app)
+        .put(`/api/stock/${id}`)
+        .send({
+          data: {
+            modelName: 'other_name',
+            description: [
+              {
+                color: 'other_color',
+                quantity: 22
+              }
+            ]
+          }
+        })
+        .expect(403)
+    })
   })
 })
