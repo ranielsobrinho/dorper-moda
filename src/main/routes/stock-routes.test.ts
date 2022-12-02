@@ -83,6 +83,19 @@ describe('Stock Routes', () => {
         .set('x-access-token', accessToken)
         .expect(200)
     })
+
+    test('Should return 403 if no accessToken is provided', async () => {
+      await stockCollection.insertOne({
+        modelName: 'any_name',
+        description: [
+          {
+            color: 'any_color',
+            quantity: 1
+          }
+        ]
+      })
+      await request(app).get('/api/stock').expect(403)
+    })
   })
 
   describe('GET /stock/1', () => {
