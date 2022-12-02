@@ -16,7 +16,6 @@ describe('CreateSalesValidation Factory', () => {
       'deliveryFee',
       'paymentForm',
       'products',
-      'description',
       'total'
     ]) {
       validations.push(new RequiredFieldValidation(field))
