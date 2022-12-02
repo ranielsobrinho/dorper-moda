@@ -6,12 +6,21 @@ import { makeGetByIdController } from '../factories/controllers/stock/get-by-id/
 import { makeLoadStockByNameController } from '../factories/controllers/stock/load-stock-by-name/load-stock-by-name-factory'
 import { makeLoadStocksController } from '../factories/controllers/stock/load-stocks/load-stocks-factory'
 import { makeUpdateStockController } from '../factories/controllers/stock/update-stock/update-stock-factory'
+import { auth } from '../middlewares'
 
 export default (router: Router): void => {
-  router.post('/stock', adaptRoute(makeAddStockController()))
-  router.get('/stock', adaptRoute(makeLoadStocksController()))
-  router.get('/stock/:stockId', adaptRoute(makeGetByIdController()))
-  router.post('/stock/by-name', adaptRoute(makeLoadStockByNameController()))
-  router.delete('/stock/:stockId', adaptRoute(makeDeleteStockController()))
-  router.put('/stock/:stockId', adaptRoute(makeUpdateStockController()))
+  router.post('/stock', auth, adaptRoute(makeAddStockController()))
+  router.get('/stock', auth, adaptRoute(makeLoadStocksController()))
+  router.get('/stock/:stockId', auth, adaptRoute(makeGetByIdController()))
+  router.post(
+    '/stock/by-name',
+    auth,
+    adaptRoute(makeLoadStockByNameController())
+  )
+  router.delete(
+    '/stock/:stockId',
+    auth,
+    adaptRoute(makeDeleteStockController())
+  )
+  router.put('/stock/:stockId', auth, adaptRoute(makeUpdateStockController()))
 }
