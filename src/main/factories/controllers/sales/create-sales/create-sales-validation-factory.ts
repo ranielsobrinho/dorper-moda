@@ -8,7 +8,6 @@ export const makeCreatSalesValidation = (): ValidationComposite => {
   const validations: Validation[] = []
   for (const field of [
     'clientName',
-    'deliveryFee',
     'paymentForm',
     'products',
     'description',
