@@ -5,11 +5,12 @@ import { makeGetSalesController } from '../factories/controllers/sales/get-sales
 import { makeGetSaleByIdController } from '../factories/controllers/sales/get-sale-by-id/get-sale-by-id-factory'
 import { makeUpdateSaleController } from '../factories/controllers/sales/update-sale/update-sale-factory'
 import { makeCancelSaleController } from '../factories/controllers/sales/cancel-sale/cancel-sale-factory'
+import { auth } from '../middlewares'
 
 export default (router: Router): void => {
-  router.post('/sales', adaptRoute(makeCreateSalesController()))
-  router.get('/sales', adaptRoute(makeGetSalesController()))
-  router.get('/sales/:saleId', adaptRoute(makeGetSaleByIdController()))
-  router.put('/sales/:saleId', adaptRoute(makeUpdateSaleController()))
-  router.delete('/sales/:saleId', adaptRoute(makeCancelSaleController()))
+  router.post('/sales', auth, adaptRoute(makeCreateSalesController()))
+  router.get('/sales', auth, adaptRoute(makeGetSalesController()))
+  router.get('/sales/:saleId', auth, adaptRoute(makeGetSaleByIdController()))
+  router.put('/sales/:saleId', auth, adaptRoute(makeUpdateSaleController()))
+  router.delete('/sales/:saleId', auth, adaptRoute(makeCancelSaleController()))
 }

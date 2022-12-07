@@ -33,7 +33,7 @@ export class CreateSalesController implements Controller {
       } = httpRequest.body
       const saleError = await this.createSales.execute({
         clientName,
-        deliveryFee,
+        deliveryFee: deliveryFee || 0,
         paymentForm,
         products,
         description,
