@@ -6,12 +6,7 @@ import {
 
 export const makeCreatSalesValidation = (): ValidationComposite => {
   const validations: Validation[] = []
-  for (const field of [
-    'clientName',
-    'paymentForm',
-    'products',
-    'total'
-  ]) {
+  for (const field of ['clientName', 'paymentForm', 'products', 'total']) {
     validations.push(new RequiredFieldValidation(field))
   }
   return new ValidationComposite(validations)
