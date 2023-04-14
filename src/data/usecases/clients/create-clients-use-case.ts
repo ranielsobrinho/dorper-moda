@@ -7,13 +7,7 @@ export class CreateClientsUseCase implements CreateClient {
   ) {}
 
   async execute(params: CreateClient.Params): Promise<CreateClient.Result> {
-    await this.createClientRepository.create(params)
-    return {
-      name: 'any_name',
-      address: 'any_address',
-      cpf: 'any_cpf',
-      telephone: 'any_telephone',
-      baseFee: 10
-    }
+    const client = await this.createClientRepository.create(params)
+    return client
   }
 }
