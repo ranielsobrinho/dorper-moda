@@ -9,8 +9,13 @@ export class CreateClientsUseCase implements CreateClient {
   ) {}
 
   async execute(params: CreateClient.Params): Promise<CreateClient.Result> {
-    await this.getClientByCpfRepository.getByCpf(params.cpf)
-    const client = await this.createClientRepository.create(params)
-    return client
+    const existingClient = await this.getClientByCpfRepository.getByCpf(
+      params.cpf
+    )
+    if (!existingClient) {
+      const client = await this.createClientRepository.create(params)
+      return client
+    }
+    return null
   }
 }

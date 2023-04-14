@@ -6,5 +6,5 @@ export interface CreateClient {
 
 export namespace CreateClient {
   export type Params = ClientsModel
-  export type Result = ClientsModel
+  export type Result = ClientsModel | null
 }
