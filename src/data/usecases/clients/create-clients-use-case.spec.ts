@@ -51,4 +51,10 @@ describe('CreateClientUseCase', () => {
     const promise = sut.execute(makeCreateClient())
     await expect(promise).rejects.toThrow(new Error())
   })
+
+  test('Should return a client on success', async () => {
+    const { sut } = makeSut()
+    const response = await sut.execute(makeCreateClient())
+    expect(response).toEqual(makeCreateClient())
+  })
 })
