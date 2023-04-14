@@ -75,6 +75,15 @@ describe('CreateClientUseCase', () => {
     expect(getClientSpy).toHaveBeenCalledWith(makeCreateClient().cpf)
   })
 
+  test('Should call GetClientByCpfRepository with correct value', async () => {
+    const { sut, getClientByCpfRepositoryStub } = makeSut()
+    jest
+      .spyOn(getClientByCpfRepositoryStub, 'getByCpf')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeCreateClient())
+    await expect(promise).rejects.toThrow(new Error())
+  })
+
   test('Should return a client on success', async () => {
     const { sut } = makeSut()
     const response = await sut.execute(makeCreateClient())
