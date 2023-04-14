@@ -1,5 +1,6 @@
 import { ClientsModel } from '../../../domain/models/clients'
 import { CreateClientRepository } from '../../protocols/db/clients/create-client-repository'
+import { GetClientByCpfRepository } from '../../protocols/db/clients/get-client-by-cpf-repository'
 import { CreateClientsUseCase } from './create-clients-use-case'
 
 const makeCreateClient = (): ClientsModel => ({
@@ -21,17 +22,32 @@ const makeCreateClientRepositoryStub = (): CreateClientRepository => {
   return new CreateClientRepositoryStub()
 }
 
+const makeGetClientByCpfRepositoryStub = (): GetClientByCpfRepository => {
+  class GetClientByCpfRepositoryStub implements GetClientByCpfRepository {
+    async getByCpf(_cpf: string): Promise<GetClientByCpfRepository.Result> {
+      return null
+    }
+  }
+  return new GetClientByCpfRepositoryStub()
+}
+
 type SutTypes = {
   sut: CreateClientsUseCase
   createClientRepositoryStub: CreateClientRepository
+  getClientByCpfRepositoryStub: GetClientByCpfRepository
 }
 
 const makeSut = (): SutTypes => {
   const createClientRepositoryStub = makeCreateClientRepositoryStub()
-  const sut = new CreateClientsUseCase(createClientRepositoryStub)
+  const getClientByCpfRepositoryStub = makeGetClientByCpfRepositoryStub()
+  const sut = new CreateClientsUseCase(
+    createClientRepositoryStub,
+    getClientByCpfRepositoryStub
+  )
   return {
     sut,
-    createClientRepositoryStub
+    createClientRepositoryStub,
+    getClientByCpfRepositoryStub
   }
 }
 
@@ -50,6 +66,13 @@ describe('CreateClientUseCase', () => {
       .mockRejectedValueOnce(new Error())
     const promise = sut.execute(makeCreateClient())
     await expect(promise).rejects.toThrow(new Error())
+  })
+
+  test('Should call GetClientByCpfRepository with correct value', async () => {
+    const { sut, getClientByCpfRepositoryStub } = makeSut()
+    const getClientSpy = jest.spyOn(getClientByCpfRepositoryStub, 'getByCpf')
+    await sut.execute(makeCreateClient())
+    expect(getClientSpy).toHaveBeenCalledWith(makeCreateClient().cpf)
   })
 
   test('Should return a client on success', async () => {
