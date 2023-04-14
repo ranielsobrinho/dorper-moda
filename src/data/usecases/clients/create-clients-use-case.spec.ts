@@ -75,7 +75,16 @@ describe('CreateClientUseCase', () => {
     expect(getClientSpy).toHaveBeenCalledWith(makeCreateClient().cpf)
   })
 
-  test('Should call GetClientByCpfRepository with correct value', async () => {
+  test('Should return null if GetClientByCpfRepository returns a client', async () => {
+    const { sut, getClientByCpfRepositoryStub } = makeSut()
+    jest
+      .spyOn(getClientByCpfRepositoryStub, 'getByCpf')
+      .mockResolvedValueOnce(makeCreateClient())
+    const response = await sut.execute(makeCreateClient())
+    expect(response).toBeNull()
+  })
+
+  test('Should throw if GetClientByCpfRepository throws', async () => {
     const { sut, getClientByCpfRepositoryStub } = makeSut()
     jest
       .spyOn(getClientByCpfRepositoryStub, 'getByCpf')
