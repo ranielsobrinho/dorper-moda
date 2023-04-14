@@ -9,17 +9,35 @@ const makeCreateClient = (): ClientsModel => ({
   telephone: 'any_telephone',
   baseFee: 10
 })
+
+const makeCreateClientRepositoryStub = (): CreateClientRepository => {
+  class CreateClientRepositoryStub implements CreateClientRepository {
+    async create(
+      params: CreateClientRepository.Params
+    ): Promise<CreateClientRepository.Result> {
+      return makeCreateClient()
+    }
+  }
+  return new CreateClientRepositoryStub()
+}
+
+type SutTypes = {
+  sut: CreateClientsUseCase
+  createClientRepositoryStub: CreateClientRepository
+}
+
+const makeSut = (): SutTypes => {
+  const createClientRepositoryStub = makeCreateClientRepositoryStub()
+  const sut = new CreateClientsUseCase(createClientRepositoryStub)
+  return {
+    sut,
+    createClientRepositoryStub
+  }
+}
+
 describe('CreateClientUseCase', () => {
   test('Should call CreateClientRepository with correct values', async () => {
-    class CreateClientRepositoryStub implements CreateClientRepository {
-      async create(
-        params: CreateClientRepository.Params
-      ): Promise<CreateClientRepository.Result> {
-        return makeCreateClient()
-      }
-    }
-    const createClientRepositoryStub = new CreateClientRepositoryStub()
-    const sut = new CreateClientsUseCase(createClientRepositoryStub)
+    const { sut, createClientRepositoryStub } = makeSut()
     const createClientSpy = jest.spyOn(createClientRepositoryStub, 'create')
     await sut.execute(makeCreateClient())
     expect(createClientSpy).toHaveBeenCalledWith(makeCreateClient())
