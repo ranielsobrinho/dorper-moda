@@ -42,4 +42,13 @@ describe('CreateClientUseCase', () => {
     await sut.execute(makeCreateClient())
     expect(createClientSpy).toHaveBeenCalledWith(makeCreateClient())
   })
+
+  test('Should throw if CreateClientRepository throws', async () => {
+    const { sut, createClientRepositoryStub } = makeSut()
+    jest
+      .spyOn(createClientRepositoryStub, 'create')
+      .mockRejectedValueOnce(new Error())
+    const promise = sut.execute(makeCreateClient())
+    await expect(promise).rejects.toThrow(new Error())
+  })
 })
