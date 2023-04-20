@@ -1,6 +1,6 @@
-import { CreateClient } from '../../../domain/usecases/clients/create-client'
-import { CreateClientRepository } from '../../protocols/db/clients/create-client-repository'
-import { GetClientByCpfRepository } from '../../protocols/db/clients/get-client-by-cpf-repository'
+import { CreateClient } from '../../../../domain/usecases/clients/create-client'
+import { CreateClientRepository } from '../../../protocols/db/clients/create-client-repository'
+import { GetClientByCpfRepository } from '../../../protocols/db/clients/get-client-by-cpf-repository'
 
 export class CreateClientsUseCase implements CreateClient {
   constructor(

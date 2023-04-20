@@ -1,6 +1,6 @@
-import { ClientsModel } from '../../../domain/models/clients'
-import { CreateClientRepository } from '../../protocols/db/clients/create-client-repository'
-import { GetClientByCpfRepository } from '../../protocols/db/clients/get-client-by-cpf-repository'
+import { ClientsModel } from '../../../../domain/models/clients'
+import { CreateClientRepository } from '../../../protocols/db/clients/create-client-repository'
+import { GetClientByCpfRepository } from '../../../protocols/db/clients/get-client-by-cpf-repository'
 import { CreateClientsUseCase } from './create-clients-use-case'
 
 const makeCreateClient = (): ClientsModel => ({
