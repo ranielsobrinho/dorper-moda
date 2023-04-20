@@ -65,4 +65,29 @@ describe('ClientsMongoRepository', () => {
       expect(clientData).toBe(null)
     })
   })
+
+  describe('getAll()', () => {
+    test('Should return an array of clients on success', async () => {
+      await clientsCollection.insertMany([
+        {
+          name: 'any_name',
+          address: 'any_address',
+          cpf: 'any_cpf',
+          telephone: 'any_telephone',
+          baseFee: 10
+        },
+        {
+          name: 'other_name',
+          address: 'other_address',
+          cpf: 'other_cpf',
+          telephone: 'other_telephone',
+          baseFee: 15
+        }
+      ])
+      const sut = makeSut()
+      const clientsData = await sut.getAll()
+      expect(clientsData).toBeTruthy()
+      expect(clientsData).toBeInstanceOf(Array)
+    })
+  })
 })
