@@ -1,9 +1,13 @@
 import { MongoHelper } from '../helpers/mongo-helper'
 import { CreateClientRepository } from '../../../../data/protocols/db/clients/create-client-repository'
 import { GetClientByCpfRepository } from '../../../../data/protocols/db/clients/get-client-by-cpf-repository'
+import { GetClientsRepository } from '../../../../data/protocols/db/clients/get-clients-repository'
 
 export class ClientsMongoRepository
-  implements CreateClientRepository, GetClientByCpfRepository
+  implements
+    CreateClientRepository,
+    GetClientByCpfRepository,
+    GetClientsRepository
 {
   async create(
     params: CreateClientRepository.Params
@@ -20,5 +24,11 @@ export class ClientsMongoRepository
       return null
     }
     return clientData && MongoHelper.map(clientData)
+  }
+
+  async getAll(): Promise<GetClientsRepository.Result> {
+    const clientsCollection = MongoHelper.getCollection('clients')
+    const clientData = await clientsCollection.find().toArray()
+    return clientData && MongoHelper.mapCollection(clientData)
   }
 }
