@@ -97,4 +97,18 @@ describe('Sales Routes', () => {
         .expect(400)
     })
   })
+
+  describe('GET /clients', () => {
+    test('Should return 200 on success', async () => {
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .get('/api/clients')
+        .set('x-access-token', accessToken)
+        .expect(200)
+    })
+
+    test('Should return 403 if is missing access token', async () => {
+      await request(app).get('/api/clients').expect(403)
+    })
+  })
 })
