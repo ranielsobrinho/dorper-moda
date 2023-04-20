@@ -111,4 +111,33 @@ describe('Sales Routes', () => {
       await request(app).get('/api/clients').expect(403)
     })
   })
+
+  describe('GET /clients/:cpf', () => {
+    test('Should return 200 on success', async () => {
+      const accessToken = await makeAccessToken()
+      await clientsCollection.insertOne({
+        name: 'any_name',
+        address: 'any_address',
+        cpf: 'any_cpf',
+        telephone: 'any_telephone',
+        baseFee: 10
+      })
+      await request(app)
+        .get('/api/clients/any_cpf')
+        .set('x-access-token', accessToken)
+        .expect(200)
+    })
+
+    test('Should return 400 if wrong cpf is provided', async () => {
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .get('/api/clients/any_cpf')
+        .set('x-access-token', accessToken)
+        .expect(400)
+    })
+
+    test('Should return 403 if is missing access token', async () => {
+      await request(app).get('/api/clients').expect(403)
+    })
+  })
 })
