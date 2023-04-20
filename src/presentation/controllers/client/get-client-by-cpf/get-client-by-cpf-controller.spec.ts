@@ -5,7 +5,7 @@ import { GetClientByCpf } from '../../../../domain/usecases/clients/get-client-b
 import { ClientsModel } from '../../../../domain/models/clients'
 
 const makeFakeClientRequest = (): HttpRequest => ({
-  headers: {
+  params: {
     cpf: 'any_cpf'
   }
 })
