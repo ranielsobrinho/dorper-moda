@@ -1,12 +1,11 @@
 import { GetClientByCpfController } from './get-client-by-cpf-controller'
-import { HttpRequest, Validation } from '../../../protocols'
+import { HttpRequest } from '../../../protocols'
 import { badRequest, ok, serverError } from '../../../helpers/http-helper'
-import { MissingParamError } from '../../../errors'
 import { GetClientByCpf } from '../../../../domain/usecases/clients/get-client-by-cpf'
 import { ClientsModel } from '../../../../domain/models/clients'
 
 const makeFakeClientRequest = (): HttpRequest => ({
-  body: {
+  headers: {
     cpf: 'any_cpf'
   }
 })
@@ -28,29 +27,17 @@ const makeGetClientByCpfStub = (): GetClientByCpf => {
   return new GetClientByCpfStub()
 }
 
-const makeValidationStub = (): Validation => {
-  class ValidationStub implements Validation {
-    validate(input: any): Error | null {
-      return null
-    }
-  }
-  return new ValidationStub()
-}
-
 type SutTypes = {
   sut: GetClientByCpfController
   getClientByCpfStub: GetClientByCpf
-  validationStub: Validation
 }
 
 const makeSut = (): SutTypes => {
   const getClientByCpfStub = makeGetClientByCpfStub()
-  const validationStub = makeValidationStub()
-  const sut = new GetClientByCpfController(getClientByCpfStub, validationStub)
+  const sut = new GetClientByCpfController(getClientByCpfStub)
   return {
     sut,
-    getClientByCpfStub,
-    validationStub
+    getClientByCpfStub
   }
 }
 
@@ -59,7 +46,7 @@ describe('GetClientByCpfController', () => {
     const { sut, getClientByCpfStub } = makeSut()
     const createClientSpy = jest.spyOn(getClientByCpfStub, 'execute')
     await sut.handle(makeFakeClientRequest())
-    expect(createClientSpy).toHaveBeenCalledWith(makeFakeClientRequest().body)
+    expect(createClientSpy).toHaveBeenCalledWith('any_cpf')
   })
 
   test('Should return 500 if GetClientByCpf throws', async () => {
@@ -80,22 +67,6 @@ describe('GetClientByCpfController', () => {
     expect(httpResponse).toEqual(
       badRequest(new Error('Não há cliente com o cpf cadastrado.'))
     )
-  })
-
-  test('Should call Validation with correct values', async () => {
-    const { sut, validationStub } = makeSut()
-    const validateSpy = jest.spyOn(validationStub, 'validate')
-    await sut.handle(makeFakeClientRequest())
-    expect(validateSpy).toHaveBeenCalledWith(makeFakeClientRequest().body)
-  })
-
-  test('Should return 400 if Validation returns a error', async () => {
-    const { sut, validationStub } = makeSut()
-    jest
-      .spyOn(validationStub, 'validate')
-      .mockReturnValueOnce(new MissingParamError('any_field'))
-    const httpResponse = await sut.handle(makeFakeClientRequest())
-    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
   })
 
   test('Should return 204 on success', async () => {

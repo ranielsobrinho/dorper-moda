@@ -1,28 +1,14 @@
 import { GetClientByCpf } from '../../../../domain/usecases/clients/get-client-by-cpf'
 import { badRequest, ok, serverError } from '../../../helpers/http-helper'
-import {
-  Controller,
-  HttpRequest,
-  HttpResponse,
-  Validation
-} from '../../../protocols'
+import { Controller, HttpRequest, HttpResponse } from '../../../protocols'
 
 export class GetClientByCpfController implements Controller {
-  constructor(
-    private readonly getClientByCpf: GetClientByCpf,
-    private readonly validation: Validation
-  ) {}
+  constructor(private readonly getClientByCpf: GetClientByCpf) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const error = this.validation.validate(httpRequest.body)
-      if (error) {
-        return badRequest(error)
-      }
-
-      const clientOrError = await this.getClientByCpf.execute({
-        ...httpRequest.body
-      })
+      const { cpf } = httpRequest.headers
+      const clientOrError = await this.getClientByCpf.execute(cpf)
       if (clientOrError === null) {
         return badRequest(new Error('Não há cliente com o cpf cadastrado.'))
       }
