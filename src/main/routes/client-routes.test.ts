@@ -169,4 +169,82 @@ describe('Sales Routes', () => {
       await request(app).get('/api/clients').expect(403)
     })
   })
+
+  describe('PUT /clients/:cpf', () => {
+    test('Should return 200 on success', async () => {
+      const accessToken = await makeAccessToken()
+      await clientsCollection.insertOne({
+        name: 'any_name',
+        address: 'any_address',
+        cpf: 'any_cpf',
+        telephone: 'any_telephone',
+        baseFee: 10
+      })
+      await request(app)
+        .put('/api/clients/any_cpf')
+        .set('x-access-token', accessToken)
+        .send({
+          name: 'other_name',
+          address: 'other_address',
+          cpf: 'other_cpf',
+          telephone: 'other_telephone',
+          baseFee: 19
+        })
+        .expect(200)
+    })
+
+    test('Should return 400 if missing a required field', async () => {
+      const accessToken = await makeAccessToken()
+      await clientsCollection.insertOne({
+        name: 'any_name',
+        address: 'any_address',
+        cpf: 'any_cpf',
+        telephone: 'any_telephone',
+        baseFee: 10
+      })
+      await request(app)
+        .put('/api/clients/any_cpf')
+        .set('x-access-token', accessToken)
+        .send({
+          name: 'any_name',
+          address: 'any_address',
+          telephone: 'any_telephone'
+        })
+        .expect(400)
+    })
+
+    test('Should return 403 if is missing access token', async () => {
+      await clientsCollection.insertOne({
+        name: 'any_name',
+        address: 'any_address',
+        cpf: 'any_cpf',
+        telephone: 'any_telephone',
+        baseFee: 10
+      })
+      await request(app)
+        .put('/api/clients/any_cpf')
+        .send({
+          name: 'any_name',
+          address: 'any_address',
+          cpf: 'any_cpf',
+          telephone: 'any_telephone',
+          baseFee: 10
+        })
+        .expect(403)
+    })
+
+    test('Should return 400 if cpf does not exists', async () => {
+      const accessToken = await makeAccessToken()
+      await request(app)
+        .put('/api/clients/inexisting_cpf')
+        .set('x-access-token', accessToken)
+        .send({
+          name: 'any_name',
+          address: 'any_address',
+          telephone: 'any_telephone',
+          baseFee: 10
+        })
+        .expect(400)
+    })
+  })
 })
