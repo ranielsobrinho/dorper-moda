@@ -3,13 +3,16 @@ import { CreateClientRepository } from '../../../../data/protocols/db/clients/cr
 import { GetClientByCpfRepository } from '../../../../data/protocols/db/clients/get-client-by-cpf-repository'
 import { GetClientsRepository } from '../../../../data/protocols/db/clients/get-clients-repository'
 import { DeleteClientRepository } from '../../../../data/protocols/db/clients/delete-client-repository'
+import { UpdateClientRepository } from '../../../../data/protocols/db/clients/update-client-repository'
+import { ClientsModel } from '../../../../domain/models/clients'
 
 export class ClientsMongoRepository
   implements
     CreateClientRepository,
     GetClientByCpfRepository,
     GetClientsRepository,
-    DeleteClientRepository
+    DeleteClientRepository,
+    UpdateClientRepository
 {
   async create(
     params: CreateClientRepository.Params
@@ -41,5 +44,26 @@ export class ClientsMongoRepository
       return 'OK'
     }
     return null
+  }
+
+  async update(
+    params: UpdateClientRepository.Params
+  ): Promise<UpdateClientRepository.Result> {
+    const clientsCollection = MongoHelper.getCollection('clients')
+    const { cpf, address, baseFee, name, telephone } = params
+    await clientsCollection.findOneAndUpdate(
+      { cpf },
+      {
+        $set: {
+          name: name,
+          address: address,
+          telephone: telephone,
+          cpf: cpf,
+          baseFee: baseFee
+        }
+      }
+    )
+    const client = await clientsCollection.findOne({ cpf })
+    return client && MongoHelper.map(client)
   }
 }
