@@ -90,4 +90,23 @@ describe('ClientsMongoRepository', () => {
       expect(clientsData).toBeInstanceOf(Array)
     })
   })
+
+  describe('delete()', () => {
+    test('Should return OK on success', async () => {
+      await clientsCollection.insertOne(makeGetClient())
+      const cpf = makeGetClient().cpf
+      const insertedData = await clientsCollection.findOne({ cpf })
+      expect(insertedData).toBeTruthy()
+      expect(insertedData?.name).toEqual('any_name')
+      const sut = makeSut()
+      const deletedClient = await sut.delete(makeGetClient().cpf)
+      expect(deletedClient).toEqual('OK')
+    })
+
+    test('Should return null on fail', async () => {
+      const sut = makeSut()
+      const clientData = await sut.delete('6338470e2c2a01971011214f')
+      expect(clientData).toBe(null)
+    })
+  })
 })
