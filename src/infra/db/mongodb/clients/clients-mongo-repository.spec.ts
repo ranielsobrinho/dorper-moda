@@ -11,6 +11,14 @@ const makeFakeClientRequest = (): CreateClientRepository.Params => ({
   baseFee: 10
 })
 
+const makeFakeUpdateClientRequest = (): CreateClientRepository.Params => ({
+  name: 'other_name',
+  address: 'any_address',
+  cpf: 'any_cpf',
+  telephone: 'any_telephone',
+  baseFee: 10
+})
+
 const makeGetClient = (): CreateClientRepository.Params => ({
   name: 'any_name',
   address: 'any_address',
@@ -107,6 +115,24 @@ describe('ClientsMongoRepository', () => {
       const sut = makeSut()
       const clientData = await sut.delete('6338470e2c2a01971011214f')
       expect(clientData).toBe(null)
+    })
+  })
+
+  describe('update()', () => {
+    test('Should update a client on success', async () => {
+      await clientsCollection.insertOne(makeGetClient())
+      const cpf = makeGetClient().cpf
+      const insertedData = await clientsCollection.findOne({ cpf })
+      expect(insertedData).toBeTruthy()
+      expect(insertedData?.name).toEqual('any_name')
+
+      const sut = makeSut()
+      await sut.update(makeFakeUpdateClientRequest())
+      const clientData = await clientsCollection.findOne({
+        cpf: 'any_cpf'
+      })
+      expect(clientData).toBeTruthy()
+      expect(clientData?.name).toEqual('other_name')
     })
   })
 })
