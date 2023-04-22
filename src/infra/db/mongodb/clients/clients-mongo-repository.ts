@@ -18,7 +18,9 @@ export class ClientsMongoRepository
     params: CreateClientRepository.Params
   ): Promise<CreateClientRepository.Result> {
     const clientsCollection = MongoHelper.getCollection('clients')
-    const client = await clientsCollection.insertOne(params)
+    const { cpf } = params
+    await clientsCollection.insertOne(params)
+    const client = await clientsCollection.findOne({ cpf })
     return client && MongoHelper.map(client)
   }
 
