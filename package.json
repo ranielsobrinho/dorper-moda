@@ -6,9 +6,9 @@
   "scripts": {
     "start": "node dist/main/server.js",
     "build": "rimraf dist/ && npx tsc",
-    "up": "npm run build && sudo docker compose up -d",
+    "up": "npm run build && docker compose up -d",
     "up:logs": "npm run up && docker-compose logs -f",
-    "down": "sudo docker compose down",
+    "down": "docker compose down",
     "prepare": "husky install",
     "dev": "ts-node-dev src/main/server.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
