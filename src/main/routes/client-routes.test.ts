@@ -43,7 +43,8 @@ describe('Sales Routes', () => {
           address: 'any_address',
           cpf: 'any_cpf',
           telephone: 'any_telephone',
-          baseFee: 10
+          baseFee: 10,
+          cep: '12342-143'
         })
         .expect(200)
     })
@@ -55,9 +56,9 @@ describe('Sales Routes', () => {
         .set('x-access-token', accessToken)
         .send({
           name: 'any_name',
-          address: 'any_address',
           cpf: 'any_cpf',
-          telephone: 'any_telephone'
+          telephone: 'any_telephone',
+          cep: '12342-143'
         })
         .expect(400)
     })
@@ -70,7 +71,8 @@ describe('Sales Routes', () => {
           address: 'any_address',
           cpf: 'any_cpf',
           telephone: 'any_telephone',
-          baseFee: 10
+          baseFee: 10,
+          cep: '12342-143'
         })
         .expect(403)
     })
@@ -82,7 +84,8 @@ describe('Sales Routes', () => {
         address: 'any_address',
         cpf: 'any_cpf',
         telephone: 'any_telephone',
-        baseFee: 10
+        baseFee: 10,
+        cep: '12342-143'
       })
       await request(app)
         .post('/api/clients')
@@ -92,7 +95,8 @@ describe('Sales Routes', () => {
           address: 'any_address',
           cpf: 'any_cpf',
           telephone: 'any_telephone',
-          baseFee: 10
+          baseFee: 10,
+          cep: '12342-143'
         })
         .expect(400)
     })
@@ -120,7 +124,8 @@ describe('Sales Routes', () => {
         address: 'any_address',
         cpf: 'any_cpf',
         telephone: 'any_telephone',
-        baseFee: 10
+        baseFee: 10,
+        cep: '12342-143'
       })
       await request(app)
         .get('/api/clients/any_cpf')
@@ -149,7 +154,8 @@ describe('Sales Routes', () => {
         address: 'any_address',
         cpf: 'any_cpf',
         telephone: 'any_telephone',
-        baseFee: 10
+        baseFee: 10,
+        cep: '12342-143'
       })
       await request(app)
         .delete('/api/clients/any_cpf')
@@ -178,7 +184,8 @@ describe('Sales Routes', () => {
         address: 'any_address',
         cpf: 'any_cpf',
         telephone: 'any_telephone',
-        baseFee: 10
+        baseFee: 10,
+        cep: '12342-143'
       })
       await request(app)
         .put('/api/clients/any_cpf')
@@ -188,7 +195,8 @@ describe('Sales Routes', () => {
           address: 'other_address',
           cpf: 'other_cpf',
           telephone: 'other_telephone',
-          baseFee: 19
+          baseFee: 19,
+          cep: '12342-143'
         })
         .expect(200)
     })
@@ -200,14 +208,14 @@ describe('Sales Routes', () => {
         address: 'any_address',
         cpf: 'any_cpf',
         telephone: 'any_telephone',
-        baseFee: 10
+        baseFee: 10,
+        cep: '12342-143'
       })
       await request(app)
         .put('/api/clients/any_cpf')
         .set('x-access-token', accessToken)
         .send({
           name: 'any_name',
-          address: 'any_address',
           telephone: 'any_telephone'
         })
         .expect(400)
@@ -219,7 +227,8 @@ describe('Sales Routes', () => {
         address: 'any_address',
         cpf: 'any_cpf',
         telephone: 'any_telephone',
-        baseFee: 10
+        baseFee: 10,
+        cep: '12342-143'
       })
       await request(app)
         .put('/api/clients/any_cpf')
@@ -228,7 +237,8 @@ describe('Sales Routes', () => {
           address: 'any_address',
           cpf: 'any_cpf',
           telephone: 'any_telephone',
-          baseFee: 10
+          baseFee: 10,
+          cep: '12342-143'
         })
         .expect(403)
     })
@@ -242,7 +252,8 @@ describe('Sales Routes', () => {
           name: 'any_name',
           address: 'any_address',
           telephone: 'any_telephone',
-          baseFee: 10
+          baseFee: 10,
+          cep: '12342-143'
         })
         .expect(400)
     })

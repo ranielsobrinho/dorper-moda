@@ -7,7 +7,8 @@ const makeGetClient = (): ClientsModel => ({
   address: 'any_address',
   cpf: 'any_cpf',
   telephone: 'any_telephone',
-  baseFee: 10
+  baseFee: 10,
+  cep: '12342-143'
 })
 
 const makeGetClientByCpfRepositoryStub = (): GetClientByCpfRepository => {

@@ -13,7 +13,8 @@ const makeFakeClientRequest = (): HttpRequest => ({
     name: 'any_name',
     address: 'any_address',
     telephone: 'any_telephone',
-    baseFee: 10
+    baseFee: 10,
+    cep: '12342-143'
   }
 })
 
@@ -22,7 +23,8 @@ const makeCreateClientData = (): ClientsModel => ({
   address: 'any_address',
   cpf: 'any_cpf',
   telephone: 'any_telephone',
-  baseFee: 10
+  baseFee: 10,
+  cep: '12342-143'
 })
 
 const makeUpdateClientStub = (): UpdateClient => {

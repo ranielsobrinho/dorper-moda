@@ -16,7 +16,7 @@ export class UpdateClientController implements Controller {
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { cpf } = httpRequest.params
-      const { name, address, telephone, baseFee } = httpRequest.body
+      const { name, address, telephone, baseFee, cep } = httpRequest.body
 
       const error = this.validation.validate(httpRequest.body)
       if (error) {
@@ -28,7 +28,8 @@ export class UpdateClientController implements Controller {
         address,
         telephone,
         cpf,
-        baseFee
+        baseFee,
+        cep
       })
       if (clientOrError === null) {
         return badRequest(new Error('Não há cliente com o cpf cadastrado.'))

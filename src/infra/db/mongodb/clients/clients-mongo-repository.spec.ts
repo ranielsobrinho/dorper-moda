@@ -8,7 +8,8 @@ const makeFakeClientRequest = (): CreateClientRepository.Params => ({
   address: 'any_address',
   cpf: 'any_cpf',
   telephone: 'any_telephone',
-  baseFee: 10
+  baseFee: 10,
+  cep: '12342-143'
 })
 
 const makeFakeUpdateClientRequest = (): CreateClientRepository.Params => ({
@@ -16,7 +17,8 @@ const makeFakeUpdateClientRequest = (): CreateClientRepository.Params => ({
   address: 'any_address',
   cpf: 'any_cpf',
   telephone: 'any_telephone',
-  baseFee: 10
+  baseFee: 10,
+  cep: '12342-143'
 })
 
 const makeGetClient = (): CreateClientRepository.Params => ({
@@ -24,7 +26,8 @@ const makeGetClient = (): CreateClientRepository.Params => ({
   address: 'any_address',
   cpf: 'any_cpf',
   telephone: 'any_telephone',
-  baseFee: 10
+  baseFee: 10,
+  cep: '12342-143'
 })
 
 let clientsCollection: Collection

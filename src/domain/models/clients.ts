@@ -4,4 +4,5 @@ export type ClientsModel = {
   cpf: string
   telephone: string
   baseFee: number
+  cep: string
 }

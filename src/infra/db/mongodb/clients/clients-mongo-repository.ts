@@ -4,7 +4,6 @@ import { GetClientByCpfRepository } from '../../../../data/protocols/db/clients/
 import { GetClientsRepository } from '../../../../data/protocols/db/clients/get-clients-repository'
 import { DeleteClientRepository } from '../../../../data/protocols/db/clients/delete-client-repository'
 import { UpdateClientRepository } from '../../../../data/protocols/db/clients/update-client-repository'
-import { ClientsModel } from '../../../../domain/models/clients'
 
 export class ClientsMongoRepository
   implements
@@ -52,7 +51,7 @@ export class ClientsMongoRepository
     params: UpdateClientRepository.Params
   ): Promise<UpdateClientRepository.Result> {
     const clientsCollection = MongoHelper.getCollection('clients')
-    const { cpf, address, baseFee, name, telephone } = params
+    const { cpf, address, baseFee, name, telephone, cep } = params
     await clientsCollection.findOneAndUpdate(
       { cpf },
       {
@@ -61,7 +60,8 @@ export class ClientsMongoRepository
           address: address,
           telephone: telephone,
           cpf: cpf,
-          baseFee: baseFee
+          baseFee: baseFee,
+          cep: cep
         }
       }
     )
