@@ -11,7 +11,7 @@ describe('CreateClientValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
     makeCreateClientValidation()
     const validations: Validation[] = []
-    for (const field of ['name', 'address', 'cpf', 'telephone', 'baseFee']) {
+    for (const field of ['name', 'address']) {
       validations.push(new RequiredFieldValidation(field))
     }
     expect(ValidationComposite).toHaveBeenCalledWith(validations)

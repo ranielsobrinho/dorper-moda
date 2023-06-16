@@ -6,7 +6,7 @@ import {
 
 export const makeCreateClientValidation = (): ValidationComposite => {
   const validations: Validation[] = []
-  for (const field of ['name', 'address', 'cpf', 'telephone', 'baseFee']) {
+  for (const field of ['name', 'address']) {
     validations.push(new RequiredFieldValidation(field))
   }
   return new ValidationComposite(validations)
